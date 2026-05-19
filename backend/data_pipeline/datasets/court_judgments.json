@@ -1,0 +1,391 @@
+{
+  "metadata": {
+    "source": "judgments",
+    "total_records": 12,
+    "generated_at": "2026-03-24T09:50:19.567294+00:00"
+  },
+  "records": [
+    {
+      "case_name": "Maneka Gandhi v. Union of India",
+      "court": "Supreme Court of India",
+      "date": "1978-01-25",
+      "citation": "AIR 1978 SC 597",
+      "bench": "M.H. Beg CJ, Y.V. Chandrachud, V.R. Krishna Iyer, P.N. Bhagwati, N.L. Untwalia, S. Murtaza Fazal Ali, P.S. Kailasam JJ",
+      "case_number": "Writ Petition 231 of 1977",
+      "legal_topic": "fundamental_rights, constitutional",
+      "summary": "The Supreme Court expanded the scope of Article 21 (right to life and personal liberty) holding that 'procedure established by law' must be fair, just and reasonable and not arbitrary or oppressive. The right to travel abroad is part of personal liberty under Article 21. An order impounding Maneka Gandhi's passport without giving her an opportunity to be heard violated Articles 14, 19 and 21. The Court established that Articles 14, 19 and 21 are interlinked and must be read together — the golden triangle. The Court overruled A.K. Gopalan v. State of Madras (1950) to the extent it held that each Fundamental Right is a separate and independent right.",
+      "acts_cited": [
+        "Constitution of India, Article 21",
+        "Constitution of India, Article 14",
+        "Constitution of India, Article 19",
+        "Passports Act, 1967"
+      ],
+      "sections_cited": [],
+      "legal_principles": [
+        "Right to life includes right to live with human dignity",
+        "Procedure established by law must be fair, just and reasonable",
+        "Articles 14, 19 and 21 are interlinked and constitute a golden triangle",
+        "Passport authority must give reasonable opportunity before impounding passport"
+      ],
+      "keywords": "maneka, gandhi, article, right, personal, liberty, established, must, articles, union, india, supreme",
+      "source_url": "https://main.sci.gov.in",
+      "content_hash": "6715b03f23794962a7582bd57c8aad6dc0250820c6f70ff288d1554375bf958e",
+      "last_updated": "2026-03-24T09:50:16.036798+00:00",
+      "act_name": "Supreme Court of India",
+      "section_number": "AIR 1978 SC 597",
+      "title": "Maneka Gandhi v. Union of India",
+      "description": "The Supreme Court expanded the scope of Article 21 (right to life and personal liberty) holding that 'procedure established by law' must be fair, just and reasonable and not arbitrary or oppressive. The right to travel abroad is part of personal liberty under Article 21. An order impounding Maneka Gandhi's passport without giving her an opportunity to be heard violated Articles 14, 19 and 21. The Court established that Articles 14, 19 and 21 are interlinked and must be read together — the golden triangle. The Court overruled A.K. Gopalan v. State of Madras (1950) to the extent it held that each Fundamental Right is a separate and independent right.",
+      "jurisdiction": "central",
+      "law_type": "judgment"
+    },
+    {
+      "case_name": "Kesavananda Bharati v. State of Kerala",
+      "court": "Supreme Court of India",
+      "date": "1973-04-24",
+      "citation": "AIR 1973 SC 1461",
+      "bench": "13-judge Constitution Bench",
+      "case_number": "Writ Petition 135 of 1970",
+      "legal_topic": "constitutional, fundamental_rights",
+      "summary": "The Supreme Court in a 7-6 majority held that Parliament has the power to amend any part of the Constitution including Fundamental Rights, but it cannot alter the 'basic structure' of the Constitution. The basic structure doctrine was established — Parliament cannot destroy the basic features of the Constitution through amendments. Elements of basic structure include: supremacy of Constitution, republican and democratic form of government, secular character, separation of powers, federal character. This judgment effectively overruled Golak Nath v. State of Punjab (1967).",
+      "acts_cited": [
+        "Constitution of India, Article 368",
+        "Kerala Land Reforms Act, 1963"
+      ],
+      "sections_cited": [],
+      "legal_principles": [
+        "Parliament cannot alter the basic structure of the Constitution",
+        "Judicial review is part of the basic structure",
+        "Basic structure includes supremacy of Constitution, democracy, secularism, federalism",
+        "No amendment can destroy the Constitutional identity"
+      ],
+      "keywords": "constitution, basic, structure, parliament, cannot, kesavananda, bharati, state, kerala, supreme, majority, power",
+      "source_url": "https://main.sci.gov.in",
+      "content_hash": "6a48256ff8009d5d91f6fc6821af42cf10963153bed451884080130128aa03bb",
+      "last_updated": "2026-03-24T09:50:16.036798+00:00",
+      "act_name": "Supreme Court of India",
+      "section_number": "AIR 1973 SC 1461",
+      "title": "Kesavananda Bharati v. State of Kerala",
+      "description": "The Supreme Court in a 7-6 majority held that Parliament has the power to amend any part of the Constitution including Fundamental Rights, but it cannot alter the 'basic structure' of the Constitution. The basic structure doctrine was established — Parliament cannot destroy the basic features of the Constitution through amendments. Elements of basic structure include: supremacy of Constitution, republican and democratic form of government, secular character, separation of powers, federal character. This judgment effectively overruled Golak Nath v. State of Punjab (1967).",
+      "jurisdiction": "central",
+      "law_type": "judgment"
+    },
+    {
+      "case_name": "Vishaka v. State of Rajasthan",
+      "court": "Supreme Court of India",
+      "date": "1997-08-13",
+      "citation": "AIR 1997 SC 3011",
+      "bench": "J.S. Verma CJ, Sujata V. Manohar, B.N. Kirpal JJ",
+      "case_number": "Writ Petition 666 of 1992",
+      "legal_topic": "fundamental_rights, labour",
+      "summary": "The Supreme Court laid down guidelines (Vishaka Guidelines) for prevention of sexual harassment at the workplace in the absence of enacted law. The Court held that sexual harassment of working women amounts to violation of rights of gender equality and right to life and liberty under Articles 14, 15 and 21. The guidelines included: employers must prevent sexual harassment, set up complaints committee, and raise awareness. These guidelines were given the force of law until Parliament enacted the Sexual Harassment of Women at Workplace (Prevention, Prohibition and Redressal) Act, 2013.",
+      "acts_cited": [
+        "Constitution of India, Article 14",
+        "Constitution of India, Article 15",
+        "Constitution of India, Article 21",
+        "Convention on Elimination of All Forms of Discrimination Against Women"
+      ],
+      "sections_cited": [],
+      "legal_principles": [
+        "Sexual harassment at workplace violates fundamental rights",
+        "Employer has duty to prevent sexual harassment",
+        "Courts can issue guidelines having force of law when there is a legislative void",
+        "International conventions can be used to interpret fundamental rights"
+      ],
+      "keywords": "guidelines, sexual, harassment, vishaka, enacted, state, rajasthan, supreme, laid, down, prevention, workplace",
+      "source_url": "https://main.sci.gov.in",
+      "content_hash": "224cf816ebdd4ae84ece63f1f5b310de55a68f2be9da110925f3632d4b927732",
+      "last_updated": "2026-03-24T09:50:16.036798+00:00",
+      "act_name": "Supreme Court of India",
+      "section_number": "AIR 1997 SC 3011",
+      "title": "Vishaka v. State of Rajasthan",
+      "description": "The Supreme Court laid down guidelines (Vishaka Guidelines) for prevention of sexual harassment at the workplace in the absence of enacted law. The Court held that sexual harassment of working women amounts to violation of rights of gender equality and right to life and liberty under Articles 14, 15 and 21. The guidelines included: employers must prevent sexual harassment, set up complaints committee, and raise awareness. These guidelines were given the force of law until Parliament enacted the Sexual Harassment of Women at Workplace (Prevention, Prohibition and Redressal) Act, 2013.",
+      "jurisdiction": "central",
+      "law_type": "judgment"
+    },
+    {
+      "case_name": "Shreya Singhal v. Union of India",
+      "court": "Supreme Court of India",
+      "date": "2015-03-24",
+      "citation": "(2015) 5 SCC 1",
+      "bench": "J. Chelameswar, Rohinton Fali Nariman JJ",
+      "case_number": "Writ Petition 167 of 2012",
+      "legal_topic": "fundamental_rights, cyber",
+      "summary": "The Supreme Court struck down Section 66A of the Information Technology Act, 2000, which punished sending 'grossly offensive' or 'menacing' messages online. The Court held that Section 66A was unconstitutional as it violated the freedom of speech and expression guaranteed under Article 19(1)(a). The expression 'grossly offensive' and 'menacing character' were vague and overbroad, creating a chilling effect on free speech. The provision was not saved by Article 19(2) as it was not a reasonable restriction. Section 79 read down: intermediaries not liable for third-party content unless they had actual knowledge or had not acted expeditiously.",
+      "acts_cited": [
+        "Information Technology Act, 2000, Section 66A",
+        "Constitution of India, Article 19",
+        "Constitution of India, Article 19(2)"
+      ],
+      "sections_cited": [],
+      "legal_principles": [
+        "Section 66A IT Act struck down for being unconstitutional",
+        "Vague laws that restrict free speech cannot be saved by Article 19(2)",
+        "Online speech has same protection as offline speech",
+        "Chilling effect on free speech renders law unconstitutional"
+      ],
+      "keywords": "section, grossly, offensive, menacing, speech, expression, article, shreya, singhal, union, india, supreme",
+      "source_url": "https://main.sci.gov.in",
+      "content_hash": "2c33c70038625db73255581cca636db0eb970372dae3729a072b83fbb385a132",
+      "last_updated": "2026-03-24T09:50:16.036798+00:00",
+      "act_name": "Supreme Court of India",
+      "section_number": "(2015) 5 SCC 1",
+      "title": "Shreya Singhal v. Union of India",
+      "description": "The Supreme Court struck down Section 66A of the Information Technology Act, 2000, which punished sending 'grossly offensive' or 'menacing' messages online. The Court held that Section 66A was unconstitutional as it violated the freedom of speech and expression guaranteed under Article 19(1)(a). The expression 'grossly offensive' and 'menacing character' were vague and overbroad, creating a chilling effect on free speech. The provision was not saved by Article 19(2) as it was not a reasonable restriction. Section 79 read down: intermediaries not liable for third-party content unless they had actual knowledge or had not acted expeditiously.",
+      "jurisdiction": "central",
+      "law_type": "judgment"
+    },
+    {
+      "case_name": "D.K. Basu v. State of West Bengal",
+      "court": "Supreme Court of India",
+      "date": "1997-01-18",
+      "citation": "AIR 1997 SC 610",
+      "bench": "A.S. Anand, Kuldip Singh JJ",
+      "case_number": "Writ Petition 539 of 1986",
+      "legal_topic": "criminal, fundamental_rights",
+      "summary": "The Supreme Court laid down guidelines to prevent custodial deaths and torture. The Court held that custodial violence violates Article 21 (right to life). The guidelines include: police must identify themselves in writing upon arrest; memo of arrest must be prepared; arrestee must be informed of right to inform a relative; medical examination at regular intervals; right to meet a lawyer; magistrate must be informed within 24 hours. These guidelines were later incorporated into Section 41B of CrPC (now BNSS 2023). Compensation must be paid to victims of custodial violence.",
+      "acts_cited": [
+        "Constitution of India, Article 21",
+        "Code of Criminal Procedure, 1973, Section 41",
+        "Constitution of India, Article 22"
+      ],
+      "sections_cited": [],
+      "legal_principles": [
+        "Custodial torture violates Article 21",
+        "State is vicariously liable for acts of its officers",
+        "Arrested person must be produced before magistrate within 24 hours",
+        "Right to legal counsel must be communicated at time of arrest"
+      ],
+      "keywords": "must, guidelines, right, custodial, arrest, informed, basu, state, west, bengal, supreme, laid",
+      "source_url": "https://main.sci.gov.in",
+      "content_hash": "e39183867b68384737910e4aab1d65f3b1d538fdbeee32327f28624740cb3283",
+      "last_updated": "2026-03-24T09:50:16.036798+00:00",
+      "act_name": "Supreme Court of India",
+      "section_number": "AIR 1997 SC 610",
+      "title": "D.K. Basu v. State of West Bengal",
+      "description": "The Supreme Court laid down guidelines to prevent custodial deaths and torture. The Court held that custodial violence violates Article 21 (right to life). The guidelines include: police must identify themselves in writing upon arrest; memo of arrest must be prepared; arrestee must be informed of right to inform a relative; medical examination at regular intervals; right to meet a lawyer; magistrate must be informed within 24 hours. These guidelines were later incorporated into Section 41B of CrPC (now BNSS 2023). Compensation must be paid to victims of custodial violence.",
+      "jurisdiction": "central",
+      "law_type": "judgment"
+    },
+    {
+      "case_name": "Navtej Singh Johar v. Union of India",
+      "court": "Supreme Court of India",
+      "date": "2018-09-06",
+      "citation": "(2018) 10 SCC 1",
+      "bench": "Dipak Misra CJ, A.M. Khanwilkar, R.F. Nariman, D.Y. Chandrachud, Indu Malhotra JJ",
+      "case_number": "Writ Petition 76 of 2016",
+      "legal_topic": "fundamental_rights, constitutional",
+      "summary": "The Supreme Court in a unanimous 5-judge Constitution Bench decriminalized consensual same-sex relations between adults by reading down Section 377 of the Indian Penal Code. The Court held that criminalizing consensual same-sex acts violates Articles 14, 15, 19 and 21 of the Constitution. Sexual orientation is an essential attribute of identity. LGBT persons have full constitutional rights. The Court overruled Suresh Kumar Koushal v. Naz Foundation (2014). The right to privacy includes the right to sexual orientation.",
+      "acts_cited": [
+        "Indian Penal Code, 1860, Section 377",
+        "Constitution of India, Article 14",
+        "Constitution of India, Article 15",
+        "Constitution of India, Article 21"
+      ],
+      "sections_cited": [],
+      "legal_principles": [
+        "Section 377 IPC read down — consensual same-sex acts decriminalized",
+        "Sexual orientation is an essential attribute of identity protected under Article 21",
+        "Constitutional morality prevails over social morality",
+        "Right to privacy includes right to sexual orientation"
+      ],
+      "keywords": "constitution, consensual, same, right, navtej, singh, johar, union, india, supreme, unanimous, decriminalized",
+      "source_url": "https://main.sci.gov.in",
+      "content_hash": "7882b5eb8cca74169610b07815385117b050f374671142cbe5ae6c740a0ca4cc",
+      "last_updated": "2026-03-24T09:50:16.036798+00:00",
+      "act_name": "Supreme Court of India",
+      "section_number": "(2018) 10 SCC 1",
+      "title": "Navtej Singh Johar v. Union of India",
+      "description": "The Supreme Court in a unanimous 5-judge Constitution Bench decriminalized consensual same-sex relations between adults by reading down Section 377 of the Indian Penal Code. The Court held that criminalizing consensual same-sex acts violates Articles 14, 15, 19 and 21 of the Constitution. Sexual orientation is an essential attribute of identity. LGBT persons have full constitutional rights. The Court overruled Suresh Kumar Koushal v. Naz Foundation (2014). The right to privacy includes the right to sexual orientation.",
+      "jurisdiction": "central",
+      "law_type": "judgment"
+    },
+    {
+      "case_name": "Justice K.S. Puttaswamy v. Union of India",
+      "court": "Supreme Court of India",
+      "date": "2017-08-24",
+      "citation": "(2017) 10 SCC 1",
+      "bench": "9-judge Constitution Bench",
+      "case_number": "Writ Petition 494 of 2012",
+      "legal_topic": "fundamental_rights, constitutional",
+      "summary": "A 9-judge Constitution Bench unanimously held that the right to privacy is a fundamental right protected under Article 21 of the Constitution. Privacy is intrinsic to life and liberty. The Bench overruled M.P. Sharma (1958) and Kharak Singh (1962) to the extent they held otherwise. Privacy includes personal autonomy, bodily integrity, informational privacy, and decisional autonomy. State can restrict privacy rights only on the touchstone of legality, legitimate aim, and proportionality. The Aadhaar scheme was upheld partially in a subsequent judgment.",
+      "acts_cited": [
+        "Constitution of India, Article 21",
+        "Constitution of India, Article 19"
+      ],
+      "sections_cited": [],
+      "legal_principles": [
+        "Right to privacy is a fundamental right under Article 21",
+        "Privacy includes informational privacy, bodily integrity, and decisional autonomy",
+        "Any infringement of privacy must satisfy legality, legitimate aim, and proportionality",
+        "State surveillance must comply with Article 21 standards"
+      ],
+      "keywords": "privacy, constitution, right, autonomy, puttaswamy, union, india, unanimously, fundamental, protected, article, intrinsic",
+      "source_url": "https://main.sci.gov.in",
+      "content_hash": "89122b53c595db3d8c0b4014732c6ae724f95f61107b220dcac90ea5f6050408",
+      "last_updated": "2026-03-24T09:50:16.036798+00:00",
+      "act_name": "Supreme Court of India",
+      "section_number": "(2017) 10 SCC 1",
+      "title": "Justice K.S. Puttaswamy v. Union of India",
+      "description": "A 9-judge Constitution Bench unanimously held that the right to privacy is a fundamental right protected under Article 21 of the Constitution. Privacy is intrinsic to life and liberty. The Bench overruled M.P. Sharma (1958) and Kharak Singh (1962) to the extent they held otherwise. Privacy includes personal autonomy, bodily integrity, informational privacy, and decisional autonomy. State can restrict privacy rights only on the touchstone of legality, legitimate aim, and proportionality. The Aadhaar scheme was upheld partially in a subsequent judgment.",
+      "jurisdiction": "central",
+      "law_type": "judgment"
+    },
+    {
+      "case_name": "M.C. Mehta v. Union of India (Oleum Gas Leak)",
+      "court": "Supreme Court of India",
+      "date": "1987-02-20",
+      "citation": "AIR 1987 SC 1086",
+      "bench": "P.N. Bhagwati CJ, Ranganath Misra, G.L. Oza, M.M. Dutt, K.N. Singh JJ",
+      "case_number": "Writ Petition 12739 of 1985",
+      "legal_topic": "environment, constitutional",
+      "summary": "The Supreme Court evolved the principle of 'absolute liability' distinct from strict liability in Rylands v. Fletcher. An enterprise engaged in a hazardous activity is absolutely liable for harm resulting from such activity. No exceptions apply — an enterprise cannot escape liability by showing the escape was due to an Act of God or act of a stranger. The quantum of damages should be commensurate with the magnitude and capacity of the enterprise. This case established the 'polluter pays' principle in Indian law and formed the basis for environmental liability.",
+      "acts_cited": [
+        "Constitution of India, Article 21",
+        "Environment Protection Act, 1986"
+      ],
+      "sections_cited": [],
+      "legal_principles": [
+        "Absolute liability for hazardous activities — no exceptions",
+        "Polluter pays principle established in Indian law",
+        "Enterprises must compensate all victims of hazardous industrial activity",
+        "Right to live in a clean environment is part of Article 21"
+      ],
+      "keywords": "liability, enterprise, activity, escape, mehta, union, india, oleum, leak, supreme, evolved, principle",
+      "source_url": "https://main.sci.gov.in",
+      "content_hash": "ebd004acfd8485daac4ec74ba534f14223756f1a6dfb218235932ef5abb60791",
+      "last_updated": "2026-03-24T09:50:16.036798+00:00",
+      "act_name": "Supreme Court of India",
+      "section_number": "AIR 1987 SC 1086",
+      "title": "M.C. Mehta v. Union of India (Oleum Gas Leak)",
+      "description": "The Supreme Court evolved the principle of 'absolute liability' distinct from strict liability in Rylands v. Fletcher. An enterprise engaged in a hazardous activity is absolutely liable for harm resulting from such activity. No exceptions apply — an enterprise cannot escape liability by showing the escape was due to an Act of God or act of a stranger. The quantum of damages should be commensurate with the magnitude and capacity of the enterprise. This case established the 'polluter pays' principle in Indian law and formed the basis for environmental liability.",
+      "jurisdiction": "central",
+      "law_type": "judgment"
+    },
+    {
+      "case_name": "Arnesh Kumar v. State of Bihar",
+      "court": "Supreme Court of India",
+      "date": "2014-07-02",
+      "citation": "(2014) 8 SCC 273",
+      "bench": "Chandramauli Kumar Prasad, Pinaki Chandra Ghose JJ",
+      "case_number": "Criminal Appeal 1277 of 2014",
+      "legal_topic": "criminal, fundamental_rights",
+      "summary": "The Supreme Court issued guidelines to prevent arbitrary arrest in cases under Section 498A IPC (now Section 85 BNS) and the Dowry Prohibition Act. The Court held that police must apply their mind and be satisfied that arrest is necessary before arresting a person. A Magistrate shall not authorize detention unless police officer furnishes reasons for arrest. The Court directed all State Governments to instruct Magistrates not to authorize detention mechanically. The guidelines apply to all offences punishable with imprisonment up to 7 years under Section 41 CrPC (now BNSS).",
+      "acts_cited": [
+        "Indian Penal Code, 1860, Section 498A",
+        "Code of Criminal Procedure, 1973, Section 41",
+        "Dowry Prohibition Act, 1961"
+      ],
+      "sections_cited": [],
+      "legal_principles": [
+        "Arrest is not mandatory even for cognizable offences",
+        "Police must apply mind before effecting arrest",
+        "Section 41A CrPC notice must be served before arrest in 7-year offences",
+        "Magistrate must record reasons before authorizing detention"
+      ],
+      "keywords": "arrest, state, guidelines, section, police, apply, authorize, detention, arnesh, kumar, bihar, supreme",
+      "source_url": "https://main.sci.gov.in",
+      "content_hash": "326f956d137335a427a99ab33fdf9660979428f8837c9175545d59b5aac22c8d",
+      "last_updated": "2026-03-24T09:50:16.036798+00:00",
+      "act_name": "Supreme Court of India",
+      "section_number": "(2014) 8 SCC 273",
+      "title": "Arnesh Kumar v. State of Bihar",
+      "description": "The Supreme Court issued guidelines to prevent arbitrary arrest in cases under Section 498A IPC (now Section 85 BNS) and the Dowry Prohibition Act. The Court held that police must apply their mind and be satisfied that arrest is necessary before arresting a person. A Magistrate shall not authorize detention unless police officer furnishes reasons for arrest. The Court directed all State Governments to instruct Magistrates not to authorize detention mechanically. The guidelines apply to all offences punishable with imprisonment up to 7 years under Section 41 CrPC (now BNSS).",
+      "jurisdiction": "central",
+      "law_type": "judgment"
+    },
+    {
+      "case_name": "Indira Sawhney v. Union of India",
+      "court": "Supreme Court of India",
+      "date": "1992-11-16",
+      "citation": "AIR 1993 SC 477",
+      "bench": "9-judge Constitution Bench",
+      "case_number": "Writ Petition 930 of 1990",
+      "legal_topic": "constitutional, fundamental_rights",
+      "summary": "The Supreme Court upheld the Mandal Commission's 27% reservation for Other Backward Classes (OBCs) in central government jobs under Article 16(4). The Court held that the 'creamy layer' among OBCs must be excluded from reservation benefits. The total reservation cannot exceed 50% (the '50% ceiling rule'). Reservations in promotions are not permitted. Backward classes under Article 16(4) need not be socially and educationally backward — social backwardness alone suffices. Caste can be a determining factor for backwardness.",
+      "acts_cited": [
+        "Constitution of India, Article 16",
+        "Constitution of India, Article 16(4)"
+      ],
+      "sections_cited": [],
+      "legal_principles": [
+        "OBC reservation capped at 27% with creamy layer exclusion",
+        "Total reservation cannot exceed 50%",
+        "Reservations in promotions not permissible under Article 16(4)",
+        "Caste can be a determining factor for social backwardness"
+      ],
+      "keywords": "reservation, backward, classes, obcs, article, indira, sawhney, union, india, supreme, upheld, mandal",
+      "source_url": "https://main.sci.gov.in",
+      "content_hash": "f7e838911a9c2dcb9d01a89e55471aee514e380625e985a3baf2d0c08ebe387c",
+      "last_updated": "2026-03-24T09:50:16.036798+00:00",
+      "act_name": "Supreme Court of India",
+      "section_number": "AIR 1993 SC 477",
+      "title": "Indira Sawhney v. Union of India",
+      "description": "The Supreme Court upheld the Mandal Commission's 27% reservation for Other Backward Classes (OBCs) in central government jobs under Article 16(4). The Court held that the 'creamy layer' among OBCs must be excluded from reservation benefits. The total reservation cannot exceed 50% (the '50% ceiling rule'). Reservations in promotions are not permitted. Backward classes under Article 16(4) need not be socially and educationally backward — social backwardness alone suffices. Caste can be a determining factor for backwardness.",
+      "jurisdiction": "central",
+      "law_type": "judgment"
+    },
+    {
+      "case_name": "Olga Tellis v. Bombay Municipal Corporation",
+      "court": "Supreme Court of India",
+      "date": "1985-07-10",
+      "citation": "AIR 1986 SC 180",
+      "bench": "Y.V. Chandrachud CJ, V.D. Tulzapurkar, O. Chinnappa Reddy, V. Balakrishna Eradi, A. Varadarajan JJ",
+      "case_number": "Writ Petition 4582 of 1985",
+      "legal_topic": "fundamental_rights, civil",
+      "summary": "The Supreme Court held that the right to livelihood is an intrinsic part of the right to life under Article 21. Pavement dwellers have a right to their livelihood — eviction from pavements without alternative shelter violates Article 21. The State cannot evict the urban poor from their means of livelihood without providing reasonable opportunity and alternative accommodation. The right to life includes the right to live with basic human dignity. However, the eviction order was upheld with directions to provide alternative sites.",
+      "acts_cited": [
+        "Constitution of India, Article 21",
+        "Bombay Municipal Corporation Act, 1888"
+      ],
+      "sections_cited": [],
+      "legal_principles": [
+        "Right to livelihood is part of right to life under Article 21",
+        "Eviction of urban poor must comply with Article 21",
+        "State must provide reasonable opportunity before eviction",
+        "Right to life includes right to live with human dignity"
+      ],
+      "keywords": "right, livelihood, life, article, their, eviction, without, alternative, olga, tellis, bombay, municipal",
+      "source_url": "https://main.sci.gov.in",
+      "content_hash": "0438b1681803454204ab41466625af7167472755393e98af0ee0bff8ec3f1fb3",
+      "last_updated": "2026-03-24T09:50:16.036798+00:00",
+      "act_name": "Supreme Court of India",
+      "section_number": "AIR 1986 SC 180",
+      "title": "Olga Tellis v. Bombay Municipal Corporation",
+      "description": "The Supreme Court held that the right to livelihood is an intrinsic part of the right to life under Article 21. Pavement dwellers have a right to their livelihood — eviction from pavements without alternative shelter violates Article 21. The State cannot evict the urban poor from their means of livelihood without providing reasonable opportunity and alternative accommodation. The right to life includes the right to live with basic human dignity. However, the eviction order was upheld with directions to provide alternative sites.",
+      "jurisdiction": "central",
+      "law_type": "judgment"
+    },
+    {
+      "case_name": "Gian Kaur v. State of Punjab",
+      "court": "Supreme Court of India",
+      "date": "1996-03-21",
+      "citation": "AIR 1996 SC 946",
+      "bench": "J.S. Verma, G.N. Ray, N.P. Singh, Faizan Uddin, G.T. Nanavati JJ",
+      "case_number": "Criminal Appeal 417 of 1994",
+      "legal_topic": "criminal, fundamental_rights",
+      "summary": "A 5-judge Constitution Bench upheld the validity of Section 309 IPC (attempt to commit suicide) and Section 306 IPC (abetment of suicide). The Court held that the right to die is not included in the right to life under Article 21 — the right to life does not include the right to extinguish life. Overruling P. Rathinam v. Union of India, the Court held that Article 21 cannot be interpreted to include the right to die. However, the Court recognized 'passive euthanasia' in later cases.",
+      "acts_cited": [
+        "Indian Penal Code, 1860, Section 306",
+        "Indian Penal Code, 1860, Section 309",
+        "Constitution of India, Article 21"
+      ],
+      "sections_cited": [],
+      "legal_principles": [
+        "Right to life does not include right to die",
+        "Section 309 IPC (attempt to suicide) held constitutionally valid",
+        "Section 306 IPC (abetment of suicide) valid",
+        "Article 21 protects life, not its extinction"
+      ],
+      "keywords": "right, life, section, suicide, article, include, gian, kaur, state, punjab, constitution, upheld",
+      "source_url": "https://main.sci.gov.in",
+      "content_hash": "716fba0b673eb2560bf50fa6983e9e4d30ccbb37439fd6232d7383f523037365",
+      "last_updated": "2026-03-24T09:50:16.036798+00:00",
+      "act_name": "Supreme Court of India",
+      "section_number": "AIR 1996 SC 946",
+      "title": "Gian Kaur v. State of Punjab",
+      "description": "A 5-judge Constitution Bench upheld the validity of Section 309 IPC (attempt to commit suicide) and Section 306 IPC (abetment of suicide). The Court held that the right to die is not included in the right to life under Article 21 — the right to life does not include the right to extinguish life. Overruling P. Rathinam v. Union of India, the Court held that Article 21 cannot be interpreted to include the right to die. However, the Court recognized 'passive euthanasia' in later cases.",
+      "jurisdiction": "central",
+      "law_type": "judgment"
+    }
+  ]
+}

@@ -1,0 +1,40 @@
+# Dependencies
+node_modules/
+__pycache__/
+*.pyc
+*.pyo
+venv/
+.venv/
+env/
+
+# Environment
+.env
+.env.local
+.env.production
+
+# Build
+.next/
+out/
+dist/
+build/
+*.egg-info/
+
+# Database
+chroma_data/
+*.db
+*.sqlite3
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Logs
+*.log
+npm-debug.log*

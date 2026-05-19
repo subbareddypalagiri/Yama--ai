@@ -1,0 +1,304 @@
+[
+  {
+    "act_name": "Industrial Disputes Act, 1947",
+    "section_number": "2(k)",
+    "title": "Definition of Industrial Dispute",
+    "description": "Industrial dispute means any dispute or difference between employers and employers, or between employers and workmen, or between workmen and workmen, which is connected with the employment or non-employment or the terms of employment or with the conditions of labour, of any person.",
+    "keywords": "industrial dispute, labour dispute, employment, workmen, employer, conditions of labour",
+    "category": "labour"
+  },
+  {
+    "act_name": "Industrial Disputes Act, 1947",
+    "section_number": "25F",
+    "title": "Conditions precedent to retrenchment of workmen",
+    "description": "No workman employed in any industry who has been in continuous service for not less than one year under an employer shall be retrenched by that employer until the workman has been given one month's notice in writing indicating the reasons for retrenchment and the period of notice has expired, or the workman has been paid in lieu of such notice, wages for the period of the notice.",
+    "keywords": "retrenchment, termination, one month notice, compensation, workman",
+    "category": "labour",
+    "punishment": "Retrenchment compensation: 15 days wages for every completed year of service"
+  },
+  {
+    "act_name": "Employees' Provident Fund and Miscellaneous Provisions Act, 1952",
+    "section_number": "14",
+    "title": "Penalties",
+    "description": "If any employer makes default in the payment of any contribution to the Fund, the Pension Fund or the Insurance Fund, or in the transfer of accumulations required to be transferred by him, or in the payment of any charges payable under any other provision of this Act, he shall be punishable with imprisonment for a term which may extend to three years.",
+    "keywords": "EPF, PF default, employer contribution, provident fund, pension fund",
+    "category": "labour",
+    "punishment": "Imprisonment up to 3 years or fine up to Rs. 10,000 or both"
+  },
+  {
+    "act_name": "Employees' State Insurance Act, 1948",
+    "section_number": "85",
+    "title": "Punishment for failure to pay contributions",
+    "description": "If any person fails to pay any contribution which under this Act he is liable to pay, or having deducted the employee's contribution from the wages fails to pay the same to the Corporation within the time specified, he shall be punishable with imprisonment for a term which may extend to three years.",
+    "keywords": "ESI, employee insurance, contribution default, employer, ESIC",
+    "category": "labour",
+    "punishment": "Imprisonment up to 3 years and fine up to Rs. 5,000"
+  },
+  {
+    "act_name": "Payment of Gratuity Act, 1972",
+    "section_number": "4",
+    "title": "Payment of gratuity",
+    "description": "Gratuity shall be payable to an employee on the termination of his employment after he has rendered continuous service for not less than five years, on his superannuation, or on his retirement or resignation, or on his death or disablement due to accident or disease. The gratuity payable to an employee shall be at the rate of fifteen days' wages based on the rate of wages last drawn for every completed year of service.",
+    "keywords": "gratuity, retirement, resignation, 5 years service, 15 days wages",
+    "category": "labour",
+    "punishment": "15 days wages for every completed year of service, maximum Rs. 20 lakhs"
+  },
+  {
+    "act_name": "Minimum Wages Act, 1948",
+    "section_number": "22",
+    "title": "Penalties for certain offences",
+    "description": "Any employer who pays to any employee less than the minimum rates of wages fixed for that employee's class of work, or less than the amount due to him under the provisions of this Act, shall be punishable with imprisonment for a term which may extend to six months, or with fine which may extend to five hundred rupees, or with both.",
+    "keywords": "minimum wages, underpayment, employer penalty, wage violation",
+    "category": "labour",
+    "punishment": "Imprisonment up to 6 months or fine up to Rs. 500 or both"
+  },
+  {
+    "act_name": "Sexual Harassment of Women at Workplace Act, 2013",
+    "section_number": "2(n)",
+    "title": "Definition of Sexual Harassment",
+    "description": "Sexual harassment includes any one or more of the following unwelcome acts or behaviour: physical contact and advances, a demand or request for sexual favours, making sexually coloured remarks, showing pornography, any other unwelcome physical, verbal or non-verbal conduct of sexual nature.",
+    "keywords": "sexual harassment, workplace harassment, POSH, unwelcome conduct, women",
+    "category": "labour"
+  },
+  {
+    "act_name": "Sexual Harassment of Women at Workplace Act, 2013",
+    "section_number": "4",
+    "title": "Constitution of Internal Complaints Committee",
+    "description": "Every employer of a workplace shall constitute a Committee to be known as the Internal Complaints Committee. The Presiding Officer shall be a woman employed at a senior level at workplace from amongst the employees.",
+    "keywords": "ICC, internal complaints committee, POSH, workplace, employer duty",
+    "category": "labour"
+  },
+  {
+    "act_name": "Maternity Benefit Act, 1961",
+    "section_number": "5",
+    "title": "Right to payment of maternity benefit",
+    "description": "Subject to the provisions of this Act, every woman shall be entitled to, and her employer shall be liable for, the payment of maternity benefit at the rate of the average daily wage for the period of her actual absence, that is to say, the period immediately preceding the day of her delivery, the actual day of her delivery and any period immediately following that day.",
+    "keywords": "maternity benefit, maternity leave, pregnancy, woman employee, employer liability",
+    "category": "labour",
+    "punishment": "26 weeks paid maternity leave for first two children, 12 weeks for third child onwards"
+  },
+  {
+    "act_name": "Workmen's Compensation Act, 1923",
+    "section_number": "3",
+    "title": "Employer's liability for compensation",
+    "description": "If personal injury is caused to a workman by accident arising out of and in the course of his employment, his employer shall be liable to pay compensation. The employer shall not be so liable in respect of any injury which does not result in the total or partial disablement of the workman for a period exceeding three days.",
+    "keywords": "workmen compensation, accident, injury, employer liability, disability",
+    "category": "labour"
+  },
+  {
+    "act_name": "Rent Control Act (Generic)",
+    "section_number": "14",
+    "title": "Grounds for eviction of tenants",
+    "description": "Notwithstanding anything contained in any other law, no suit shall be filed for eviction of a tenant from any premises except on one or more of the following grounds: non-payment of rent, subletting without permission, causing damage to premises, requirement for personal use by landlord, premises required for repairs.",
+    "keywords": "rent control, eviction, tenant, landlord, non-payment, subletting",
+    "category": "civil"
+  },
+  {
+    "act_name": "Registration Act, 1908",
+    "section_number": "17",
+    "title": "Documents of which registration is compulsory",
+    "description": "The following documents shall be registered: instruments of gift of immovable property, other non-testamentary instruments which purport or operate to create, declare, assign, limit or extinguish any right, title or interest in immovable property of the value of one hundred rupees and upwards, non-testamentary instruments which acknowledge the receipt or payment of any consideration on account of creation or transfer of such right.",
+    "keywords": "registration, property registration, immovable property, gift deed, sale deed",
+    "category": "civil"
+  },
+  {
+    "act_name": "Stamp Act, 1899",
+    "section_number": "3",
+    "title": "Instruments chargeable with duty",
+    "description": "Subject to the provisions of this Act and the exemptions contained in Schedule I, the following instruments shall be chargeable with duty of the amount indicated in that Schedule as the proper duty therefor respectively.",
+    "keywords": "stamp duty, instrument, registration, property, agreement",
+    "category": "civil"
+  },
+  {
+    "act_name": "Partnership Act, 1932",
+    "section_number": "4",
+    "title": "Definition of Partnership",
+    "description": "Partnership is the relation between persons who have agreed to share the profits of a business carried on by all or any of them acting for all. Persons who have entered into partnership with one another are called individually partners and collectively a firm.",
+    "keywords": "partnership, partners, firm, business, profit sharing",
+    "category": "civil"
+  },
+  {
+    "act_name": "Companies Act, 2013",
+    "section_number": "447",
+    "title": "Punishment for fraud",
+    "description": "Any person who is found to be guilty of fraud involving an amount of at least ten lakh rupees or one per cent of the turnover of the company shall be punishable with imprisonment for a term which shall not be less than six months but which may extend to ten years and shall also be liable to fine.",
+    "keywords": "corporate fraud, company fraud, directors liability, misrepresentation",
+    "category": "criminal",
+    "punishment": "Imprisonment 6 months to 10 years with fine (minimum equal to fraud amount, max 3x)"
+  },
+  {
+    "act_name": "Companies Act, 2013",
+    "section_number": "138",
+    "title": "Declaration and payment of dividend",
+    "description": "The Board of Directors of a company may declare interim dividend during any financial year or at any time during the period from closure of financial year till holding of the annual general meeting out of the surplus in the profit and loss account or out of profits of the financial year for which such interim dividend is sought to be declared.",
+    "keywords": "dividend, shareholders, profit distribution, company, board of directors",
+    "category": "civil"
+  },
+  {
+    "act_name": "Bharatiya Nyaya Sanhita, 2023",
+    "section_number": "63",
+    "title": "Punishment for rape",
+    "description": "Whoever commits rape shall be punished with rigorous imprisonment of either description for a term which shall not be less than ten years, but which may extend to imprisonment for life, and shall also be liable to fine.",
+    "keywords": "rape, sexual assault, consent, woman, punishment, rigorous imprisonment",
+    "category": "criminal",
+    "punishment": "Rigorous imprisonment 10 years to life with fine",
+    "old_law_reference": "Replaces IPC Section 376"
+  },
+  {
+    "act_name": "Bharatiya Nyaya Sanhita, 2023",
+    "section_number": "64",
+    "title": "Punishment for rape in certain cases",
+    "description": "Whoever commits rape on a woman under sixteen years of age shall be punished with rigorous imprisonment for a term which shall not be less than twenty years, but which may extend to imprisonment for life, which shall mean imprisonment for the remainder of that person's natural life, and shall also be liable to fine.",
+    "keywords": "rape of minor, child rape, statutory rape, POCSO, minor victim",
+    "category": "criminal",
+    "punishment": "Rigorous imprisonment 20 years to life (natural life) with fine"
+  },
+  {
+    "act_name": "Bharatiya Nyaya Sanhita, 2023",
+    "section_number": "69",
+    "title": "Sexual intercourse by person in authority",
+    "description": "Whoever, being in a position of authority or in a fiduciary relationship, or being a public servant, or being on the management or staff of a jail, remand home or other place of custody, or being on the management or staff of hospital, takes advantage of his official position and induces or seduces any woman to have sexual intercourse with him, shall be punished.",
+    "keywords": "sexual harassment, authority abuse, fiduciary, public servant, hospital staff",
+    "category": "criminal",
+    "punishment": "Rigorous imprisonment 5-10 years with fine"
+  },
+  {
+    "act_name": "Bharatiya Nyaya Sanhita, 2023",
+    "section_number": "85",
+    "title": "Husband or relative subjecting woman to cruelty",
+    "description": "Whoever, being the husband or the relative of the husband of a woman, subjects such woman to cruelty shall be punished with imprisonment for a term which may extend to three years and shall also be liable to fine.",
+    "keywords": "domestic violence, cruelty, husband, dowry harassment, married woman",
+    "category": "criminal",
+    "punishment": "Imprisonment up to 3 years with fine",
+    "old_law_reference": "Replaces IPC Section 498A"
+  },
+  {
+    "act_name": "Bharatiya Nyaya Sanhita, 2023",
+    "section_number": "79",
+    "title": "Word, gesture or act intended to insult modesty of a woman",
+    "description": "Whoever, intending to insult the modesty of any woman, utters any words, makes any sound or gesture, or exhibits any object, intending that such word or sound shall be heard, or that such gesture or object shall be seen, by such woman, or intrudes upon the privacy of such woman, shall be punished.",
+    "keywords": "eve teasing, modesty, insult, harassment, woman, privacy intrusion",
+    "category": "criminal",
+    "punishment": "Imprisonment up to 3 years with fine"
+  },
+  {
+    "act_name": "Bharatiya Nyaya Sanhita, 2023",
+    "section_number": "74",
+    "title": "Assault or use of criminal force to woman with intent to outrage her modesty",
+    "description": "Whoever assaults or uses criminal force to any woman, intending to outrage or knowing it to be likely that he will thereby outrage her modesty, shall be punished with imprisonment of either description for a term which shall not be less than one year but which may extend to five years, and shall also be liable to fine.",
+    "keywords": "assault, criminal force, outrage modesty, woman, molestation",
+    "category": "criminal",
+    "punishment": "Imprisonment 1-5 years with fine"
+  },
+  {
+    "act_name": "Bharatiya Nyaya Sanhita, 2023",
+    "section_number": "351",
+    "title": "Criminal intimidation",
+    "description": "Whoever threatens another with any injury to his person, reputation or property, or to the person or reputation of any one in whom that person is interested, with intent to cause alarm to that person, or to cause that person to do any act which he is not legally bound to do, or to omit to do any act which that person is legally entitled to do, commits criminal intimidation.",
+    "keywords": "threat, intimidation, blackmail, extortion, coercion, alarm",
+    "category": "criminal",
+    "punishment": "Imprisonment up to 2 years or fine or both"
+  },
+  {
+    "act_name": "Bharatiya Nyaya Sanhita, 2023",
+    "section_number": "352",
+    "title": "Intentional insult with intent to provoke breach of peace",
+    "description": "Whoever intentionally insults, and thereby gives provocation to any person, intending or knowing it to be likely that such provocation will cause him to break the public peace, or to commit any other offence, shall be punished.",
+    "keywords": "insult, provocation, breach of peace, public disturbance",
+    "category": "criminal",
+    "punishment": "Imprisonment up to 2 years or fine or both"
+  },
+  {
+    "act_name": "Hindu Succession Act, 1956",
+    "section_number": "6",
+    "title": "Devolution of interest in coparcenary property",
+    "description": "On and from the commencement of the Hindu Succession (Amendment) Act, 2005, in a Joint Hindu family governed by the Mitakshara law, the daughter of a coparcener shall by birth become a coparcener in her own right in the same manner as the son and have the same rights in the coparcenary property as she would have had if she had been a son.",
+    "keywords": "Hindu succession, daughter rights, coparcenary, ancestral property, inheritance",
+    "category": "family"
+  },
+  {
+    "act_name": "Hindu Succession Act, 1956",
+    "section_number": "8",
+    "title": "General rules of succession in case of males",
+    "description": "The property of a male Hindu dying intestate shall devolve according to the provisions of this Chapter firstly upon the heirs, being the relatives specified in class I of the Schedule; secondly, if there is no heir of class I, then upon the heirs, being the relatives specified in class II of the Schedule.",
+    "keywords": "intestate succession, male Hindu, heirs, class I heirs, inheritance",
+    "category": "family"
+  },
+  {
+    "act_name": "Muslim Personal Law (Shariat) Application Act, 1937",
+    "section_number": "2",
+    "title": "Application of Personal law to Muslims",
+    "description": "Notwithstanding any custom or usage to the contrary, in all questions regarding intestate succession, special property of females, marriage, dissolution of marriage including talaq, ila, zihar, lian, khula and mubaraat, maintenance, dower, guardianship, gifts, trusts and trust properties, and wakfs the rule of decision shall be the Muslim Personal Law (Shariat).",
+    "keywords": "Muslim law, shariat, marriage, divorce, talaq, maintenance, inheritance",
+    "category": "family"
+  },
+  {
+    "act_name": "Indian Succession Act, 1925",
+    "section_number": "63",
+    "title": "Execution of unprivileged Wills",
+    "description": "Every testator, not being a soldier employed in an expedition or engaged in actual warfare, or an airman so employed or engaged, or a mariner at sea, shall execute his Will according to the following rules: The testator shall sign or shall affix his mark to the Will, or it shall be signed by some other person in his presence and by his direction.",
+    "keywords": "will, testament, execution, signature, witness, testator",
+    "category": "family"
+  },
+  {
+    "act_name": "Maintenance and Welfare of Parents and Senior Citizens Act, 2007",
+    "section_number": "4",
+    "title": "Maintenance of parents and senior citizens",
+    "description": "A senior citizen including parent who is unable to maintain himself from his own earning or property owned by him, shall be entitled to make an application for maintenance. Children or relatives shall maintain such parents or senior citizens.",
+    "keywords": "senior citizen, parent maintenance, old age, children duty, elderly care",
+    "category": "family"
+  },
+  {
+    "act_name": "Juvenile Justice (Care and Protection of Children) Act, 2015",
+    "section_number": "83",
+    "title": "Presumption and determination of age",
+    "description": "Where it appears that a person who has committed an offence is a child, the Juvenile Justice Board or a committee or a court shall make an inquiry to determine the age of that person and shall determine the age of the person as on the date of commission of the offence.",
+    "keywords": "juvenile, minor, age determination, child offender, JJ Act",
+    "category": "criminal"
+  },
+  {
+    "act_name": "Narcotic Drugs and Psychotropic Substances Act, 1985",
+    "section_number": "20",
+    "title": "Punishment for contravention in relation to cannabis plant and cannabis",
+    "description": "Whoever, in contravention of any provision of this Act or any rule or order made or condition of licence granted thereunder, produces, manufactures, possesses, sells, purchases, transports, imports inter-State, exports inter-State or uses cannabis, shall be punishable.",
+    "keywords": "NDPS, cannabis, ganja, drugs, narcotic, possession, trafficking",
+    "category": "criminal",
+    "punishment": "Small quantity: up to 1 year or fine or both. Commercial quantity: 10-20 years with fine"
+  },
+  {
+    "act_name": "Narcotic Drugs and Psychotropic Substances Act, 1985",
+    "section_number": "21",
+    "title": "Punishment for contravention in relation to manufactured drugs and preparations",
+    "description": "Whoever, in contravention of any provision of this Act or any rule or order made or condition of licence granted thereunder, manufactures, possesses, sells, purchases, transports, imports inter-State, exports inter-State or uses any manufactured drug or any preparation containing any manufactured drug shall be punishable.",
+    "keywords": "NDPS, manufactured drugs, heroin, cocaine, possession, trafficking",
+    "category": "criminal",
+    "punishment": "Small quantity: up to 1 year or fine or both. Commercial quantity: 10-20 years with fine Rs 1-2 lakhs"
+  },
+  {
+    "act_name": "Arms Act, 1959",
+    "section_number": "25",
+    "title": "Punishment for certain offences",
+    "description": "Whoever acquires, has in his possession or carries any firearm or ammunition in contravention of section 3, or manufactures, sells, transfers, converts, repairs, tests or proves, or exposes or offers for sale any firearm or ammunition in contravention of section 5, shall be punishable.",
+    "keywords": "arms, firearms, ammunition, illegal possession, license, weapon",
+    "category": "criminal",
+    "punishment": "Imprisonment 3-7 years with fine for prohibited arms; 1-3 years for other violations"
+  },
+  {
+    "act_name": "Unlawful Activities (Prevention) Act, 1967",
+    "section_number": "20",
+    "title": "Punishment for being member of terrorist gang or organisation",
+    "description": "Any person who is a member of a terrorist gang or a terrorist organisation, which is involved in terrorist act, shall be punishable with imprisonment for a term which may extend to imprisonment for life, and shall also be liable to fine.",
+    "keywords": "UAPA, terrorism, terrorist organization, member, national security",
+    "category": "criminal",
+    "punishment": "Imprisonment up to life with fine"
+  },
+  {
+    "act_name": "National Security Act, 1980",
+    "section_number": "3",
+    "title": "Power to make orders detaining certain persons",
+    "description": "The Central Government or the State Government may make an order directing that any person be detained if the Central Government or the State Government is satisfied with respect to any person that with a view to preventing him from acting in any manner prejudicial to the defence of India, the relations of India with foreign powers, or the security of India.",
+    "keywords": "NSA, preventive detention, national security, defence of India",
+    "category": "criminal",
+    "punishment": "Preventive detention up to 12 months"
+  }
+]

@@ -1,0 +1,285 @@
+[
+  {
+    "act_name": "Indian Penal Code, 1860",
+    "section_number": "302",
+    "title": "Punishment for murder",
+    "description": "Whoever commits murder shall be punished with death, or imprisonment for life, and shall also be liable to fine.",
+    "keywords": "murder, death penalty, life imprisonment, homicide, killing",
+    "category": "criminal",
+    "punishment": "Death or imprisonment for life with fine",
+    "old_law_reference": "Replaced by BNS Section 103"
+  },
+  {
+    "act_name": "Indian Penal Code, 1860",
+    "section_number": "304",
+    "title": "Punishment for culpable homicide not amounting to murder",
+    "description": "Whoever commits culpable homicide not amounting to murder shall be punished with imprisonment for life, or imprisonment for a term which may extend to ten years, and shall also be liable to fine, if the act by which the death is caused is done with the intention of causing death, or of causing such bodily injury as is likely to cause death.",
+    "keywords": "culpable homicide, manslaughter, unintentional killing, bodily injury",
+    "category": "criminal",
+    "punishment": "Imprisonment for life or up to 10 years with fine",
+    "old_law_reference": "Replaced by BNS Section 105"
+  },
+  {
+    "act_name": "Indian Penal Code, 1860",
+    "section_number": "376",
+    "title": "Punishment for rape",
+    "description": "Whoever commits rape shall be punished with rigorous imprisonment for a term which shall not be less than ten years, but which may extend to imprisonment for life, and shall also be liable to fine.",
+    "keywords": "rape, sexual assault, sexual offense, consent, woman",
+    "category": "criminal",
+    "punishment": "Rigorous imprisonment 10 years to life with fine",
+    "old_law_reference": "Replaced by BNS Section 63"
+  },
+  {
+    "act_name": "Indian Penal Code, 1860",
+    "section_number": "420",
+    "title": "Cheating and dishonestly inducing delivery of property",
+    "description": "Whoever cheats and thereby dishonestly induces the person deceived to deliver any property to any person, or to make, alter or destroy the whole or any part of a valuable security, shall be punished with imprisonment which may extend to seven years, and shall also be liable to fine.",
+    "keywords": "cheating, fraud, deception, property, dishonest, scam",
+    "category": "criminal",
+    "punishment": "Imprisonment up to 7 years with fine",
+    "old_law_reference": "Replaced by BNS Section 318"
+  },
+  {
+    "act_name": "Indian Penal Code, 1860",
+    "section_number": "498A",
+    "title": "Husband or relative of husband subjecting woman to cruelty",
+    "description": "Whoever, being the husband or the relative of the husband of a woman, subjects such woman to cruelty shall be punished with imprisonment for a term which may extend to three years and shall also be liable to fine. Cruelty means any wilful conduct which is of such a nature as is likely to drive the woman to commit suicide or to cause grave injury or danger to life, limb or health of the woman.",
+    "keywords": "domestic violence, cruelty, dowry harassment, married woman, husband",
+    "category": "criminal",
+    "punishment": "Imprisonment up to 3 years with fine",
+    "old_law_reference": "Replaced by BNS Section 85"
+  },
+  {
+    "act_name": "Code of Criminal Procedure, 1973",
+    "section_number": "125",
+    "title": "Order for maintenance of wives, children and parents",
+    "description": "If any person having sufficient means neglects or refuses to maintain his wife, unable to maintain herself, or his legitimate or illegitimate minor child, whether married or not, unable to maintain itself, or his legitimate or illegitimate child who has attained majority where such child is by reason of any physical or mental abnormality or injury unable to maintain itself, or his father or mother, unable to maintain himself or herself, a Magistrate of the first class may order such person to make a monthly allowance for the maintenance.",
+    "keywords": "maintenance, alimony, wife, children, parents, neglect, support",
+    "category": "family",
+    "punishment": "Monthly maintenance allowance as ordered by court"
+  },
+  {
+    "act_name": "Code of Criminal Procedure, 1973",
+    "section_number": "154",
+    "title": "Information in cognizable cases (FIR)",
+    "description": "Every information relating to the commission of a cognizable offence, if given orally to an officer in charge of a police station, shall be reduced to writing by him or under his direction, and be read over to the informant; and every such information, whether given in writing or reduced to writing as aforesaid, shall be signed by the person giving it, and the substance thereof shall be entered in a book to be kept by such officer in such form as the State Government may prescribe in this behalf.",
+    "keywords": "FIR, First Information Report, police complaint, cognizable offense, police station",
+    "category": "criminal",
+    "punishment": "N/A - Procedural provision"
+  },
+  {
+    "act_name": "Code of Criminal Procedure, 1973",
+    "section_number": "437",
+    "title": "When bail may be taken in case of non-bailable offence",
+    "description": "When any person accused of, or suspected of, the commission of any non-bailable offence is arrested or detained without warrant by an officer in charge of a police station or appears or is brought before a Court other than the High Court or Court of Session, he may be released on bail.",
+    "keywords": "bail, non-bailable, arrest, detention, release, court",
+    "category": "criminal",
+    "punishment": "N/A - Bail provision"
+  },
+  {
+    "act_name": "Code of Criminal Procedure, 1973",
+    "section_number": "482",
+    "title": "Saving of inherent powers of High Court",
+    "description": "Nothing in this Code shall be deemed to limit or affect the inherent powers of the High Court to make such orders as may be necessary to give effect to any order under this Code, or to prevent abuse of the process of any Court or otherwise to secure the ends of justice.",
+    "keywords": "High Court, inherent powers, quashing, FIR quash, abuse of process, justice",
+    "category": "criminal",
+    "punishment": "N/A - Court powers provision"
+  },
+  {
+    "act_name": "Indian Evidence Act, 1872",
+    "section_number": "3",
+    "title": "Interpretation clause (Evidence)",
+    "description": "Evidence means and includes all statements which the Court permits or requires to be made before it by witnesses, in relation to matters of fact under inquiry (oral evidence), and all documents including electronic records produced for the inspection of the Court (documentary evidence).",
+    "keywords": "evidence, witness, testimony, documents, electronic records, court",
+    "category": "criminal",
+    "old_law_reference": "Replaced by BSA Section 2"
+  },
+  {
+    "act_name": "Indian Evidence Act, 1872",
+    "section_number": "65B",
+    "title": "Admissibility of electronic records",
+    "description": "Notwithstanding anything contained in this Act, any information contained in an electronic record which is printed on a paper, stored, recorded or copied in optical or magnetic media produced by a computer shall be deemed to be also a document, if the conditions mentioned in this section are satisfied in relation to the information and computer in question and shall be admissible in any proceedings.",
+    "keywords": "electronic evidence, digital records, computer, admissibility, certificate",
+    "category": "cyber",
+    "old_law_reference": "Replaced by BSA Section 63"
+  },
+  {
+    "act_name": "Transfer of Property Act, 1882",
+    "section_number": "54",
+    "title": "Sale defined",
+    "description": "Sale is a transfer of ownership in exchange for a price paid or promised or part-paid and part-promised. A contract for the sale of immovable property is a contract that a sale of such property shall take place on terms settled between the parties.",
+    "keywords": "sale, property transfer, ownership, price, immovable property, deed",
+    "category": "civil"
+  },
+  {
+    "act_name": "Transfer of Property Act, 1882",
+    "section_number": "58",
+    "title": "Mortgage defined",
+    "description": "A mortgage is the transfer of an interest in specific immoveable property for the purpose of securing the payment of money advanced or to be advanced by way of loan, an existing or future debt, or the performance of an engagement which may give rise to a pecuniary liability.",
+    "keywords": "mortgage, loan security, immovable property, debt, mortgagor, mortgagee",
+    "category": "civil"
+  },
+  {
+    "act_name": "Transfer of Property Act, 1882",
+    "section_number": "105",
+    "title": "Lease defined",
+    "description": "A lease of immoveable property is a transfer of a right to enjoy such property, made for a certain time, express or implied, or in perpetuity, in consideration of a price paid or promised, or of money, a share of crops, service or any other thing of value, to be rendered periodically or on specified occasions to the transferor by the transferee, who accepts the transfer on such terms.",
+    "keywords": "lease, rent, tenant, landlord, property, rental agreement",
+    "category": "civil"
+  },
+  {
+    "act_name": "Limitation Act, 1963",
+    "section_number": "3",
+    "title": "Bar of limitation",
+    "description": "Subject to the provisions contained in sections 4 to 24 (inclusive), every suit instituted, appeal preferred, and application made after the prescribed period shall be dismissed although limitation has not been set up as a defence.",
+    "keywords": "limitation period, time bar, filing deadline, suit, appeal, application",
+    "category": "civil"
+  },
+  {
+    "act_name": "Arbitration and Conciliation Act, 1996",
+    "section_number": "7",
+    "title": "Arbitration agreement",
+    "description": "In this Part, arbitration agreement means an agreement by the parties to submit to arbitration all or certain disputes which have arisen or which may arise between them in respect of a defined legal relationship, whether contractual or not. An arbitration agreement may be in the form of an arbitration clause in a contract or in the form of a separate agreement.",
+    "keywords": "arbitration, dispute resolution, agreement, contract clause, ADR",
+    "category": "civil"
+  },
+  {
+    "act_name": "Arbitration and Conciliation Act, 1996",
+    "section_number": "34",
+    "title": "Application for setting aside arbitral award",
+    "description": "Recourse to a Court against an arbitral award may be made only by an application for setting aside such award. An arbitral award may be set aside by the Court only if the party making the application furnishes proof that the composition of the arbitral tribunal or the arbitral procedure was not in accordance with the agreement of the parties.",
+    "keywords": "arbitral award, challenge, setting aside, court, appeal",
+    "category": "civil"
+  },
+  {
+    "act_name": "Prevention of Corruption Act, 1988",
+    "section_number": "7",
+    "title": "Offence relating to public servant being bribed",
+    "description": "Any public servant who obtains or accepts or attempts to obtain, from any person, for himself or for any other person, any undue advantage, as a motive or reward for an official act or for rendering or attempting to render any service or disservice to any person, shall be punishable with imprisonment for a term which shall not be less than three years but which may extend to seven years and shall also be liable to fine.",
+    "keywords": "bribery, corruption, public servant, government official, undue advantage",
+    "category": "criminal",
+    "punishment": "Imprisonment 3-7 years with fine"
+  },
+  {
+    "act_name": "Prevention of Money Laundering Act, 2002",
+    "section_number": "3",
+    "title": "Offence of money-laundering",
+    "description": "Whosoever directly or indirectly attempts to indulge or knowingly assists or knowingly is a party or is actually involved in any process or activity connected with the proceeds of crime including its concealment, possession, acquisition or use and projecting or claiming it as untainted property shall be guilty of offence of money-laundering.",
+    "keywords": "money laundering, proceeds of crime, illegal money, financial crime, ED",
+    "category": "criminal",
+    "punishment": "Rigorous imprisonment 3-7 years with fine up to Rs. 5 lakhs"
+  },
+  {
+    "act_name": "Negotiable Instruments Act, 1881",
+    "section_number": "138",
+    "title": "Dishonour of cheque for insufficiency of funds",
+    "description": "Where any cheque drawn by a person on an account maintained by him with a banker for payment of any amount of money to another person from out of that account for the discharge, in whole or in part, of any debt or other liability, is returned by the bank unpaid, either because of the amount of money standing to the credit of that account is insufficient to honour the cheque or that it exceeds the amount arranged to be paid from that account by an agreement made with that bank, such person shall be deemed to have committed an offence.",
+    "keywords": "cheque bounce, dishonour, insufficient funds, bank, payment, debt",
+    "category": "criminal",
+    "punishment": "Imprisonment up to 2 years or fine up to twice the cheque amount, or both"
+  },
+  {
+    "act_name": "Protection of Children from Sexual Offences Act, 2012",
+    "section_number": "4",
+    "title": "Punishment for penetrative sexual assault",
+    "description": "Whoever commits penetrative sexual assault shall be punished with imprisonment of either description for a term which shall not be less than ten years but which may extend to imprisonment for life, and shall also be liable to fine.",
+    "keywords": "POCSO, child sexual abuse, penetrative assault, minor, protection of children",
+    "category": "criminal",
+    "punishment": "Imprisonment 10 years to life with fine"
+  },
+  {
+    "act_name": "Protection of Children from Sexual Offences Act, 2012",
+    "section_number": "7",
+    "title": "Sexual assault",
+    "description": "Whoever, with sexual intent touches the vagina, penis, anus or breast of the child or makes the child touch the vagina, penis, anus or breast of such person or any other person, or does any other act with sexual intent which involves physical contact without penetration is said to commit sexual assault.",
+    "keywords": "POCSO, sexual assault, child, minor, sexual intent, physical contact",
+    "category": "criminal",
+    "punishment": "Imprisonment 3-5 years with fine"
+  },
+  {
+    "act_name": "Scheduled Castes and Scheduled Tribes (Prevention of Atrocities) Act, 1989",
+    "section_number": "3",
+    "title": "Punishments for offences of atrocities",
+    "description": "Whoever commits an offence of atrocity against a member of Scheduled Caste or Scheduled Tribe shall be punishable with imprisonment for a term which shall not be less than six months but which may extend to five years and with fine.",
+    "keywords": "SC/ST atrocities, caste discrimination, scheduled caste, scheduled tribe, untouchability",
+    "category": "criminal",
+    "punishment": "Imprisonment 6 months to 5 years with fine"
+  },
+  {
+    "act_name": "Dowry Prohibition Act, 1961",
+    "section_number": "3",
+    "title": "Penalty for giving or taking dowry",
+    "description": "If any person, after the commencement of this Act, gives or takes or abets the giving or taking of dowry, he shall be punishable with imprisonment for a term which shall not be less than five years, and with fine which shall not be less than fifteen thousand rupees or the amount of the value of such dowry, whichever is more.",
+    "keywords": "dowry, marriage, giving dowry, taking dowry, bride, groom",
+    "category": "criminal",
+    "punishment": "Imprisonment minimum 5 years with fine minimum Rs. 15,000"
+  },
+  {
+    "act_name": "Dowry Prohibition Act, 1961",
+    "section_number": "4",
+    "title": "Penalty for demanding dowry",
+    "description": "If any person demands, directly or indirectly, from the parents or other relatives or guardian of a bride or bridegroom any dowry, he shall be punishable with imprisonment for a term which shall not be less than six months but which may extend to two years and with fine which may extend to ten thousand rupees.",
+    "keywords": "dowry demand, harassment, marriage, bride family, demand",
+    "category": "criminal",
+    "punishment": "Imprisonment 6 months to 2 years with fine up to Rs. 10,000"
+  },
+  {
+    "act_name": "Legal Services Authorities Act, 1987",
+    "section_number": "12",
+    "title": "Criteria for giving legal services",
+    "description": "Every person who has to file or defend a case shall be entitled to legal services under this Act if that person is a member of SC/ST, victim of trafficking, woman or child, person with disability, person under circumstances of undeserved want, industrial workman, person in custody, or person with annual income less than the prescribed amount.",
+    "keywords": "free legal aid, legal services, poor, SC/ST, woman, child, disability",
+    "category": "civil"
+  },
+  {
+    "act_name": "Right to Education Act, 2009",
+    "section_number": "3",
+    "title": "Right of child to free and compulsory education",
+    "description": "Every child of the age of six to fourteen years shall have a right to free and compulsory education in a neighbourhood school till completion of elementary education.",
+    "keywords": "education, free education, compulsory education, child, school, RTE",
+    "category": "constitutional"
+  },
+  {
+    "act_name": "Environmental Protection Act, 1986",
+    "section_number": "15",
+    "title": "Penalty for contravention of provisions of the Act",
+    "description": "Whoever fails to comply with or contravenes any of the provisions of this Act, or the rules made or orders or directions issued thereunder, shall be punishable with imprisonment for a term which may extend to five years or with fine which may extend to one lakh rupees, or with both.",
+    "keywords": "environment, pollution, penalty, violation, environmental protection",
+    "category": "civil",
+    "punishment": "Imprisonment up to 5 years or fine up to Rs. 1 lakh or both"
+  },
+  {
+    "act_name": "Food Safety and Standards Act, 2006",
+    "section_number": "59",
+    "title": "Punishment for unsafe food",
+    "description": "Any person who sells or offers for sale any unsafe food which is not injurious to health or which renders the food injurious to health shall be punishable with imprisonment for a term which may extend to six months and with fine which may extend to one lakh rupees.",
+    "keywords": "food safety, adulteration, unsafe food, FSSAI, health hazard",
+    "category": "consumer",
+    "punishment": "Imprisonment up to 6 months with fine up to Rs. 1 lakh"
+  },
+  {
+    "act_name": "Real Estate (Regulation and Development) Act, 2016",
+    "section_number": "18",
+    "title": "Return of amount and compensation",
+    "description": "If the promoter fails to complete or is unable to give possession of an apartment, plot or building, he shall be liable on demand to the allottees to return the amount received by him in respect of that apartment, plot, building, with interest at such rate as may be prescribed.",
+    "keywords": "RERA, real estate, builder, flat, possession, delay, compensation",
+    "category": "consumer"
+  },
+  {
+    "act_name": "Insolvency and Bankruptcy Code, 2016",
+    "section_number": "7",
+    "title": "Initiation of corporate insolvency resolution process by financial creditor",
+    "description": "A financial creditor either by itself or jointly with other financial creditors, or any other person on behalf of the financial creditor may file an application for initiating corporate insolvency resolution process against a corporate debtor before the Adjudicating Authority when a default has occurred.",
+    "keywords": "IBC, insolvency, bankruptcy, corporate debtor, financial creditor, NCLT, default",
+    "category": "civil"
+  },
+  {
+    "act_name": "Goods and Services Tax Act, 2017",
+    "section_number": "122",
+    "title": "Penalty for certain offences",
+    "description": "Where a taxable person who supplies any goods or services without issue of any invoice or issues an incorrect or false invoice, or collects any amount as tax but fails to pay the same to the Government beyond a period of three months, shall be liable to pay a penalty of ten thousand rupees or tax evaded, whichever is higher.",
+    "keywords": "GST, tax evasion, penalty, invoice, goods and services tax",
+    "category": "civil",
+    "punishment": "Penalty Rs. 10,000 or tax evaded, whichever is higher"
+  }
+]

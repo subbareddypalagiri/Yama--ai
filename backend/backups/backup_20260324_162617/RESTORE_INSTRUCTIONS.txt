@@ -1,0 +1,48 @@
+YAMA AI DATABASE BACKUP - RESTORE INSTRUCTIONS
+===============================================
+
+Backup Date: 20260324_162617
+Location: backups/backup_20260324_162617
+
+FILES IN THIS BACKUP:
+  - yama_ai.db         : SQLite database file
+  - yama_ai.db-shm    : Shared memory file
+  - yama_ai.db-wal    : Write-ahead log
+  - export_20260324_162617.json    : Full data export in JSON format
+  - summary_20260324_162617.csv     : Acts summary in CSV format
+  - MANIFEST.json      : Backup metadata
+
+TO RESTORE:
+1. Stop the backend server
+2. Delete or rename the old database files
+3. Copy the .db, .db-shm, and .db-wal files to the backend folder
+4. Restart the backend server
+
+STATISTICS:
+  Total Documents: 398
+  Unique Acts: 85
+  
+CATEGORIES:
+    - civil: 48
+    - constitutional: 41
+    - consumer: 10
+    - corporate: 7
+    - criminal: 110
+    - cyber: 11
+    - education: 4
+    - environmental: 4
+    - family: 24
+    - general: 58
+
+DOCUMENT TYPES:
+    - standard: 68
+    - act: 277
+    - amendment: 22
+    - article: 10
+    - judgment: 21
+
+JURISDICTIONS:
+    - central: 378
+    - state: 20
+
+For questions or issues, check the application logs.

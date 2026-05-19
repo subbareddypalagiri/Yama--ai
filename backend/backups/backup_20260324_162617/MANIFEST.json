@@ -1,0 +1,44 @@
+{
+  "backup_date": "20260324_162617",
+  "database_version": "YAMA AI v1.0",
+  "total_documents": 398,
+  "unique_acts": 85,
+  "files": {
+    "database": [
+      "yama_ai.db",
+      "yama_ai.db-shm",
+      "yama_ai.db-wal"
+    ],
+    "json_export": "export_20260324_162617.json",
+    "csv_export": "summary_20260324_162617.csv"
+  },
+  "statistics": {
+    "by_category": {
+      "civil": 48,
+      "constitutional": 41,
+      "consumer": 10,
+      "corporate": 7,
+      "criminal": 110,
+      "cyber": 11,
+      "education": 4,
+      "environmental": 4,
+      "family": 24,
+      "general": 58,
+      "labour": 52,
+      "motor_vehicle": 5,
+      "rti": 3,
+      "tax": 21
+    },
+    "by_type": {
+      "standard": 68,
+      "act": 277,
+      "amendment": 22,
+      "article": 10,
+      "judgment": 21
+    },
+    "by_jurisdiction": {
+      "central": 378,
+      "state": 20
+    }
+  }
+}

@@ -1,0 +1,59 @@
+# Backend Dependencies - YAMA AI (Updated 2026)
+
+# Web Framework - Latest versions with security updates
+fastapi>=0.115.0,<1.0.0        # Updated for latest features and security
+uvicorn[standard]>=0.32.0,<1.0.0  # Performance improvements
+python-multipart>=0.0.12       # Latest security fixes
+
+# Database - Production-ready PostgreSQL support
+sqlalchemy>=2.0.36,<3.0.0      # Latest stable with async improvements
+asyncpg>=0.30.0                # High-performance PostgreSQL adapter
+psycopg2-binary>=2.9.10        # Backup PostgreSQL adapter
+aiosqlite>=0.20.0              # SQLite for development/testing
+
+# AI & Embeddings - Latest LangChain ecosystem
+sentence-transformers>=3.3.0   # Latest embedding models
+langchain>=0.3.0               # Major LangChain update with breaking changes
+langchain-community>=0.3.0     # Updated community integrations
+langchain-openai>=0.2.0        # Latest OpenAI integration
+langchain-anthropic>=0.2.0     # Latest Claude integration  
+langchain-chroma>=0.1.4        # Updated vector store integration
+
+# Vector Database - Production ChromaDB
+chromadb>=0.5.20,<1.0.0        # Latest with performance improvements
+
+# Ingestion System - Enhanced web scraping
+beautifulsoup4>=4.12.3         # Latest HTML parsing
+httpx>=0.28.0                  # Modern async HTTP client
+requests>=2.32.0               # Fallback HTTP client
+lxml>=5.3.0                    # Faster HTML/XML parser
+aiofiles>=24.1.0               # Async file operations
+
+# Scheduler & Background Tasks
+apscheduler>=3.11.0            # Latest scheduler with timezone fixes
+celery[redis]>=5.4.0           # Optional: Distributed task queue
+redis>=5.2.0                   # Optional: Redis for Celery
+
+# Security & Validation
+pydantic>=2.10.0,<3.0.0        # Latest with performance improvements
+pydantic-settings>=2.7.0,<3.0.0 # Environment settings management
+email-validator>=2.2.0         # Email validation for user inputs
+python-jose[cryptography]>=3.3.0 # JWT token handling
+
+# Development & Monitoring
+python-dotenv>=1.0.1           # Environment variable loading
+loguru>=0.7.2                  # Better logging
+rich>=13.9.0                   # Rich terminal output for debugging
+prometheus-client>=0.21.0      # Metrics collection
+
+# Language Processing - Roman English Support
+indic-nlp-library>=0.1.0       # For Indian language NLP
+google-cloud-translate>=3.11.0 # Translation API (optional)
+translatepy>=2.0.0             # Free translation alternative
+regex>=2024.0.0                # Advanced pattern matching for transliteration
+langdetect>=1.0.9              # Language detection
+
+# Optional: Advanced Features
+# playwright>=1.49.0           # JS-rendered court portals
+# streamlit>=1.40.0            # Optional admin interface
+# jupyter>=1.1.0               # Optional data analysis notebook
