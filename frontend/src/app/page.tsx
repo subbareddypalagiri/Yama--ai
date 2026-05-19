@@ -53,6 +53,9 @@ export default function Home() {
               <Link href="/explore" className="px-4 py-2 text-[13px] text-white/50 hover:text-white transition-all rounded-xl hover:bg-white/5">
                 Explore
               </Link>
+              <Link href="/lawyer" className="px-4 py-2 text-[13px] text-white/50 hover:text-white transition-all rounded-xl hover:bg-white/5">
+                Your Lawyer
+              </Link>
               {/* Language Selector */}
               <LanguageSelector />
               {/* Dark Mode Toggle */}
@@ -242,6 +245,7 @@ export default function Home() {
           <div className="flex items-center gap-8">
             <Link href="/search" className="text-[13px] text-white/30 hover:text-white transition-colors">Search</Link>
             <Link href="/explore" className="text-[13px] text-white/30 hover:text-white transition-colors">Explore</Link>
+            <Link href="/lawyer" className="text-[13px] text-white/30 hover:text-white transition-colors">Your Lawyer</Link>
             <Link href="/chat" className="text-[13px] text-white/30 hover:text-white transition-colors">{t.nav.chat}</Link>
           </div>
         </div>

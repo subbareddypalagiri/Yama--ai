@@ -1,4 +1,8 @@
-const API_BASE = (process.env.NEXT_PUBLIC_API_URL ?? '') + '/api/v1';
+const configuredApiUrl = process.env.NEXT_PUBLIC_API_URL?.trim();
+
+export const API_BASE = configuredApiUrl
+  ? `${configuredApiUrl.replace(/\/$/, '')}/api/v1`
+  : 'http://localhost:8000/api/v1';
 
 export type ChatResponseStyle = 'default' | 'roman_english';
 

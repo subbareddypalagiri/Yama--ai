@@ -13,6 +13,7 @@ from app.api.routes import chat, laws, analyze, health
 from app.api.routes import situation
 from app.api.routes import ingestion as ingestion_routes
 from app.api.routes import cases, documents, reports
+from app.api.routes.lawyer import router as lawyer_router
 from app.db.database import engine
 from app.db.models import Base
 
@@ -85,6 +86,7 @@ app.include_router(ingestion_routes.router, prefix="/api/v1")
 app.include_router(cases.router, prefix="/api/v1")
 app.include_router(documents.router, prefix="/api/v1")
 app.include_router(reports.router, prefix="/api/v1")
+app.include_router(lawyer_router, prefix="/api/v1")
 
 
 @app.get("/")
