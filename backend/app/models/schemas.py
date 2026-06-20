@@ -25,6 +25,8 @@ class ChatRequest(BaseModel):
         "auto",
         description="Input language. 'auto' for auto-detection.",
     )
+    custom_api_key: Optional[str] = Field(None, description="Optional custom API key from the user settings")
+    custom_model: Optional[str] = Field(None, description="Optional custom model name from the user settings")
 
 
 class AnalyzeRequest(BaseModel):

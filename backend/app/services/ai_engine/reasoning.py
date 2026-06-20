@@ -33,13 +33,15 @@ class IRACReasoningEngine:
     def is_standalone(self) -> bool:
         return self.llm is None
 
-    def analyze(self, situation: str, retrieved_laws: str) -> str:
+    def analyze(self, situation: str, retrieved_laws: str, response_style: str = "default", response_language: Optional[str] = None) -> str:
         """
         Perform full IRAC analysis on a user's situation.
 
         Args:
             situation: The user's description of their legal situation.
             retrieved_laws: Relevant legal provisions retrieved via RAG.
+            response_style: The style of response (e.g. roman_english).
+            response_language: Target response language.
 
         Returns:
             Complete IRAC analysis as markdown text.
@@ -47,9 +49,9 @@ class IRACReasoningEngine:
         if self.is_standalone:
             return self._standalone_analyze(situation, retrieved_laws)
 
-        return self._llm_analyze(situation, retrieved_laws)
+        return self._llm_analyze(situation, retrieved_laws, response_style, response_language)
 
-    def _llm_analyze(self, situation: str, retrieved_laws: str) -> str:
+    def _llm_analyze(self, situation: str, retrieved_laws: str, response_style: str = "default", response_language: Optional[str] = None) -> str:
         """Full analysis using a configured LLM."""
         from langchain_core.prompts import (
             ChatPromptTemplate,
@@ -57,8 +59,37 @@ class IRACReasoningEngine:
             HumanMessagePromptTemplate,
         )
 
+        style_instruction = ""
+        if response_style == "roman_english" or response_language == "roman_english":
+            target_lang = "hindi"
+            if response_language in ["hindi", "tamil", "telugu", "kannada"]:
+                target_lang = response_language
+            
+            if target_lang == "telugu":
+                style_instruction = (
+                    "\n\nIMPORTANT: Write the entire analysis fully in Romanized Telugu (Tanglish - Telugu written using the Latin/English alphabet). "
+                    "Do not use Telugu script or non-Latin script. Use Telugu words written in English phonetics."
+                )
+            elif target_lang == "tamil":
+                style_instruction = (
+                    "\n\nIMPORTANT: Write the entire analysis fully in Romanized Tamil (Tamlish - Tamil written using the Latin/English alphabet). "
+                    "Do not use Tamil script or non-Latin script. Use Tamil words written in English phonetics."
+                )
+            elif target_lang == "kannada":
+                style_instruction = (
+                    "\n\nIMPORTANT: Write the entire analysis fully in Romanized Kannada (Kannada written using the Latin/English alphabet). "
+                    "Do not use Kannada script or non-Latin script. Use Kannada words written in English phonetics."
+                )
+            else:
+                style_instruction = (
+                    "\n\nIMPORTANT: Write the entire analysis fully in Romanized Hindi (Hinglish - Hindi written using the Latin/English alphabet). "
+                    "Do not use Devanagari or any non-Latin script. Use Hindi words written in English phonetics."
+                )
+        elif response_language in ["hindi", "tamil", "telugu", "kannada"]:
+            style_instruction = f"\n\nIMPORTANT: Write the entire analysis fully in native {response_language.capitalize()} script."
+
         prompt = ChatPromptTemplate.from_messages([
-            SystemMessagePromptTemplate.from_template(IRAC_SYSTEM_PROMPT),
+            SystemMessagePromptTemplate.from_template(IRAC_SYSTEM_PROMPT + style_instruction),
             HumanMessagePromptTemplate.from_template(
                 """Analyze this situation using IRAC framework. Be concise.
 

@@ -6,7 +6,14 @@ export const API_BASE = configuredApiUrl
 
 export type ChatResponseStyle = 'default' | 'roman_english';
 
-export async function sendChatMessage(message: string, sessionId?: string, responseStyle: ChatResponseStyle = 'default') {
+export async function sendChatMessage(
+  message: string, 
+  sessionId?: string, 
+  responseStyle: ChatResponseStyle = 'default', 
+  responseLanguage?: string,
+  customApiKey?: string,
+  customModel?: string
+) {
   // 3-minute timeout for Ollama responses
   const controller = new AbortController();
   const timeoutId = setTimeout(() => controller.abort(), 180000);
@@ -15,7 +22,14 @@ export async function sendChatMessage(message: string, sessionId?: string, respo
     const res = await fetch(`${API_BASE}/chat/`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ message, session_id: sessionId, response_style: responseStyle }),
+      body: JSON.stringify({ 
+        message, 
+        session_id: sessionId, 
+        response_style: responseStyle,
+        response_language: responseLanguage,
+        custom_api_key: customApiKey,
+        custom_model: customModel
+      }),
       signal: controller.signal,
     });
     clearTimeout(timeoutId);

@@ -20,9 +20,9 @@ class ChatEngine:
     - Adapts response length to query type
     """
 
-    def __init__(self):
+    def __init__(self, llm=None):
         self.conversation_contexts = {}  # session_id -> context
-        self.llm = get_llm()  # Get Ollama or other configured LLM
+        self.llm = llm if llm is not None else get_llm()  # Get Ollama or other configured LLM
     
     @property
     def is_llm_enabled(self) -> bool:
@@ -35,6 +35,7 @@ class ChatEngine:
         session_id: str,
         conversation_history: List[Dict] = None,
         response_style: str = "default",
+        response_language: Optional[str] = None,
     ) -> str:
         """
         Generate a smart, concise response based on user message and context.
@@ -49,7 +50,7 @@ class ChatEngine:
         
         # Use LLM for real AI responses if available
         if self.is_llm_enabled:
-            return self._llm_response(message, retrieved_laws, conversation_history, msg_type, response_style)
+            return self._llm_response(message, retrieved_laws, conversation_history, msg_type, response_style, response_language)
         
         # Fallback to template-based responses
         if msg_type == "followup":
@@ -116,6 +117,7 @@ What legal situation can I help you with today?"""
         history: List[Dict],
         msg_type: str,
         response_style: str = "default",
+        response_language: Optional[str] = None,
     ) -> str:
         """Generate response using Ollama LLM."""
         try:
@@ -130,11 +132,33 @@ What legal situation can I help you with today?"""
             
             # Create prompt based on message type
             style_instruction = ""
-            if response_style == "roman_english":
-                style_instruction = (
-                    " Reply fully in Roman English (Hinglish in Latin script). "
-                    "Do not use Devanagari or any non-Latin script."
-                )
+            if response_style == "roman_english" or response_language == "roman_english":
+                target_lang = "hindi"
+                if response_language in ["hindi", "tamil", "telugu", "kannada"]:
+                    target_lang = response_language
+                
+                if target_lang == "telugu":
+                    style_instruction = (
+                        " IMPORTANT: Reply fully in Romanized Telugu (Tanglish - Telugu written using the Latin/English alphabet). "
+                        "Do not use Telugu script or non-Latin script. Use Telugu words written in English phonetics."
+                    )
+                elif target_lang == "tamil":
+                    style_instruction = (
+                        " IMPORTANT: Reply fully in Romanized Tamil (Tamlish - Tamil written using the Latin/English alphabet). "
+                        "Do not use Tamil script or non-Latin script. Use Tamil words written in English phonetics."
+                    )
+                elif target_lang == "kannada":
+                    style_instruction = (
+                        " IMPORTANT: Reply fully in Romanized Kannada (Kannada written using the Latin/English alphabet). "
+                        "Do not use Kannada script or non-Latin script. Use Kannada words written in English phonetics."
+                    )
+                else:
+                    style_instruction = (
+                        " IMPORTANT: Reply fully in Romanized Hindi (Hinglish - Hindi written using the Latin/English alphabet). "
+                        "Do not use Devanagari or any non-Latin script. Use Hindi words written in English phonetics."
+                    )
+            elif response_language in ["hindi", "tamil", "telugu", "kannada"]:
+                style_instruction = f" IMPORTANT: Reply fully in native {response_language.capitalize()} script."
 
             if msg_type == "followup":
                 system_prompt = f"""You are YAMA AI, an Indian legal assistant. The user is asking a follow-up question about their previous query.
@@ -142,12 +166,17 @@ Give a concise, helpful answer (2-4 sentences). Reference the relevant laws if a
 Be conversational and friendly. End with an offer to help further.{style_instruction}"""
             else:
                 system_prompt = f"""You are YAMA AI, an Indian legal assistant specializing in Indian law.
-Analyze the user's legal situation and provide:
-1. A brief summary (1-2 sentences) of the legal issue
-2. The most relevant laws (cite specific sections)
-3. Recommended next steps (2-3 bullet points)
+Analyze the user's legal situation and provide a solution based on:
+- The Indian Constitution
+- Relevant Indian Laws and Sections
+- Relevant Court Judgments
 
-Keep your response concise (under 200 words). Be helpful and conversational.
+Please provide:
+1. A brief summary (1-2 sentences) of the legal issue.
+2. The most relevant constitutional articles, laws (cite specific sections), and court judgments.
+3. Recommended next steps or solutions (2-3 bullet points).
+
+Keep your response concise and structured. Be helpful and conversational.
 Always mention that this is legal information, not legal advice.{style_instruction}"""
 
             prompt = ChatPromptTemplate.from_messages([
@@ -389,7 +418,12 @@ Just let me know!"""
 _chat_engine = None
 
 
-def get_chat_engine() -> ChatEngine:
+def get_chat_engine(custom_api_key=None, custom_model=None) -> ChatEngine:
+    if custom_api_key and custom_model:
+        # If custom model provided, create a temporary instance
+        custom_llm = get_llm(custom_api_key, custom_model)
+        return ChatEngine(llm=custom_llm)
+        
     global _chat_engine
     if _chat_engine is None:
         _chat_engine = ChatEngine()

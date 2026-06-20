@@ -12,9 +12,10 @@ from app.core.config import settings
 logger = logging.getLogger("yama_ai.llm")
 
 
-def get_llm():
+def get_llm(custom_api_key=None, custom_model=None):
     """
-    Return configured LLM instance based on LLM_PROVIDER setting.
+    Return configured LLM instance based on LLM_PROVIDER setting or custom user overrides.
+    If provider is 'gemini', it will attempt to load Gemini, and fallback to Ollama if it fails.
     Returns None if provider is "none" (standalone reasoning mode).
     """
 
@@ -22,6 +23,45 @@ def get_llm():
 
     if provider == "none":
         return None
+
+    # Use custom overrides if provided by the user
+    if custom_api_key and custom_model:
+        try:
+            from langchain_google_genai import ChatGoogleGenerativeAI
+            logger.info(f"Using Custom LLM override: {custom_model}")
+            
+            # Simple mapping to format the name for the Gemini SDK if it matches the dropdown names
+            # Gemini SDK typically expects 'gemini-1.5-flash', 'gemini-1.5-pro', etc.
+            # But we pass what the user selected. If it's a generic proxy, they might need OpenAI client.
+            # Assuming the user wants Google Generative AI based on their previous request.
+            
+            return ChatGoogleGenerativeAI(
+                model=custom_model, 
+                google_api_key=custom_api_key,
+                temperature=0.3,
+                max_output_tokens=1500,
+            )
+        except Exception as e:
+            logger.warning(f"Failed to initialize custom model {custom_model}: {e}. Falling back to default provider.")
+
+    # Check Gemini first if provider is gemini or even if it's default to see if key exists
+    if provider == "gemini":
+        if settings.GOOGLE_API_KEY:
+            try:
+                from langchain_google_genai import ChatGoogleGenerativeAI
+                logger.info("Initializing Gemini as primary LLM...")
+                return ChatGoogleGenerativeAI(
+                    model="gemini-1.5-flash", # Fallback default if setting is different
+                    google_api_key=settings.GOOGLE_API_KEY,
+                    temperature=0.3,
+                    max_output_tokens=1500,
+                )
+            except Exception as e:
+                logger.warning("Gemini initialization failed (%s). Falling back to Ollama.", e)
+                provider = "ollama"
+        else:
+            logger.warning("Google API Key not found. Falling back to Ollama.")
+            provider = "ollama"
 
     try:
         if provider == "openai":
@@ -44,19 +84,11 @@ def get_llm():
 
         elif provider == "ollama":
             from langchain_community.chat_models import ChatOllama
+            logger.info("Initializing Ollama LLM...")
             return ChatOllama(
                 model=settings.OLLAMA_MODEL,
                 base_url=settings.OLLAMA_BASE_URL,
                 temperature=0.3,
-            )
-
-        elif provider == "gemini":
-            from langchain_google_genai import ChatGoogleGenerativeAI
-            return ChatGoogleGenerativeAI(
-                model=settings.GEMINI_MODEL,
-                google_api_key=settings.GOOGLE_API_KEY,
-                temperature=0.3,
-                max_output_tokens=1500,  # Reduced from 2000 for faster responses
             )
 
         raise ValueError(

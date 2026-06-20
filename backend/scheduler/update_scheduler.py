@@ -77,6 +77,14 @@ from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any, Callable, Dict, List, Optional
 
+# Load env variables from .env file
+try:
+    from dotenv import load_dotenv
+    _BACKEND_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+    load_dotenv(os.path.join(_BACKEND_ROOT, ".env"))
+except ImportError:
+    pass
+
 # ── Path setup ──
 _BACKEND_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 if _BACKEND_ROOT not in sys.path:

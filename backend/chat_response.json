@@ -1,0 +1,64 @@
+{
+  "session_id": "4f65d3b0-4c26-44dd-a039-fae950116c16",
+  "analysis": "## ⚖️ FACT SUMMARY\nOka addhe-darudu (tenant) tana illu khaali chesin tarvata, illu yajamani (landlord) addhe-darudu icchina security deposit ni tirigi ivvadaniki nirakaristunnaru.\n\n**Key Parties Identified:**\n- **Addhe-darudu (Tenant):** Security deposit tirigi pondalani korutunnaru.\n- **Illu Yajamani (Landlord):** Security deposit ni tirigi ivvadaniki nirakaristunnaru.\n\n**Key Elements:**\n- **Amount/Values involved:** Security deposit amount (specific amount ivvaledu).\n- **Location/Jurisdiction indicators:** Jharkhand Tenancy Act mention chesaru, so Jharkhand lo jarigina samasya anukuntunnam.\n\n## 🚨 SEVERITY & URGENCY ASSESSMENT\n\n**Severity Level:** Moderate\n**Nature:** Civil\n**Urgency:** Time-Sensitive (legal notice pampadaniki, suit veyadaniki time limits undavachu)\n\n⏰ **Time-Sensitive Actions (if any):**\n- Illu khaali chesina tarvata, security deposit tirigi ivvadaniki oka reasonable time period untundi. Aa time lo ivvakapothe, ventane legal notice pampadam manchidi.\n- State-specific Rent Control Acts lo security deposit recovery ki oka limitation",
+  "relevant_sections": [
+    {
+      "id": 170,
+      "act_name": "Real Estate (Regulation and Development) Act, 2016",
+      "section_number": "18",
+      "title": "Return of amount and compensation",
+      "description": "If the promoter fails to complete or is unable to give possession of an apartment, plot or building, he shall be liable on demand to the allottees to return the amount received by him in respect of that apartment, plot, building, with interest at such rate as may be prescribed.",
+      "keywords": "RERA, real estate, builder, flat, possession, delay, compensation",
+      "category": "consumer",
+      "punishment": null,
+      "old_law_reference": null
+    },
+    {
+      "id": 183,
+      "act_name": "Rent Control Act (Generic)",
+      "section_number": "14",
+      "title": "Grounds for eviction of tenants",
+      "description": "Notwithstanding anything contained in any other law, no suit shall be filed for eviction of a tenant from any premises except on one or more of the following grounds: non-payment of rent, subletting without permission, causing damage to premises, requirement for personal use by landlord, premises required for repairs.",
+      "keywords": "rent control, eviction, tenant, landlord, non-payment, subletting",
+      "category": "civil",
+      "punishment": null,
+      "old_law_reference": null
+    },
+    {
+      "id": 155,
+      "act_name": "Transfer of Property Act, 1882",
+      "section_number": "105",
+      "title": "Lease defined",
+      "description": "A lease of immoveable property is a transfer of a right to enjoy such property, made for a certain time, express or implied, or in perpetuity, in consideration of a price paid or promised, or of money, a share of crops, service or any other thing of value, to be rendered periodically or on specified occasions to the transferor by the transferee, who accepts the transfer on such terms.",
+      "keywords": "lease, rent, tenant, landlord, property, rental agreement",
+      "category": "civil",
+      "punishment": null,
+      "old_law_reference": null
+    },
+    {
+      "id": 364,
+      "act_name": "Jharkhand Tenancy Act, 1949",
+      "section_number": "5",
+      "title": "Rights of tenant",
+      "description": "Tenants have rights to peaceful possession and security of tenure as prescribed.",
+      "keywords": "state, jharkhand, rights of tenan",
+      "category": "general",
+      "punishment": null,
+      "old_law_reference": null
+    },
+    {
+      "id": 175,
+      "act_name": "Employees' Provident Fund and Miscellaneous Provisions Act, 1952",
+      "section_number": "14",
+      "title": "Penalties",
+      "description": "If any employer makes default in the payment of any contribution to the Fund, the Pension Fund or the Insurance Fund, or in the transfer of accumulations required to be transferred by him, or in the payment of any charges payable under any other provision of this Act, he shall be punishable with imprisonment for a term which may extend to three years.",
+      "keywords": "EPF, PF default, employer contribution, provident fund, pension fund",
+      "category": "labour",
+      "punishment": "Imprisonment up to 3 years or fine up to Rs. 10,000 or both",
+      "old_law_reference": null
+    }
+  ],
+  "timestamp": "2026-06-19T09:23:06.438523Z",
+  "detected_input_language": "english",
+  "response_language": "telugu"
+}

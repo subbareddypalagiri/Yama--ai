@@ -18,18 +18,25 @@ router = APIRouter(prefix="/laws", tags=["Laws"])
 
 @router.get("/search", response_model=SearchResponse)
 async def search_laws(
-    q: str = Query(..., min_length=2, description="Search query"),
+    q: Optional[str] = Query(None, description="Search query"),
     category: Optional[str] = Query(None, description="Filter by category"),
     limit: int = Query(10, ge=1, le=50),
     db: Session = Depends(get_db),
 ):
-    """Search legal provisions by keyword or semantic similarity."""
+    """Search legal provisions by keyword or semantic similarity. Returns all laws if query is empty."""
     try:
-        pipeline = RAGPipeline(db)
-        results = pipeline.search_laws(q, category, limit)
+        if not q or not q.strip():
+            # If no query is provided, return laws directly from DB (latest first)
+            query_obj = db.query(LawSection).filter(LawSection.is_active == True)
+            if category:
+                query_obj = query_obj.filter(LawSection.category == category)
+            results = query_obj.order_by(LawSection.id.desc()).limit(limit).all()
+        else:
+            pipeline = RAGPipeline(db)
+            results = pipeline.search_laws(q, category, limit)
 
         return SearchResponse(
-            query=q,
+            query=q or "",
             results=[LawSectionResponse.model_validate(r) for r in results],
             total=len(results),
         )

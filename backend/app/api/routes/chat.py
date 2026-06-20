@@ -95,17 +95,25 @@ async def chat_analyze(request: ChatRequest, db: Session = Depends(get_db)):
         db.add(user_msg)
         db.commit()
 
-        # Retrieve relevant laws using English message (limit to 5 for speed)
-        pipeline = RAGPipeline(db)
-        relevant_laws = pipeline.retrieve_relevant_laws(message_for_analysis, limit=5)
+        # Smarter message classification for routing
+        msg_lower = message_for_analysis.lower().strip()
+        is_greeting = False
+        greeting_words = ['hi', 'hello', 'hey', 'hlo', 'hii', 'namaste', 'good morning', 'good evening', 'greetings', 'thanks']
+        if any(msg_lower == g or msg_lower.startswith(g + " ") for g in greeting_words) and len(msg_lower) < 25:
+            is_greeting = True
+
+        relevant_laws = []
+        pipeline = None
+        if not is_greeting:
+            # Retrieve relevant laws using English message (limit to 5 for speed)
+            pipeline = RAGPipeline(db)
+            relevant_laws = pipeline.retrieve_relevant_laws(message_for_analysis, limit=5)
 
         # Get smart response from chat engine
-        chat_engine = get_chat_engine()
-        
-        # Smarter message classification for routing
-        msg_lower = message_for_analysis.lower()
-        is_greeting = any(word in msg_lower for word in 
-                         ['hi', 'hello', 'hey', 'namaste', 'good morning', 'greetings', 'thanks'])
+        chat_engine = get_chat_engine(
+            custom_api_key=request.custom_api_key,
+            custom_model=request.custom_model
+        )
         
         # Check for deep legal question indicators
         legal_keywords = ['law', 'legal', 'right', 'court', 'section', 'act', 'contract', 'agreement', 
@@ -115,19 +123,26 @@ async def chat_analyze(request: ChatRequest, db: Session = Depends(get_db)):
         is_short_followup = len(history) > 0 and len(message_for_analysis) < 50
         is_simple_question = any(word in msg_lower for word in ['what', 'when', 'how', 'which', 'tell', 'explain', 'define']) and len(message_for_analysis) < 80
         
-        # Use chat engine for greetings and simple questions
-        if is_greeting or (is_short_followup and not has_legal_keyword) or (is_simple_question and not has_legal_keyword):
+        # Treat very short words like 'hloo', 'hai', 'helo' as short generic queries to prevent heavy IRAC
+        is_very_short_generic = len(msg_lower) < 15 and not has_legal_keyword
+        
+        # Use chat engine for greetings, short generic inputs, and simple questions
+        is_llm_active = chat_engine.is_llm_enabled
+        
+        if is_greeting or is_very_short_generic or (is_short_followup and not has_legal_keyword) or (is_simple_question and not has_legal_keyword):
             response_text = chat_engine.get_response(
                 message=message_for_analysis,
                 retrieved_laws=relevant_laws,
                 session_id=session_id,
                 conversation_history=history,
                 response_style=request.response_style,
+                response_language=response_language,
             )
         else:
             # For actual legal situation analysis, use IRAC engine for proper analysis
             try:
                 irac_engine = IRACReasoningEngine()
+                is_llm_active = not irac_engine.is_standalone
                 
                 # Format laws for IRAC analysis
                 laws_formatted = []
@@ -141,7 +156,12 @@ async def chat_analyze(request: ChatRequest, db: Session = Depends(get_db)):
                 laws_text = "\n".join(laws_formatted) if laws_formatted else "No specific laws found"
                 
                 # Perform IRAC analysis
-                response_text = irac_engine.analyze(message_for_analysis, laws_text)
+                response_text = irac_engine.analyze(
+                    situation=message_for_analysis, 
+                    retrieved_laws=laws_text, 
+                    response_style=request.response_style, 
+                    response_language=response_language
+                )
             except Exception as e:
                 # If IRAC fails, fallback to chat engine
                 print(f"IRAC analysis failed: {e}, using fallback")
@@ -151,33 +171,35 @@ async def chat_analyze(request: ChatRequest, db: Session = Depends(get_db)):
                     session_id=session_id,
                     conversation_history=history,
                     response_style=request.response_style,
+                    response_language=response_language,
                 )
 
-        # Convert response to target language if needed
+        # Convert response to target language if needed (only if LLM didn't handle it directly)
         final_response = response_text
         
-        if response_language == "roman_english" and detected_language != "english":
-            # Translate to native script first, then transliterate to Roman
-            if detected_language in ["hindi", "tamil", "telugu", "kannada"]:
-                native_response = translator.translate_from_english(
+        if not is_llm_active:
+            if response_language == "roman_english" and detected_language != "english":
+                # Translate to native script first, then transliterate to Roman
+                if detected_language in ["hindi", "tamil", "telugu", "kannada"]:
+                    native_response = translator.translate_from_english(
+                        response_text,
+                        detected_language
+                    )
+                    final_response = transliterator.transliterate_to_roman(
+                        native_response,
+                        detected_language
+                    )
+            elif response_language == "roman_english" and detected_language == "english":
+                # If input was English but user wants Roman English response
+                # Default to Hindi Roman English
+                native_response = translator.translate_from_english(response_text, "hindi")
+                final_response = transliterator.transliterate_to_roman(native_response, "hindi")
+            elif response_language in ["hindi", "tamil", "telugu", "kannada"]:
+                # Translate to native script
+                final_response = translator.translate_from_english(
                     response_text,
-                    detected_language
+                    response_language
                 )
-                final_response = transliterator.transliterate_to_roman(
-                    native_response,
-                    detected_language
-                )
-        elif response_language == "roman_english" and detected_language == "english":
-            # If input was English but user wants Roman English response
-            # Default to Hindi Roman English
-            native_response = translator.translate_from_english(response_text, "hindi")
-            final_response = transliterator.transliterate_to_roman(native_response, "hindi")
-        elif response_language in ["hindi", "tamil", "telugu", "kannada"]:
-            # Translate to native script
-            final_response = translator.translate_from_english(
-                response_text,
-                response_language
-            )
 
         # Save assistant response
         assistant_msg = ChatMessage(
@@ -189,10 +211,12 @@ async def chat_analyze(request: ChatRequest, db: Session = Depends(get_db)):
         db.commit()
 
         # Format relevant sections for API response
-        law_records = pipeline._resolve_db_records(relevant_laws)
-        relevant_sections = [
-            LawSectionResponse.model_validate(law) for law in law_records[:5]
-        ]
+        relevant_sections = []
+        if pipeline and relevant_laws:
+            law_records = pipeline._resolve_db_records(relevant_laws)
+            relevant_sections = [
+                LawSectionResponse.model_validate(law) for law in law_records[:5]
+            ]
 
         return ChatResponse(
             session_id=session_id,

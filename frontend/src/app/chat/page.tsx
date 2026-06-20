@@ -3,9 +3,11 @@
 import { useState, useRef, useEffect, Suspense } from 'react';
 import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
-import { Scale, Loader2, AlertTriangle, BookOpen, ChevronLeft, Sparkles, Paperclip, X, FileText, Image as ImageIcon, File, ArrowUp, Copy, Check, RotateCcw } from 'lucide-react';
+import { Scale, Loader2, AlertTriangle, BookOpen, ChevronLeft, Sparkles, Paperclip, X, FileText, Image as ImageIcon, File, ArrowUp, Copy, Check, RotateCcw, Settings2 } from 'lucide-react';
 import ReactMarkdown from 'react-markdown';
 import { sendChatMessage, type ChatResponseStyle } from '@/lib/api';
+import { useLanguage } from '@/context/LanguageContext';
+import { SettingsModal } from '@/components/chat/SettingsModal';
 import type { ChatMessage, ChatApiResponse } from '@/types';
 
 interface AttachedFile {
@@ -43,6 +45,7 @@ function LoadingScreen() {
 }
 
 function ChatPageInner() {
+  const { language } = useLanguage();
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [input, setInput] = useState('');
   const [isLoading, setIsLoading] = useState(false);
@@ -56,6 +59,29 @@ function ChatPageInner() {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const searchParams = useSearchParams();
   const autoSubmitted = useRef(false);
+  const [isSettingsOpen, setIsSettingsOpen] = useState(false);
+  const [customApiKey, setCustomApiKey] = useState('');
+  const [customModel, setCustomModel] = useState('Gemini 2.5 Flash');
+
+  // Load settings on mount
+  useEffect(() => {
+    const saved = localStorage.getItem('yama_ai_settings');
+    if (saved) {
+      try {
+        const { apiKey, model } = JSON.parse(saved);
+        if (apiKey) setCustomApiKey(apiKey);
+        if (model) setCustomModel(model);
+      } catch (e) {
+        console.error('Failed to parse settings', e);
+      }
+    }
+  }, []);
+
+  const handleSaveSettings = (apiKey: string, model: string) => {
+    setCustomApiKey(apiKey);
+    setCustomModel(model);
+    localStorage.setItem('yama_ai_settings', JSON.stringify({ apiKey, model }));
+  };
 
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -106,8 +132,25 @@ function ChatPageInner() {
     setAttachments([]);
     setIsLoading(true);
     if (textareaRef.current) textareaRef.current.style.height = 'auto';
+    
+    // Map frontend language selector value to API response language
+    const langMapping: Record<string, string> = {
+      en: 'english',
+      hi: 'hindi',
+      ta: 'tamil',
+      te: 'telugu',
+    };
+    const responseLanguage = langMapping[language] || 'english';
+    
     try {
-      const response: ChatApiResponse = await sendChatMessage(messageText, sessionId, responseStyle);
+      const response: ChatApiResponse = await sendChatMessage(
+        messageText, 
+        sessionId, 
+        responseStyle, 
+        responseLanguage,
+        customApiKey,
+        customModel
+      );
       setSessionId(response.session_id);
       setMessages((prev) => [...prev, {
         id: (Date.now() + 1).toString(), role: 'assistant', content: response.analysis,
@@ -174,6 +217,13 @@ function ChatPageInner() {
                 <span className="hidden sm:inline">New chat</span>
               </button>
             )}
+            <button
+              onClick={() => setIsSettingsOpen(true)}
+              className="flex items-center justify-center w-9 h-9 text-white/40 hover:text-white/70 rounded-lg hover:bg-white/5 transition-all"
+              title="Settings"
+            >
+              <Settings2 className="w-5 h-5" />
+            </button>
             <Link 
               href="/search" 
               className="flex items-center gap-2 px-4 py-2 text-[13px] text-white/40 hover:text-white/70 rounded-lg hover:bg-white/5 transition-all"
@@ -313,6 +363,14 @@ function ChatPageInner() {
           </p>
         </div>
       </div>
+
+      <SettingsModal 
+        isOpen={isSettingsOpen}
+        onClose={() => setIsSettingsOpen(false)}
+        onSave={handleSaveSettings}
+        initialApiKey={customApiKey}
+        initialModel={customModel}
+      />
     </div>
   );
 }

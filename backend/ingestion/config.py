@@ -111,8 +111,8 @@ class IngestionSettings:
     max_retries: int = 3
     request_timeout: int = 30        # seconds
     user_agent: str = (
-        "YAMA-AI-LegalCrawler/1.0 "
-        "(Legal Research; +https://github.com/yama-ai; educational purpose)"
+        "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 "
+        "(KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
     )
 
     # Batch sizes
