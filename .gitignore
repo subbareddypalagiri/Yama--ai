@@ -20,8 +20,8 @@ build/
 *.egg-info/
 
 # Database
-chroma_data/
-*.db
+# chroma_data/
+# *.db
 *.sqlite3
 
 # IDE
