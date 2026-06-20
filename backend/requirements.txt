@@ -57,3 +57,5 @@ langdetect>=1.0.9              # Language detection
 # playwright>=1.49.0           # JS-rendered court portals
 # streamlit>=1.40.0            # Optional admin interface
 # jupyter>=1.1.0               # Optional data analysis notebook
+
+langchain-google-genai>=1.0.8
