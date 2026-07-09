@@ -91,15 +91,50 @@ class IRACReasoningEngine:
         prompt = ChatPromptTemplate.from_messages([
             SystemMessagePromptTemplate.from_template(IRAC_SYSTEM_PROMPT + style_instruction),
             HumanMessagePromptTemplate.from_template(
-                """Analyze this situation using IRAC framework. Be concise.
+                """As Advocate YAMA, provide a comprehensive, elite, and actionable legal consultation for this situation.
 
 SITUATION:
 {situation}
 
-RELEVANT LAWS:
+RELEVANT LAWS FROM DATABASE:
 {retrieved_laws}
 
-Provide: Issue → Applicable Laws → Application → Conclusion. Cite sections. Keep it brief."""
+You MUST structure your response strictly using this format:
+
+# 🏛️ ADVOCATE YAMA'S LEGAL STRATEGY & COUNSEL
+
+---
+
+## 🎯 STEP 1: CASE DISCOVERY & REQUIRED DOCUMENTS
+Before we proceed to formal filing or litigation, as your legal counsel, I need to verify these crucial facts and documents with you:
+- **❓ Crucial Fact Questions:** [List 2-3 sharp, precise questions specific to this case to uncover loopholes or strengthen our stand]
+- **📑 Required Document Checklist:** [List specific documents e.g., Screenshots, Bank Statements, Registered Agreements, ID Proofs needed as electronic/physical evidence under Bharatiya Sakshya Adhiniyam (BSA 2023) / Section 63/65B]
+
+---
+
+## ⚖️ STEP 2: LEGAL ANALYSIS & APPLICABLE LAWS
+- **Primary Issue:** [Clear, sharp summary of the violation/offense]
+- **Applicable Legal Provisions:**
+  - **[Exact Act & Section e.g. IT Act Sec 66C / BNS 2023 Sec 351]:** [Explain penalty and legal rights]
+  - **[Constitutional / Civil Protection]:** [e.g. Article 21 Right to Privacy / Specific Relief Act]
+
+---
+
+## 🏛️ STEP 3: LANDMARK SUPREME COURT & HIGH COURT PRECEDENTS
+To make our case 100% bulletproof before authorities or courts, we will rely on these binding judicial precedents:
+1. **[Landmark Supreme Court Case Name e.g. Shreya Singhal v. Union of India / K.S. Puttaswamy v. Union of India / relevant judgment]:** [Exact legal takeaway and how it directly protects the user]
+2. **[Relevant High Court / Supreme Court Citation]:** [Brief strategic precedent supporting our stand]
+
+---
+
+## 💡 STEP 4: STRATEGIC ACTION PLAN & PROCEDURE
+Here is your concrete, step-by-step roadmap to get justice immediately:
+1. **🚀 Immediate Action (Within 24 Hours):** [Exact portal link e.g., National Cyber Crime helpline `1930` or `https://cybercrime.gov.in` / Formal Legal Notice with 15-day deadline]
+2. **🛡️ Police / Official Filing Procedure:** [How to file FIR/complaint under Bharatiya Nagarik Suraksha Sanhita (BNSS 2023) Section 173 / Police procedure]
+3. **⚔️ Court & Compensation Strategy:** [How to claim damages under IT Act Section 43 / Consumer Forum / Civil Court / Bail defense if applicable]
+
+---
+💡 *Tip: If you have a legal notice, contract, or screenshot, upload it using the Paperclip (📎) icon below and I will extract legal loopholes and draft your exact reply!*"""
             )
         ])
 
