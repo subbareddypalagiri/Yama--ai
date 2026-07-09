@@ -5,6 +5,9 @@ Returns None when LLM_PROVIDER is "none" (standalone mode).
 """
 
 import logging
+import httpx
+from langchain_core.runnables import Runnable
+from langchain_core.messages import AIMessage
 
 from app.core.config import settings
 
@@ -12,10 +15,80 @@ from app.core.config import settings
 logger = logging.getLogger("yama_ai.llm")
 
 
+class DirectGeminiLLM(Runnable):
+    """
+    Direct REST API wrapper for Google Gemini v1beta.
+    Eliminates LangChain dependency mismatches and ComputerUse import errors.
+    """
+    def __init__(self, api_key: str, model: str = "gemini-1.5-flash", temperature: float = 0.3):
+        self.api_key = api_key
+        self.model = model if model else "gemini-1.5-flash"
+        self.temperature = temperature
+
+    def invoke(self, input, config=None, **kwargs):
+        if hasattr(input, "to_messages"):
+            messages = input.to_messages()
+        elif isinstance(input, list):
+            messages = input
+        else:
+            messages = []
+
+        system_instruction = None
+        contents = []
+        for msg in messages:
+            msg_type = getattr(msg, "type", "")
+            content_str = getattr(msg, "content", "") or str(msg)
+            if msg_type == "system" or "SystemMessage" in str(type(msg)):
+                system_instruction = {"parts": [{"text": content_str}]}
+            elif msg_type in ["human", "user"] or "HumanMessage" in str(type(msg)):
+                contents.append({"role": "user", "parts": [{"text": content_str}]})
+            elif msg_type in ["ai", "assistant"] or "AIMessage" in str(type(msg)):
+                contents.append({"role": "model", "parts": [{"text": content_str}]})
+            else:
+                contents.append({"role": "user", "parts": [{"text": content_str}]})
+
+        if not contents and hasattr(input, "to_string"):
+            contents = [{"role": "user", "parts": [{"text": input.to_string()}]}]
+
+        payload = {
+            "contents": contents,
+            "generationConfig": {
+                "temperature": self.temperature,
+                "maxOutputTokens": 2048
+            }
+        }
+        if system_instruction:
+            payload["systemInstruction"] = system_instruction
+
+        models_to_try = [self.model, "gemini-1.5-flash", "gemini-1.5-pro", "gemini-2.0-flash-exp"]
+        seen = set()
+        last_err = None
+        with httpx.Client(timeout=45.0) as client:
+            for m in models_to_try:
+                if m in seen:
+                    continue
+                seen.add(m)
+                url = f"https://generativelanguage.googleapis.com/v1beta/models/{m}:generateContent?key={self.api_key}"
+                try:
+                    res = client.post(url, json=payload)
+                    if res.status_code == 200:
+                        data = res.json()
+                        text = data.get("candidates", [{}])[0].get("content", {}).get("parts", [{}])[0].get("text", "")
+                        return AIMessage(content=text or "I could not generate an analysis. Please try clarifying your situation.")
+                    else:
+                        last_err = f"Status {res.status_code}: {res.text}"
+                        logger.warning(f"Model {m} failed: {last_err}")
+                except Exception as e:
+                    last_err = str(e)
+                    logger.warning(f"Model {m} error: {last_err}")
+
+        raise RuntimeError(f"Gemini API call failed across all fallback models: {last_err}")
+
+
 def get_llm(custom_api_key=None, custom_model=None):
     """
     Return configured LLM instance based on LLM_PROVIDER setting or custom user overrides.
-    If provider is 'gemini', it will attempt to load Gemini, and fallback to Ollama if it fails.
+    If provider is 'gemini', uses DirectGeminiLLM for instant, error-free API responses.
     Returns None if provider is "none" (standalone reasoning mode).
     """
 
@@ -25,40 +98,23 @@ def get_llm(custom_api_key=None, custom_model=None):
         return None
 
     # Use custom overrides if provided by the user
-    if custom_api_key and custom_model:
-        try:
-            from langchain_google_genai import ChatGoogleGenerativeAI
-            logger.info(f"Using Custom LLM override: {custom_model}")
-            
-            # Simple mapping to format the name for the Gemini SDK if it matches the dropdown names
-            # Gemini SDK typically expects 'gemini-1.5-flash', 'gemini-1.5-pro', etc.
-            # But we pass what the user selected. If it's a generic proxy, they might need OpenAI client.
-            # Assuming the user wants Google Generative AI based on their previous request.
-            
-            return ChatGoogleGenerativeAI(
-                model=custom_model, 
-                google_api_key=custom_api_key,
-                temperature=0.3,
-                max_output_tokens=1500,
-            )
-        except Exception as e:
-            logger.warning(f"Failed to initialize custom model {custom_model}: {e}. Falling back to default provider.")
+    if custom_api_key:
+        logger.info(f"Using Custom Gemini override: {custom_model or 'gemini-1.5-flash'}")
+        return DirectGeminiLLM(
+            api_key=custom_api_key,
+            model=custom_model or "gemini-1.5-flash",
+            temperature=0.3
+        )
 
-    # Check Gemini first if provider is gemini or even if it's default to see if key exists
+    # Check Gemini first if provider is gemini
     if provider == "gemini":
         if settings.GOOGLE_API_KEY:
-            try:
-                from langchain_google_genai import ChatGoogleGenerativeAI
-                logger.info("Initializing Gemini as primary LLM...")
-                return ChatGoogleGenerativeAI(
-                    model="gemini-1.5-flash", # Fallback default if setting is different
-                    google_api_key=settings.GOOGLE_API_KEY,
-                    temperature=0.3,
-                    max_output_tokens=1500,
-                )
-            except Exception as e:
-                logger.warning("Gemini initialization failed (%s). Falling back to Ollama.", e)
-                provider = "ollama"
+            logger.info("Initializing DirectGeminiLLM as primary LLM...")
+            return DirectGeminiLLM(
+                api_key=settings.GOOGLE_API_KEY,
+                model=getattr(settings, "GEMINI_MODEL", "gemini-1.5-flash"),
+                temperature=0.3
+            )
         else:
             logger.warning("Google API Key not found. Falling back to Ollama.")
             provider = "ollama"
