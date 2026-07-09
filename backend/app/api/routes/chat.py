@@ -7,6 +7,7 @@ Uses IRAC framework for deep analysis when needed.
 import uuid
 import io
 from datetime import datetime, timezone
+from typing import Optional
 from fastapi import APIRouter, Depends, HTTPException, UploadFile, File, Form
 from sqlalchemy.orm import Session
 
