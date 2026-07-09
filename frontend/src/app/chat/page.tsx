@@ -5,7 +5,7 @@ import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
 import { Scale, Loader2, AlertTriangle, BookOpen, ChevronLeft, Sparkles, Paperclip, X, FileText, Image as ImageIcon, File, ArrowUp, Copy, Check, RotateCcw, Settings2 } from 'lucide-react';
 import ReactMarkdown from 'react-markdown';
-import { sendChatMessage, type ChatResponseStyle } from '@/lib/api';
+import { sendChatMessage, uploadChatMessage, type ChatResponseStyle } from '@/lib/api';
 import { useLanguage } from '@/context/LanguageContext';
 import { SettingsModal } from '@/components/chat/SettingsModal';
 import type { ChatMessage, ChatApiResponse } from '@/types';
@@ -143,14 +143,27 @@ function ChatPageInner() {
     const responseLanguage = langMapping[language] || 'english';
     
     try {
-      const response: ChatApiResponse = await sendChatMessage(
-        messageText, 
-        sessionId, 
-        responseStyle, 
-        responseLanguage,
-        customApiKey,
-        customModel
-      );
+      let response: ChatApiResponse;
+      if (attachments.length > 0 && attachments[0].file) {
+        response = await uploadChatMessage(
+          attachments[0].file,
+          messageText,
+          sessionId,
+          responseStyle,
+          responseLanguage,
+          customApiKey,
+          customModel
+        );
+      } else {
+        response = await sendChatMessage(
+          messageText, 
+          sessionId, 
+          responseStyle, 
+          responseLanguage,
+          customApiKey,
+          customModel
+        );
+      }
       setSessionId(response.session_id);
       setMessages((prev) => [...prev, {
         id: (Date.now() + 1).toString(), role: 'assistant', content: response.analysis,

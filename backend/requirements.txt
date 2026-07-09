@@ -59,3 +59,4 @@ langdetect>=1.0.9              # Language detection
 # jupyter>=1.1.0               # Optional data analysis notebook
 
 langchain-google-genai>=1.0.8
+pypdf>=4.0.0

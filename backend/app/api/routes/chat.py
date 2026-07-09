@@ -5,8 +5,9 @@ Uses IRAC framework for deep analysis when needed.
 """
 
 import uuid
+import io
 from datetime import datetime, timezone
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, HTTPException, UploadFile, File, Form
 from sqlalchemy.orm import Session
 
 from app.db.database import get_db
@@ -232,6 +233,53 @@ async def chat_analyze(request: ChatRequest, db: Session = Depends(get_db)):
         error_trace = traceback.format_exc()
         print(f"ERROR in chat_analyze: {str(e)}\n{error_trace}")
         raise HTTPException(status_code=500, detail=f"Analysis failed: {str(e)}")
+
+
+@router.post("/upload", response_model=ChatResponse)
+async def upload_and_analyze(
+    file: UploadFile = File(...),
+    message: str = Form("Analyze this document and guide me on what to do."),
+    session_id: Optional[str] = Form(None),
+    response_style: str = Form("default"),
+    response_language: Optional[str] = Form(None),
+    custom_api_key: Optional[str] = Form(None),
+    custom_model: Optional[str] = Form(None),
+    db: Session = Depends(get_db)
+):
+    """
+    Extract text from uploaded document (PDF/TXT/MD) and analyze it via Advocate YAMA.
+    """
+    extracted_text = ""
+    try:
+        content = await file.read()
+        filename_lower = (file.filename or "").lower()
+        if filename_lower.endswith(".pdf"):
+            import pypdf
+            pdf_reader = pypdf.PdfReader(io.BytesIO(content))
+            pages_text = [page.extract_text() or "" for page in pdf_reader.pages[:10]]
+            extracted_text = "\n".join(pages_text)
+        elif filename_lower.endswith(".txt") or filename_lower.endswith(".md") or filename_lower.endswith(".json"):
+            extracted_text = content.decode("utf-8", errors="ignore")
+        else:
+            extracted_text = f"[Attached File Name: {file.filename} (Binary or Image file)]"
+    except Exception as e:
+        extracted_text = f"[Could not parse text from {file.filename}: {e}]"
+
+    combined_message = f"{message}\n\n--- [ATTACHED DOCUMENT: {file.filename}] ---\n{extracted_text[:4000]}\n--- END OF DOCUMENT ---"
+    
+    # Validate response_style and response_language options
+    valid_style = response_style if response_style in ["default", "roman_english"] else "default"
+    valid_lang = response_language if response_language in ["english", "hindi", "tamil", "telugu", "kannada", "roman_english"] else None
+
+    req = ChatRequest(
+        message=combined_message,
+        session_id=session_id,
+        response_style=valid_style,
+        response_language=valid_lang,
+        custom_api_key=custom_api_key,
+        custom_model=custom_model
+    )
+    return await chat_analyze(req, db)
 
 
 @router.delete("/{session_id}")

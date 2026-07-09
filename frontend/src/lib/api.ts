@@ -44,6 +44,45 @@ export async function sendChatMessage(
   }
 }
 
+export async function uploadChatMessage(
+  file: File,
+  message: string, 
+  sessionId?: string, 
+  responseStyle: ChatResponseStyle = 'default', 
+  responseLanguage?: string,
+  customApiKey?: string,
+  customModel?: string
+) {
+  const controller = new AbortController();
+  const timeoutId = setTimeout(() => controller.abort(), 180000);
+  
+  const formData = new FormData();
+  formData.append('file', file);
+  formData.append('message', message);
+  if (sessionId) formData.append('session_id', sessionId);
+  formData.append('response_style', responseStyle);
+  if (responseLanguage) formData.append('response_language', responseLanguage);
+  if (customApiKey) formData.append('custom_api_key', customApiKey);
+  if (customModel) formData.append('custom_model', customModel);
+
+  try {
+    const res = await fetch(`${API_BASE}/chat/upload`, {
+      method: 'POST',
+      body: formData,
+      signal: controller.signal,
+    });
+    clearTimeout(timeoutId);
+    if (!res.ok) throw new Error(`Chat upload failed: ${res.statusText}`);
+    return res.json();
+  } catch (err: unknown) {
+    clearTimeout(timeoutId);
+    if (err instanceof Error && err.name === 'AbortError') {
+      throw new Error('Request timed out. The AI is taking too long to respond.');
+    }
+    throw err;
+  }
+}
+
 export async function searchLaws(query: string, category?: string, limit = 10) {
   const params = new URLSearchParams({ q: query, limit: String(limit) });
   if (category) params.set('category', category);
