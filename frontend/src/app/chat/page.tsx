@@ -5,7 +5,7 @@ import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
 import { Scale, Loader2, AlertTriangle, BookOpen, ChevronLeft, Sparkles, Paperclip, X, FileText, Image as ImageIcon, File, ArrowUp, Copy, Check, RotateCcw, Settings2 } from 'lucide-react';
 import ReactMarkdown from 'react-markdown';
-import { sendChatMessage, uploadChatMessage, type ChatResponseStyle, analyzeScorecard, analyzeSimulate, analyzeEstimator, type ScorecardData, type SimulationData, type EstimatorData } from '@/lib/api';
+import { sendChatMessage, sendChatMessageStream, uploadChatMessage, type ChatResponseStyle, analyzeScorecard, analyzeSimulate, analyzeEstimator, type ScorecardData, type SimulationData, type EstimatorData } from '@/lib/api';
 import { useLanguage } from '@/context/LanguageContext';
 import { SettingsModal } from '@/components/chat/SettingsModal';
 import CaseScorecard from '@/components/intelligence/CaseScorecard';
@@ -149,8 +149,8 @@ function ChatPageInner() {
     const responseLanguage = langMapping[language] || 'english';
     
     try {
-      let response: ChatApiResponse;
       if (attachments.length > 0 && attachments[0].file) {
+        let response: ChatApiResponse;
         response = await uploadChatMessage(
           attachments[0].file,
           messageText,
@@ -160,21 +160,38 @@ function ChatPageInner() {
           customApiKey,
           customModel
         );
+        setSessionId(response.session_id);
+        setMessages((prev) => [...prev, {
+          id: (Date.now() + 1).toString(), role: 'assistant', content: response.analysis,
+          timestamp: new Date(response.timestamp), relevantSections: response.relevant_sections,
+        }]);
       } else {
-        response = await sendChatMessage(
-          messageText, 
-          sessionId, 
-          responseStyle, 
+        const tempId = (Date.now() + 1).toString();
+        setMessages((prev) => [...prev, {
+          id: tempId, role: 'assistant', content: '',
+          timestamp: new Date(), relevantSections: [],
+        }]);
+        
+        const response = await sendChatMessageStream(
+          messageText,
+          (chunkText) => {
+            setMessages((prev) => 
+              prev.map(msg => 
+                msg.id === tempId 
+                  ? { ...msg, content: msg.content + chunkText } 
+                  : msg
+              )
+            );
+          },
+          sessionId,
+          responseStyle,
           responseLanguage,
           customApiKey,
           customModel
         );
+        
+        setSessionId(response.session_id);
       }
-      setSessionId(response.session_id);
-      setMessages((prev) => [...prev, {
-        id: (Date.now() + 1).toString(), role: 'assistant', content: response.analysis,
-        timestamp: new Date(response.timestamp), relevantSections: response.relevant_sections,
-      }]);
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Analysis failed. Please try again.');
     } finally {

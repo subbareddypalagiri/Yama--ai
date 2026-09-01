@@ -17,6 +17,8 @@ env/
 out/
 dist/
 build/
+target/
+backend-rust/target/
 *.egg-info/
 
 # Database

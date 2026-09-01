@@ -2,7 +2,7 @@ const configuredApiUrl = process.env.NEXT_PUBLIC_API_URL?.trim();
 
 export const API_BASE = configuredApiUrl
   ? `${configuredApiUrl.replace(/\/$/, '')}/api/v1`
-  : 'http://localhost:8000/api/v1';
+  : 'http://localhost:8080/api/v1';
 
 export type ChatResponseStyle = 'default' | 'roman_english';
 
@@ -14,7 +14,7 @@ export async function sendChatMessage(
   customApiKey?: string,
   customModel?: string
 ) {
-  // 3-minute timeout for Ollama responses
+  // Keeping this for backward compatibility (e.g. if we switch back to non-stream)
   const controller = new AbortController();
   const timeoutId = setTimeout(() => controller.abort(), 180000);
   
@@ -42,6 +42,61 @@ export async function sendChatMessage(
     }
     throw err;
   }
+}
+
+export async function sendChatMessageStream(
+  message: string, 
+  onChunk: (text: string) => void,
+  sessionId?: string, 
+  responseStyle: ChatResponseStyle = 'default', 
+  responseLanguage?: string,
+  customApiKey?: string,
+  customModel?: string
+): Promise<{session_id: string, analysis: string}> {
+  return new Promise((resolve, reject) => {
+    let fullAnalysis = "";
+    
+    // Lazy import so it doesn't break Next.js server components if imported
+    import('@microsoft/fetch-event-source').then(({ fetchEventSource }) => {
+      fetchEventSource(`${API_BASE}/chat/`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          message,
+          session_id: sessionId,
+          response_style: responseStyle,
+          response_language: responseLanguage,
+          custom_api_key: customApiKey,
+          custom_model: customModel
+        }),
+        onmessage(ev) {
+          if (ev.data === '[DONE]') return;
+          
+          let actualText = ev.data;
+          try {
+            const json = JSON.parse(ev.data);
+            if (json.candidates?.[0]?.content?.parts?.[0]?.text) {
+               actualText = json.candidates[0].content.parts[0].text;
+            } else {
+               actualText = "";
+            }
+          } catch(e) { }
+          
+          if (actualText) {
+            fullAnalysis += actualText;
+            onChunk(actualText);
+          }
+        },
+        onclose() {
+          resolve({ session_id: sessionId || "stream_session", analysis: fullAnalysis });
+        },
+        onerror(err) {
+          reject(err);
+          throw err;
+        }
+      });
+    }).catch(reject);
+  });
 }
 
 export async function uploadChatMessage(
