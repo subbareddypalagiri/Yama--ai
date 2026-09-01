@@ -143,7 +143,10 @@ async def chat_analyze(request: ChatRequest, db: Session = Depends(get_db)):
         else:
             # For actual legal situation analysis, use IRAC engine for proper analysis
             try:
-                irac_engine = IRACReasoningEngine()
+                irac_engine = IRACReasoningEngine(
+                    custom_api_key=request.custom_api_key,
+                    custom_model=request.custom_model
+                )
                 is_llm_active = not irac_engine.is_standalone
                 
                 # Format laws for IRAC analysis
@@ -162,7 +165,8 @@ async def chat_analyze(request: ChatRequest, db: Session = Depends(get_db)):
                     situation=message_for_analysis, 
                     retrieved_laws=laws_text, 
                     response_style=request.response_style, 
-                    response_language=response_language
+                    response_language=response_language,
+                    conversation_history=history
                 )
             except Exception as e:
                 # If IRAC fails, fallback to chat engine

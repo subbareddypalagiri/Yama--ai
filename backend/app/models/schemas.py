@@ -122,3 +122,49 @@ class HealthResponse(BaseModel):
     version: str
     database: str
     vector_store: str
+
+
+# ── Intelligence Suite Models ──
+
+class ScorecardRequest(BaseModel):
+    situation: str = Field(..., min_length=5, max_length=10000, description="Detailed situation description")
+
+
+class ScorecardResponse(BaseModel):
+    win_probability: int = Field(..., ge=0, le=100, description="Estimated winning probability percentage")
+    risk_level: Literal["Low", "Medium", "High", "Critical"] = Field(..., description="Overall legal risk level")
+    primary_risk_factor: str = Field(..., description="Primary risk factor or loophole")
+    evidence_booster_tips: List[str] = Field(..., description="Evidence tips under BSA 2023 to boost probability")
+    applicable_bns_section: str = Field(..., description="Core BNS 2023 / IT Act section applicable")
+
+
+class SimulationRequest(BaseModel):
+    situation: str = Field(..., min_length=5, max_length=10000, description="Detailed situation description")
+
+
+class PersonaSimulation(BaseModel):
+    role: str = Field(..., description="Role e.g., Advocate YAMA (Counsel), Opponent Counsel, Presiding Judge")
+    title: str = Field(..., description="Title or stance")
+    arguments: List[str] = Field(..., description="Key legal points or observations")
+    legal_citations: List[str] = Field(..., description="Cited laws or Supreme Court judgments")
+
+
+class SimulationResponse(BaseModel):
+    counsel_view: PersonaSimulation
+    defense_view: PersonaSimulation
+    judge_verdict: PersonaSimulation
+    summary: str
+
+
+class EstimatorRequest(BaseModel):
+    situation: str = Field(..., min_length=5, max_length=10000, description="Detailed situation description")
+
+
+class EstimatorResponse(BaseModel):
+    case_type: str = Field(..., description="e.g., Cyber Crime / Criminal / Civil Dispute / Consumer")
+    estimated_duration: str = Field(..., description="Expected timeline in court or authority")
+    court_fee_stamp_duty: str = Field(..., description="Statutory court stamp duty or fee estimate")
+    lawyer_fee_range: str = Field(..., description="Typical litigation fee range across courts")
+    fast_track_remedy: str = Field(..., description="Alternative ₹0 fast-track resolution option e.g. Cyber portal / Lok Adalat")
+    key_steps_count: int = Field(..., description="Number of legal stages involved")
+

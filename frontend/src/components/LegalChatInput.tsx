@@ -4,6 +4,8 @@ import { useState, useRef, KeyboardEvent } from 'react';
 import { useRouter } from 'next/navigation';
 import { ArrowUp, Loader2, Paperclip, X, FileText, Image as ImageIcon, File, Sparkles } from 'lucide-react';
 import { useLanguage } from '@/context/LanguageContext';
+import VoiceConsultation from '@/components/intelligence/VoiceConsultation';
+
 
 interface AttachedFile {
   file: File;
@@ -222,6 +224,12 @@ export default function LegalChatInput() {
             <div className="absolute inset-0 rounded-xl bg-purple-500/0 group-hover:bg-purple-500/10 transition-colors" />
             <Paperclip className="relative w-5 h-5" />
           </button>
+
+          <VoiceConsultation
+            language={language}
+            onTranscript={(text) => setQuery((prev) => (prev ? `${prev} ${text}` : text))}
+          />
+
 
           {/* Textarea */}
           <div className="flex-1 min-h-[44px] flex items-center">

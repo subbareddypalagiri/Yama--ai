@@ -26,33 +26,34 @@ class IRACReasoningEngine:
     5. Generate neutral legal analysis
     """
 
-    def __init__(self):
-        self.llm = get_llm()
+    def __init__(self, custom_api_key=None, custom_model=None):
+        self.llm = get_llm(custom_api_key=custom_api_key, custom_model=custom_model)
 
     @property
     def is_standalone(self) -> bool:
         return self.llm is None
 
-    def analyze(self, situation: str, retrieved_laws: str, response_style: str = "default", response_language: Optional[str] = None) -> str:
+    def analyze(self, situation: str, retrieved_laws: str, response_style: str = "default", response_language: Optional[str] = None, conversation_history: Optional[List[Dict[str, str]]] = None) -> str:
         """
-        Perform full IRAC analysis on a user's situation.
+        Perform full two-stage Socratic IRAC analysis on a user's situation.
 
         Args:
             situation: The user's description of their legal situation.
             retrieved_laws: Relevant legal provisions retrieved via RAG.
             response_style: The style of response (e.g. roman_english).
             response_language: Target response language.
+            conversation_history: Previous messages in the chat session.
 
         Returns:
-            Complete IRAC analysis as markdown text.
+            Complete Stage 1 or Stage 2 legal consultation as markdown text.
         """
         if self.is_standalone:
             return self._standalone_analyze(situation, retrieved_laws)
 
-        return self._llm_analyze(situation, retrieved_laws, response_style, response_language)
+        return self._llm_analyze(situation, retrieved_laws, response_style, response_language, conversation_history)
 
-    def _llm_analyze(self, situation: str, retrieved_laws: str, response_style: str = "default", response_language: Optional[str] = None) -> str:
-        """Full analysis using a configured LLM."""
+    def _llm_analyze(self, situation: str, retrieved_laws: str, response_style: str = "default", response_language: Optional[str] = None, conversation_history: Optional[List[Dict[str, str]]] = None) -> str:
+        """Full analysis using a configured LLM with Stage-by-Stage Socratic flow."""
         from langchain_core.prompts import (
             ChatPromptTemplate,
             SystemMessagePromptTemplate,
@@ -88,53 +89,95 @@ class IRACReasoningEngine:
         elif response_language in ["hindi", "tamil", "telugu", "kannada"]:
             style_instruction = f"\n\nIMPORTANT: Write the entire analysis fully in native {response_language.capitalize()} script."
 
-        prompt = ChatPromptTemplate.from_messages([
-            SystemMessagePromptTemplate.from_template(IRAC_SYSTEM_PROMPT + style_instruction),
-            HumanMessagePromptTemplate.from_template(
-                """As Advocate YAMA, provide a comprehensive, elite, and actionable legal consultation for this situation.
+        # Determine Stage 1 vs Stage 2
+        is_stage_2 = False
+        history_text = ""
+        if conversation_history and len(conversation_history) > 0:
+            for m in conversation_history:
+                role_label = "User" if m.get("role") == "user" else "Advocate YAMA"
+                history_text += f"{role_label}: {m.get('content', '')}\n"
+            
+            # Check if Advocate YAMA already asked clarifying questions or discovery steps in history
+            history_str = history_text.lower()
+            if any(k in history_str for k in ["discovery", "clarifying questions", "crucial fact questions", "evidence checklist", "❓"]):
+                is_stage_2 = True
+            elif len(conversation_history) >= 2:
+                is_stage_2 = True
 
-SITUATION:
+        if not is_stage_2:
+            stage_format_instruction = """You are **Advocate YAMA**, a highly knowledgeable, empathetic, and strategic legal friend.
+
+### 🛑 CRITICAL RULE: SOCRATIC STAGE 1 (DISCOVERY ONLY)
+The user is asking a new legal query or initial situation (`SITUATION`). DO NOT give a robotic, default essay of laws, precedents, and action steps right now (`anni okesari ivva koodadhu`). Giving everything at once feels unnatural and confusing.
+Instead, act like a smart, supportive legal buddy. Your job right now is strictly **STAGE 1: CASE DISCOVERY & CLARIFYING QUESTIONS**. Speak naturally, show empathy, and ask a few targeted questions to understand their exact situation before advising.
+
+You MUST structure your response strictly using this friendly, rhythmic Stage 1 format:
+
+# 🤝 YAMA's Initial Check-In
+
+Hey there! I'm YAMA, your legal buddy. I'm really sorry you're dealing with this. Don't worry, I'm here to help you figure this out step-by-step. Before we jump into sending notices or filing complaints, let's get a clear picture of what's going on.
+
+### ❓ A Few Quick Questions to Build Your Case:
+1. **[Question 1 - E.g., Do you have this in writing? When did it happen?]**
+2. **[Question 2 - E.g., What exactly did the other person say or do recently?]**
+3. **[Question 3 - E.g., Do you have any proof of payment or communication?]**
+
+---
+
+### 📑 Things You Should Start Gathering (Keep These Handy):
+- ✅ **[Primary Document - e.g., The original agreement or offer letter]**
+- ✅ **[Payment Proof - e.g., Screenshots of UPI/Bank transfers]**
+- ✅ **[Communication Proof - e.g., WhatsApp chats or emails]**
+
+👉 *Just reply with quick answers to these (or upload any screenshots/documents using the 📎 icon or voice 🎙️). Once you tell me this, I'll give you the exact laws that protect you, past court decisions that support you, and a clear step-by-step plan on what to do next!*"""
+        else:
+            stage_format_instruction = """You are **Advocate YAMA**, a highly knowledgeable, empathetic, and strategic legal friend.
+
+### 🎯 STAGE 2: STRATEGIC COUNSEL & ACTION PLAN
+The user has now provided answers/context (`user icchina ans batti`). DO NOT repeat basic questions. Act like a smart, supportive legal buddy who is now laying out the exact plan of action in a natural, easy-to-follow rhythm.
+
+You MUST structure your response strictly using this friendly, action-oriented Stage 2 format:
+
+# 🤝 YAMA's Game Plan & Solution
+
+Thanks for sharing those details! Based on what you've told me (`[Brief 1-sentence friendly summary of their situation]`), we definitely have a path forward. Here is the exact plan on how we handle this under Indian Law, step-by-step:
+
+### ⚖️ 1. The Laws On Your Side
+- **[Exact Act & Section - e.g., BNS 2023 Section 316 / IT Act Sec 66C]:** [Explain simply, like a friend, how this law protects them based on their answers]
+- **[Evidence Strategy - e.g., under BSA 2023 Sec 61/63]:** [Explain how the proof they mentioned will help them win]
+
+---
+
+### 🏛️ 2. Proof That You Can Win (Court Precedents)
+1. **[Supreme Court/High Court Case Name]:** [Briefly explain how this past case proves the other party is wrong and protects the user]
+2. **[Supporting Citation]:** [Optional extra support]
+
+---
+
+### 💡 3. What You Need To Do Now (Action Plan)
+*Here is what we do next, step-by-step:*
+1. **🚀 Step 1 (Immediate Action):** [E.g., Send a formal legal demand notice via Registered Post. Give them 15 days to reply.]
+2. **🛡️ Step 2 (Filing a Complaint):** [E.g., If they don't reply, here is the exact portal or police procedure to use, like E-Daakhil or CyberCrime 1930.]
+3. **⚔️ Step 3 (Escalation):** [E.g., Moving to the Consumer Court or filing a civil recovery suit.]
+
+---
+⚖️ *Tip: Feel free to use the buttons below (`📊 Case Scorecard`, `🏛️ Courtroom Simulator`, `🚨 SOS Shield`, `⚖️ Litigation Estimator`) to run the numbers on your case based on what we just discussed!*"""
+
+        prompt = ChatPromptTemplate.from_messages([
+            SystemMessagePromptTemplate.from_template(stage_format_instruction + style_instruction),
+            HumanMessagePromptTemplate.from_template(
+                """As Advocate YAMA, analyze the situation and history, then provide your structured Stage response.
+
+CONVERSATION HISTORY:
+{history_section}
+
+CURRENT USER SITUATION / QUERY:
 {situation}
 
-RELEVANT LAWS FROM DATABASE:
+RELEVANT LAWS RETRIEVED FROM DATABASE:
 {retrieved_laws}
 
-You MUST structure your response strictly using this format:
-
-# 🏛️ ADVOCATE YAMA'S LEGAL STRATEGY & COUNSEL
-
----
-
-## 🎯 STEP 1: CASE DISCOVERY & REQUIRED DOCUMENTS
-Before we proceed to formal filing or litigation, as your legal counsel, I need to verify these crucial facts and documents with you:
-- **❓ Crucial Fact Questions:** [List 2-3 sharp, precise questions specific to this case to uncover loopholes or strengthen our stand]
-- **📑 Required Document Checklist:** [List specific documents e.g., Screenshots, Bank Statements, Registered Agreements, ID Proofs needed as electronic/physical evidence under Bharatiya Sakshya Adhiniyam (BSA 2023) / Section 63/65B]
-
----
-
-## ⚖️ STEP 2: LEGAL ANALYSIS & APPLICABLE LAWS
-- **Primary Issue:** [Clear, sharp summary of the violation/offense]
-- **Applicable Legal Provisions:**
-  - **[Exact Act & Section e.g. IT Act Sec 66C / BNS 2023 Sec 351]:** [Explain penalty and legal rights]
-  - **[Constitutional / Civil Protection]:** [e.g. Article 21 Right to Privacy / Specific Relief Act]
-
----
-
-## 🏛️ STEP 3: LANDMARK SUPREME COURT & HIGH COURT PRECEDENTS
-To make our case 100% bulletproof before authorities or courts, we will rely on these binding judicial precedents:
-1. **[Landmark Supreme Court Case Name e.g. Shreya Singhal v. Union of India / K.S. Puttaswamy v. Union of India / relevant judgment]:** [Exact legal takeaway and how it directly protects the user]
-2. **[Relevant High Court / Supreme Court Citation]:** [Brief strategic precedent supporting our stand]
-
----
-
-## 💡 STEP 4: STRATEGIC ACTION PLAN & PROCEDURE
-Here is your concrete, step-by-step roadmap to get justice immediately:
-1. **🚀 Immediate Action (Within 24 Hours):** [Exact portal link e.g., National Cyber Crime helpline `1930` or `https://cybercrime.gov.in` / Formal Legal Notice with 15-day deadline]
-2. **🛡️ Police / Official Filing Procedure:** [How to file FIR/complaint under Bharatiya Nagarik Suraksha Sanhita (BNSS 2023) Section 173 / Police procedure]
-3. **⚔️ Court & Compensation Strategy:** [How to claim damages under IT Act Section 43 / Consumer Forum / Civil Court / Bail defense if applicable]
-
----
-💡 *Tip: If you have a legal notice, contract, or screenshot, upload it using the Paperclip (📎) icon below and I will extract legal loopholes and draft your exact reply!*"""
+Advocate YAMA Response:"""
             )
         ])
 
@@ -142,6 +185,7 @@ Here is your concrete, step-by-step roadmap to get justice immediately:
         response = chain.invoke({
             "situation": situation,
             "retrieved_laws": retrieved_laws,
+            "history_section": history_text if history_text else "No prior history (First Turn)"
         })
 
         return response.content

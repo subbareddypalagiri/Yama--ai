@@ -7,11 +7,57 @@ from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 
 from app.db.database import get_db
-from app.models.schemas import AnalyzeRequest, LegalAnalysis, LawSectionResponse
+from app.models.schemas import (
+    AnalyzeRequest, LegalAnalysis, LawSectionResponse,
+    ScorecardRequest, ScorecardResponse,
+    SimulationRequest, SimulationResponse,
+    EstimatorRequest, EstimatorResponse
+)
 from app.services.retrieval_engine.rag_pipeline import RAGPipeline
+from app.services.ai_engine.intelligence_suite import IntelligenceSuiteEngine
 from app.core.constants import SAFETY_DISCLAIMER
 
 router = APIRouter(prefix="/analyze", tags=["Analysis"])
+
+# Singleton suite engine
+_suite_engine = None
+
+def get_suite_engine() -> IntelligenceSuiteEngine:
+    global _suite_engine
+    if _suite_engine is None:
+        _suite_engine = IntelligenceSuiteEngine()
+    return _suite_engine
+
+
+@router.post("/scorecard", response_model=ScorecardResponse)
+async def analyze_scorecard(request: ScorecardRequest):
+    """Generate Live Win Probability & Risk Meter."""
+    try:
+        engine = get_suite_engine()
+        return engine.generate_scorecard(request.situation)
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Scorecard analysis failed: {str(e)}")
+
+
+@router.post("/simulate", response_model=SimulationResponse)
+async def analyze_simulate(request: SimulationRequest):
+    """Generate 360° Courtroom Simulation (Counsel vs Defense vs Judge)."""
+    try:
+        engine = get_suite_engine()
+        return engine.generate_simulation(request.situation)
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Simulation failed: {str(e)}")
+
+
+@router.post("/estimator", response_model=EstimatorResponse)
+async def analyze_estimator(request: EstimatorRequest):
+    """Generate Litigation Timeline & Cost Estimator."""
+    try:
+        engine = get_suite_engine()
+        return engine.generate_estimator(request.situation)
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Estimator analysis failed: {str(e)}")
+
 
 
 @router.post("/", response_model=LegalAnalysis)

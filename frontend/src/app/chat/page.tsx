@@ -5,10 +5,16 @@ import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
 import { Scale, Loader2, AlertTriangle, BookOpen, ChevronLeft, Sparkles, Paperclip, X, FileText, Image as ImageIcon, File, ArrowUp, Copy, Check, RotateCcw, Settings2 } from 'lucide-react';
 import ReactMarkdown from 'react-markdown';
-import { sendChatMessage, uploadChatMessage, type ChatResponseStyle } from '@/lib/api';
+import { sendChatMessage, uploadChatMessage, type ChatResponseStyle, analyzeScorecard, analyzeSimulate, analyzeEstimator, type ScorecardData, type SimulationData, type EstimatorData } from '@/lib/api';
 import { useLanguage } from '@/context/LanguageContext';
 import { SettingsModal } from '@/components/chat/SettingsModal';
+import CaseScorecard from '@/components/intelligence/CaseScorecard';
+import CourtroomSimulatorModal from '@/components/intelligence/CourtroomSimulatorModal';
+import SosShieldModal from '@/components/intelligence/SosShieldModal';
+import LitigationEstimatorCard from '@/components/intelligence/LitigationEstimatorCard';
+import VoiceConsultation from '@/components/intelligence/VoiceConsultation';
 import type { ChatMessage, ChatApiResponse } from '@/types';
+
 
 interface AttachedFile {
   file: File;
@@ -326,6 +332,12 @@ function ChatPageInner() {
                   <Paperclip className="w-5 h-5" />
                 </button>
 
+                <VoiceConsultation
+                  language={language}
+                  onTranscript={(text) => setInput((prev) => (prev ? `${prev} ${text}` : text))}
+                />
+
+
                 <div className="flex-1 min-h-[44px] flex items-center">
                   <textarea
                     ref={textareaRef}
@@ -437,10 +449,70 @@ function MessageBubble({ message, isLast }: { message: ChatMessage; isLast: bool
   const isUser = message.role === 'user';
   const [copied, setCopied] = useState(false);
   
+  // Intelligence Suite states
+  const [scorecard, setScorecard] = useState<ScorecardData | null>(null);
+  const [loadingScorecard, setLoadingScorecard] = useState(false);
+  const [showScorecard, setShowScorecard] = useState(false);
+
+  const [simulation, setSimulation] = useState<SimulationData | null>(null);
+  const [loadingSimulation, setLoadingSimulation] = useState(false);
+  const [isSimulatorOpen, setIsSimulatorOpen] = useState(false);
+
+  const [estimator, setEstimator] = useState<EstimatorData | null>(null);
+  const [loadingEstimator, setLoadingEstimator] = useState(false);
+  const [isEstimatorOpen, setIsEstimatorOpen] = useState(false);
+
+  const [isSosOpen, setIsSosOpen] = useState(false);
+
   const copyToClipboard = () => {
     navigator.clipboard.writeText(message.content);
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
+  };
+
+  const handleOpenScorecard = async () => {
+    setShowScorecard(!showScorecard);
+    if (!scorecard && !loadingScorecard && !showScorecard) {
+      setLoadingScorecard(true);
+      try {
+        const data = await analyzeScorecard(message.content);
+        setScorecard(data);
+      } catch (e) {
+        console.error('Scorecard analysis failed', e);
+      } finally {
+        setLoadingScorecard(false);
+      }
+    }
+  };
+
+  const handleOpenSimulation = async () => {
+    setIsSimulatorOpen(true);
+    if (!simulation && !loadingSimulation) {
+      setLoadingSimulation(true);
+      try {
+        const data = await analyzeSimulate(message.content);
+        setSimulation(data);
+      } catch (e) {
+        console.error('Simulation failed', e);
+      } finally {
+        setLoadingSimulation(false);
+      }
+    }
+  };
+
+  const handleOpenEstimator = async () => {
+    setIsEstimatorOpen(true);
+    if (!estimator && !loadingEstimator) {
+      setLoadingEstimator(true);
+      try {
+        const data = await analyzeEstimator(message.content);
+        setEstimator(data);
+      } catch (e) {
+        console.error('Estimator failed', e);
+      } finally {
+        setLoadingEstimator(false);
+      }
+    }
   };
 
   return (
@@ -502,16 +574,86 @@ function MessageBubble({ message, isLast }: { message: ChatMessage; isLast: bool
               )}
             </div>
 
-            {/* Actions */}
+            {/* Actions & 4-in-1 Intelligence Suite Buttons */}
             {!isUser && (
-              <div className="flex items-center gap-2 mt-3 opacity-0 group-hover:opacity-100 transition-opacity">
-                <button
-                  onClick={copyToClipboard}
-                  className="flex items-center gap-1.5 px-2.5 py-1.5 text-[11px] text-white/30 hover:text-white/60 rounded-lg hover:bg-white/5 transition-all"
-                >
-                  {copied ? <Check className="w-3.5 h-3.5 text-green-400" /> : <Copy className="w-3.5 h-3.5" />}
-                  <span>{copied ? 'Copied' : 'Copy'}</span>
-                </button>
+              <div className="mt-3 space-y-3">
+                {/* Action Bar */}
+                <div className="flex flex-wrap items-center gap-2">
+                  <button
+                    onClick={copyToClipboard}
+                    className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold text-slate-300 hover:text-white rounded-xl bg-slate-800/80 border border-slate-700/80 hover:border-slate-600 transition-all shadow-sm"
+                  >
+                    {copied ? <Check className="w-3.5 h-3.5 text-emerald-400" /> : <Copy className="w-3.5 h-3.5" />}
+                    <span>{copied ? 'Copied' : 'Copy'}</span>
+                  </button>
+
+                  <button
+                    onClick={handleOpenScorecard}
+                    className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-bold text-purple-300 hover:text-white rounded-xl bg-purple-900/40 hover:bg-purple-800/60 border border-purple-500/40 transition-all shadow-sm"
+                  >
+                    <span>📊</span>
+                    <span>{showScorecard ? 'Hide Scorecard' : 'Live Win Probability'}</span>
+                  </button>
+
+                  <button
+                    onClick={handleOpenSimulation}
+                    className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-bold text-indigo-300 hover:text-white rounded-xl bg-indigo-900/40 hover:bg-indigo-800/60 border border-indigo-500/40 transition-all shadow-sm"
+                  >
+                    <span>⚔️</span>
+                    <span>360° Courtroom Simulator</span>
+                  </button>
+
+                  <button
+                    onClick={() => setIsSosOpen(true)}
+                    className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-bold text-rose-300 hover:text-white rounded-xl bg-rose-900/50 hover:bg-rose-800/70 border border-rose-500/50 transition-all shadow-sm animate-pulse"
+                  >
+                    <span>🚨</span>
+                    <span>Emergency SOS Shield</span>
+                  </button>
+
+                  <button
+                    onClick={handleOpenEstimator}
+                    className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-bold text-emerald-300 hover:text-white rounded-xl bg-emerald-900/40 hover:bg-emerald-800/60 border border-emerald-500/40 transition-all shadow-sm"
+                  >
+                    <span>⏳</span>
+                    <span>Timeline & Cost Estimator</span>
+                  </button>
+                </div>
+
+                {/* Scorecard Container */}
+                {showScorecard && (
+                  <CaseScorecard
+                    scorecard={scorecard}
+                    loading={loadingScorecard}
+                    onRefresh={() => {
+                      setScorecard(null);
+                      handleOpenScorecard();
+                    }}
+                  />
+                )}
+
+                {/* Courtroom Simulator Modal */}
+                <CourtroomSimulatorModal
+                  isOpen={isSimulatorOpen}
+                  onClose={() => setIsSimulatorOpen(false)}
+                  simulation={simulation}
+                  loading={loadingSimulation}
+                  situation={message.content}
+                />
+
+                {/* SOS Shield Modal */}
+                <SosShieldModal
+                  isOpen={isSosOpen}
+                  onClose={() => setIsSosOpen(false)}
+                />
+
+                {/* Litigation Estimator Modal */}
+                <LitigationEstimatorCard
+                  isOpen={isEstimatorOpen}
+                  onClose={() => setIsEstimatorOpen(false)}
+                  estimator={estimator}
+                  loading={loadingEstimator}
+                />
               </div>
             )}
 
@@ -534,6 +676,7 @@ function MessageBubble({ message, isLast }: { message: ChatMessage; isLast: bool
     </div>
   );
 }
+
 
 function ThinkingIndicator() {
   return (

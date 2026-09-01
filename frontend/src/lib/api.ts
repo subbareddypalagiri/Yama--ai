@@ -319,3 +319,67 @@ export async function getReports(caseUid?: string): Promise<Report[]> {
 export function getReportDownloadUrl(reportUid: string): string {
   return `${API_BASE}/reports/${reportUid}/download`;
 }
+
+// ============ INTELLIGENCE SUITE ============
+
+export interface ScorecardData {
+  win_probability: number;
+  risk_level: 'Low' | 'Medium' | 'High' | 'Critical';
+  primary_risk_factor: string;
+  evidence_booster_tips: string[];
+  applicable_bns_section: string;
+}
+
+export interface PersonaView {
+  role: string;
+  title: string;
+  arguments: string[];
+  legal_citations: string[];
+}
+
+export interface SimulationData {
+  counsel_view: PersonaView;
+  defense_view: PersonaView;
+  judge_verdict: PersonaView;
+  summary: string;
+}
+
+export interface EstimatorData {
+  case_type: string;
+  estimated_duration: string;
+  court_fee_stamp_duty: string;
+  lawyer_fee_range: string;
+  fast_track_remedy: string;
+  key_steps_count: number;
+}
+
+export async function analyzeScorecard(situation: string): Promise<ScorecardData> {
+  const res = await fetch(`${API_BASE}/analyze/scorecard`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ situation }),
+  });
+  if (!res.ok) throw new Error('Failed to load scorecard');
+  return res.json();
+}
+
+export async function analyzeSimulate(situation: string): Promise<SimulationData> {
+  const res = await fetch(`${API_BASE}/analyze/simulate`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ situation }),
+  });
+  if (!res.ok) throw new Error('Failed to load courtroom simulation');
+  return res.json();
+}
+
+export async function analyzeEstimator(situation: string): Promise<EstimatorData> {
+  const res = await fetch(`${API_BASE}/analyze/estimator`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ situation }),
+  });
+  if (!res.ok) throw new Error('Failed to load cost estimator');
+  return res.json();
+}
+

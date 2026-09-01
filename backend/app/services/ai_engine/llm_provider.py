@@ -25,45 +25,71 @@ class DirectGeminiLLM(Runnable):
         self.model = model if model else "gemini-1.5-flash"
         self.temperature = temperature
 
+    def _call(self, prompt: str, stop=None, run_manager=None, **kwargs) -> str:
+        res = self.invoke(prompt, config=kwargs)
+        return res.content if hasattr(res, "content") else str(res)
+
     def invoke(self, input, config=None, **kwargs):
-        if hasattr(input, "to_messages"):
-            messages = input.to_messages()
-        elif isinstance(input, list):
-            messages = input
+        if isinstance(input, str):
+            contents = [{"role": "user", "parts": [{"text": input}]}]
+            system_instruction = None
         else:
-            messages = []
-
-        system_instruction = None
-        contents = []
-        for msg in messages:
-            msg_type = getattr(msg, "type", "")
-            content_str = getattr(msg, "content", "") or str(msg)
-            if msg_type == "system" or "SystemMessage" in str(type(msg)):
-                system_instruction = {"parts": [{"text": content_str}]}
-            elif msg_type in ["human", "user"] or "HumanMessage" in str(type(msg)):
-                contents.append({"role": "user", "parts": [{"text": content_str}]})
-            elif msg_type in ["ai", "assistant"] or "AIMessage" in str(type(msg)):
-                contents.append({"role": "model", "parts": [{"text": content_str}]})
+            if hasattr(input, "to_messages"):
+                messages = input.to_messages()
+            elif isinstance(input, list):
+                messages = input
             else:
-                contents.append({"role": "user", "parts": [{"text": content_str}]})
+                messages = []
 
-        if not contents and hasattr(input, "to_string"):
-            contents = [{"role": "user", "parts": [{"text": input.to_string()}]}]
+            system_instruction = None
+            contents = []
+            for msg in messages:
+                msg_type = getattr(msg, "type", "")
+                content_str = getattr(msg, "content", "") or str(msg)
+                if msg_type == "system" or "SystemMessage" in str(type(msg)):
+                    system_instruction = {"parts": [{"text": content_str}]}
+                elif msg_type in ["human", "user"] or "HumanMessage" in str(type(msg)):
+                    contents.append({"role": "user", "parts": [{"text": content_str}]})
+                elif msg_type in ["ai", "assistant"] or "AIMessage" in str(type(msg)):
+                    contents.append({"role": "model", "parts": [{"text": content_str}]})
+                else:
+                    contents.append({"role": "user", "parts": [{"text": content_str}]})
+
+            if not contents and hasattr(input, "to_string"):
+                contents = [{"role": "user", "parts": [{"text": input.to_string()}]}]
+            elif not contents and input:
+                contents = [{"role": "user", "parts": [{"text": str(input)}]}]
+
+
+        gen_config = {
+            "temperature": self.temperature,
+            "maxOutputTokens": 8192
+        }
+        prompt_text_summary = str(contents)
+        if (config and config.get("response_mime_type") == "application/json") or "JSON" in prompt_text_summary or "schema" in prompt_text_summary:
+            gen_config["responseMimeType"] = "application/json"
 
         payload = {
             "contents": contents,
-            "generationConfig": {
-                "temperature": self.temperature,
-                "maxOutputTokens": 2048
-            }
+            "generationConfig": gen_config
         }
         if system_instruction:
             payload["systemInstruction"] = system_instruction
 
-        models_to_try = [self.model, "gemini-1.5-flash", "gemini-1.5-pro", "gemini-2.0-flash-exp"]
+
+        models_to_try = [
+            self.model,
+            "gemini-flash-lite-latest",
+            "gemini-2.0-flash",
+            "gemma-4-31b-it",
+            "gemini-flash-latest",
+            "gemini-2.0-flash-lite"
+        ]
+
         seen = set()
         last_err = None
-        with httpx.Client(timeout=45.0) as client:
+        with httpx.Client(timeout=14.0) as client:
+
             for m in models_to_try:
                 if m in seen:
                     continue
