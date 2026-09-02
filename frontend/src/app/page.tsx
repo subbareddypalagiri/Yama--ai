@@ -37,13 +37,6 @@ export default function Home() {
     }
   };
 
-  const suggestionChips = [
-    { icon: '🏠', label: 'Tenant deposit recovery' },
-    { icon: '🚗', label: 'False speed camera challan' },
-    { icon: '🚨', label: 'Police arrest rights' },
-    { icon: '💼', label: 'Salary unpaid dispute' },
-    { icon: '🔐', label: 'WhatsApp evidence vault' },
-  ];
 
   const superPowerCards = [
     {
@@ -209,41 +202,6 @@ export default function Home() {
               </form>
             </BorderBeam>
 
-            {/* Clean Suggested Prompt Chips - 1 Horizontal Row */}
-            <div className="mt-4 flex flex-wrap items-center justify-center gap-2">
-              <span className="text-[11px] font-mono text-neutral-500 uppercase tracking-wider pr-1">
-                Suggested:
-              </span>
-              {suggestionChips.map((chip, idx) => (
-                <button
-                  key={idx}
-                  onClick={() => {
-                    setQuery(chip.label);
-                    router.push(`/chat?q=${encodeURIComponent(chip.label)}`);
-                  }}
-                  className="inline-flex items-center gap-1.5 text-xs text-neutral-300 hover:text-amber-200 px-3 py-1.5 rounded-lg bg-white/[0.03] border border-white/[0.08] hover:border-[#f59e0b]/40 hover:bg-white/[0.06] transition-all"
-                >
-                  <span>{chip.icon}</span>
-                  <span>{chip.label}</span>
-                </button>
-              ))}
-            </div>
-          </div>
-
-          {/* Precision Verification Metrics */}
-          <div className="mt-6 flex flex-wrap items-center justify-center gap-6 text-xs text-neutral-400 font-medium">
-            <span className="flex items-center gap-2">
-              <CheckCircle2 className="w-4 h-4 text-emerald-400" />
-              BNS, BNSS &amp; BSA 2023 Compliant
-            </span>
-            <span className="flex items-center gap-2">
-              <CheckCircle2 className="w-4 h-4 text-[#d4af37]" />
-              28 State Acts &amp; 25 High Courts
-            </span>
-            <span className="flex items-center gap-2">
-              <CheckCircle2 className="w-4 h-4 text-blue-400" />
-              English &amp; తెలుగు Native Voice
-            </span>
           </div>
 
         </div>
