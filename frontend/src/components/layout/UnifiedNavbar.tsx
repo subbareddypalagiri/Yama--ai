@@ -9,6 +9,7 @@ import {
 } from 'lucide-react';
 import { SettingsModal } from '@/components/chat/SettingsModal';
 import CyberJurisdictionModal from '@/components/intelligence/CyberJurisdictionModal';
+import { DarkModeToggle } from '@/components/ui/DarkModeToggle';
 
 interface UnifiedNavbarProps {
   onLanguageChange?: (lang: string) => void;
@@ -108,6 +109,9 @@ export default function UnifiedNavbar({ onLanguageChange }: UnifiedNavbarProps) 
               <Globe className="w-3.5 h-3.5 text-[#d4af37]" />
               <span className="text-[11px] font-semibold">{currentLang}</span>
             </button>
+
+            {/* Dark / Light Mode Toggle */}
+            <DarkModeToggle />
 
             {/* Settings Button */}
             <button

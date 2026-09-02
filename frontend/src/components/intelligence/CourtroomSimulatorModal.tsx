@@ -6,17 +6,17 @@ import { SimulationData, PersonaView } from '@/lib/api';
 interface CourtroomSimulatorModalProps {
   isOpen: boolean;
   onClose: () => void;
-  simulation: SimulationData | null;
-  loading: boolean;
-  situation: string;
+  simulation?: SimulationData | null;
+  loading?: boolean;
+  situation?: string;
 }
 
 export default function CourtroomSimulatorModal({
   isOpen,
   onClose,
-  simulation,
-  loading,
-  situation,
+  simulation = null,
+  loading = false,
+  situation = '',
 }: CourtroomSimulatorModalProps) {
   const [activeTab, setActiveTab] = useState<'counsel' | 'defense' | 'judge'>('counsel');
 
