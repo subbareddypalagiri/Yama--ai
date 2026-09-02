@@ -4,6 +4,34 @@ use std::env;
 use futures_util::Stream;
 use std::pin::Pin;
 
+fn normalize_model_name(raw: &str) -> String {
+    let clean = raw.trim().to_lowercase();
+    if clean.is_empty() {
+        return "gemini-2.5-flash".to_string();
+    }
+
+    if clean.contains("flash-lite") || clean.contains("flash lite") {
+        "gemini-2.0-flash-lite".to_string()
+    } else if clean.contains("2.0") && clean.contains("flash") {
+        "gemini-2.0-flash".to_string()
+    } else if clean.contains("2.5") && clean.contains("pro") {
+        "gemini-2.5-pro".to_string()
+    } else if clean.contains("1.5") && clean.contains("pro") {
+        "gemini-1.5-pro".to_string()
+    } else if clean.contains("pro") {
+        "gemini-2.5-pro".to_string()
+    } else if clean.contains("2.5") || clean.contains("flash") {
+        "gemini-2.5-flash".to_string()
+    } else {
+        let slug = clean.replace(' ', "-");
+        if slug.starts_with("gemini-") {
+            slug
+        } else {
+            "gemini-2.5-flash".to_string()
+        }
+    }
+}
+
 pub struct GeminiClient {
     client: Client,
     default_api_key: String,
@@ -37,7 +65,7 @@ impl GeminiClient {
             }
         };
 
-        let model = match custom_model {
+        let raw_model = match custom_model {
             Some(ref m) if !m.trim().is_empty() => m.trim().to_string(),
             _ => {
                 if !self.default_model.trim().is_empty() {
@@ -47,6 +75,8 @@ impl GeminiClient {
                 }
             }
         };
+
+        let model = normalize_model_name(&raw_model);
 
         if api_key.is_empty() {
             return Err("No API key provided".to_string());
