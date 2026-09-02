@@ -8,7 +8,7 @@ import {
   AlertCircle, BookOpen, Gavel, HelpCircle, X, Plus, Loader2,
   Settings2, PhoneCall, ExternalLink, MessageSquare, ChevronRight,
   Award, FileCheck, Swords, Paperclip, Mic, MicOff, Volume2, VolumeX, ArrowLeftRight, Calculator,
-  Home, Car, Lock
+  Home, Car, Lock, ShieldAlert
 } from 'lucide-react';
 import ReactMarkdown from 'react-markdown';
 import { API_BASE, sendChatMessageStream, type ChatResponseStyle } from '@/lib/api';
