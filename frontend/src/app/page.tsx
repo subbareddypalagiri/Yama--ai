@@ -4,7 +4,7 @@ import Link from 'next/link';
 import dynamic from 'next/dynamic';
 import {
   Scale, Zap, ArrowRight, Briefcase, Search, BookOpen, FolderOpen,
-  Home as HomeIcon, Car, ShieldAlert, Lock, CheckCircle2
+  Home as HomeIcon, Car, ShieldAlert, Lock, CheckCircle2, Sparkles
 } from 'lucide-react';
 import LegalChatInput from '@/components/LegalChatInput';
 import UnifiedNavbar from '@/components/layout/UnifiedNavbar';
@@ -12,7 +12,7 @@ import { useLanguage } from '@/context/LanguageContext';
 
 const NeuralBackground = dynamic(() => import('@/components/NeuralBackground'), {
   ssr: false,
-  loading: () => <div className="absolute inset-0 bg-[#090a0f]" />,
+  loading: () => <div className="absolute inset-0 bg-[#08090d]" />,
 });
 
 export default function Home() {
@@ -88,74 +88,104 @@ export default function Home() {
   ];
 
   return (
-    <div className="min-h-screen flex flex-col bg-[#090a0f] text-white font-sans">
+    <div className="min-h-screen flex flex-col bg-[#08090d] text-white font-sans">
       {/* 100% Solid Precision Navbar */}
       <UnifiedNavbar />
 
-      {/* HERO SECTION - INTERACTIVE NEURAL NETWORK */}
-      <section className="relative flex flex-col items-center justify-center min-h-[85vh] px-6 pt-16 pb-20 overflow-hidden border-b border-[#1b1f2b]">
-        <NeuralBackground particleCount={800} connectionDistance={120} speed={0.2} />
-        
-        {/* Subtle Ambient Contrast Fade */}
-        <div className="absolute inset-0 bg-gradient-to-b from-[#090a0f]/60 via-transparent to-[#090a0f] pointer-events-none z-[1]" />
+      {/* HERO SECTION - ACETERNITY-STYLE ASYMMETRIC RICH TYPOGRAPHY */}
+      <section className="relative px-6 sm:px-10 lg:px-16 pt-16 pb-24 overflow-hidden border-b border-[#1b1f2b]">
+        {/* Interactive Neural Constellation in Background */}
+        <NeuralBackground particleCount={650} connectionDistance={110} speed={0.15} />
 
-        <div className="relative z-10 w-full max-w-4xl mx-auto text-center">
-          {/* Status Badge */}
-          <div className="inline-flex items-center gap-2.5 px-4 py-1.5 rounded-full border border-[#2a2f40] bg-[#11131b] mb-8">
-            <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
-            <span className="text-[11px] font-bold text-gray-200 tracking-wider uppercase">
-              BHARAT&apos;S SENIOR AI LEGAL STRATEGIST • 12,036+ LIVE RECORDS
+        {/* Aceternity Glowing Horizon Arc at the Bottom */}
+        <div className="absolute bottom-0 inset-x-0 h-44 bg-[radial-gradient(ellipse_90%_100%_at_50%_100%,rgba(212,175,55,0.14),transparent_70%)] pointer-events-none z-[2]" />
+        <div className="absolute bottom-0 inset-x-0 h-[1px] bg-gradient-to-r from-transparent via-[#d4af37]/45 to-transparent pointer-events-none z-[2]" />
+
+        {/* Ambient Top/Fade */}
+        <div className="absolute inset-0 bg-gradient-to-b from-[#08090d]/60 via-transparent to-[#08090d] pointer-events-none z-[1]" />
+
+        <div className="max-w-7xl mx-auto relative z-10">
+          {/* Top Aceternity-style Pill Badge */}
+          <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full border border-white/[0.1] bg-[#10121a]/90 mb-10 shadow-sm backdrop-blur-sm">
+            <span className="px-2 py-0.5 rounded-full bg-white/[0.08] text-white font-black text-[10px] tracking-wider uppercase">
+              YAMA AI
+            </span>
+            <span className="text-gray-300 text-xs font-medium pr-1">
+              Bharat&apos;s Senior AI Legal Strategist • 12,036+ Laws
             </span>
           </div>
 
-          {/* Master Headline */}
-          <h1 className="text-4xl sm:text-5xl md:text-6xl font-black tracking-tight leading-[1.08] mb-6 font-display">
-            <span className="text-white">The Intelligence of a</span>{' '}
-            <span className="text-[#f59e0b]">
-              Senior Advocate.
-            </span>
-            <br />
-            <span className="text-gray-300">The Speed of Pure AI.</span>
-          </h1>
+          {/* Asymmetric Split Layout (Left: Giant Headline | Right: Subtext & Action Button) */}
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-14 items-end mb-14">
+            
+            {/* Left Column: Gigantic, Bold, Left-Aligned Statement (8 cols) */}
+            <div className="lg:col-span-8 text-left">
+              <h1 className="text-5xl sm:text-6xl md:text-7xl lg:text-[76px] font-black tracking-tight leading-[1.03] text-white font-display">
+                The Intelligence of a{' '}
+                <span className="text-[#f59e0b]">Senior Advocate.</span>
+                <br />
+                <span className="text-white/95">The Speed of Pure AI.</span>
+              </h1>
+            </div>
 
-          <p className="text-sm sm:text-base text-gray-400 max-w-2xl mx-auto mb-10 leading-relaxed font-normal">
-            Autonomous statutory defense under the 2023 Sanhitas &amp; 28 State Acts, instant contract clause audits, court-standard notice drafting with gold seals, and Lok Adalat waivers.
-          </p>
+            {/* Right Column: Balanced Subtitle & Direct Action Button (4 cols) */}
+            <div className="lg:col-span-4 flex flex-col justify-end items-start space-y-6 text-left lg:pb-2">
+              <p className="text-sm sm:text-base text-gray-300 leading-relaxed font-normal">
+                Autonomous statutory defense under the 2023 Sanhitas &amp; 28 State Acts, instant contract clause audits, court-standard notice drafting with gold seals, and Lok Adalat waivers.
+              </p>
 
-          {/* Chat Input */}
-          <LegalChatInput />
+              {/* High-Tech Action Button (Aceternity style) */}
+              <Link
+                href="/lawyer"
+                className="inline-flex items-center gap-3 px-5 py-3 rounded-2xl bg-[#12141c] border border-[#272d3e] hover:border-[#d4af37] text-white text-sm font-bold transition-all group shadow-xl hover:shadow-[#d4af37]/10"
+              >
+                <div className="w-8 h-8 rounded-xl bg-gradient-to-br from-[#d4af37] to-[#f59e0b] flex items-center justify-center text-black font-black shadow-md group-hover:scale-105 transition-transform">
+                  <Scale className="w-4 h-4 text-black" />
+                </div>
+                <span>Consult Advocate YAMA</span>
+                <ArrowRight className="w-4 h-4 text-gray-400 group-hover:text-[#f59e0b] group-hover:translate-x-1 transition-all" />
+              </Link>
+            </div>
 
-          {/* Quick Metrics */}
-          <div className="mt-8 flex flex-wrap items-center justify-center gap-6 text-xs text-gray-400 font-medium">
-            <span className="flex items-center gap-2">
-              <CheckCircle2 className="w-4 h-4 text-emerald-400" />
-              BNS, BNSS &amp; BSA 2023 Compliant
-            </span>
-            <span className="flex items-center gap-2">
-              <CheckCircle2 className="w-4 h-4 text-[#d4af37]" />
-              28 State Acts &amp; 25 High Courts
-            </span>
-            <span className="flex items-center gap-2">
-              <CheckCircle2 className="w-4 h-4 text-blue-400" />
-              English &amp; తెలుగు Native Voice
-            </span>
           </div>
+
+          {/* Full-Width Expansive Chat Input Container */}
+          <div className="w-full max-w-4xl text-left">
+            <LegalChatInput />
+
+            {/* Quick Metrics */}
+            <div className="mt-8 flex flex-wrap items-center gap-6 text-xs text-gray-400 font-medium">
+              <span className="flex items-center gap-2">
+                <CheckCircle2 className="w-4 h-4 text-emerald-400" />
+                BNS, BNSS &amp; BSA 2023 Compliant
+              </span>
+              <span className="flex items-center gap-2">
+                <CheckCircle2 className="w-4 h-4 text-[#d4af37]" />
+                28 State Acts &amp; 25 High Courts
+              </span>
+              <span className="flex items-center gap-2">
+                <CheckCircle2 className="w-4 h-4 text-blue-400" />
+                English &amp; తెలుగు Native Voice
+              </span>
+            </div>
+          </div>
+
         </div>
       </section>
 
       {/* SUPERPOWERS ARSENAL - 100% SOLID OPAQUE CARDS */}
-      <section className="py-20 px-6 bg-[#0c0d14]">
-        <div className="max-w-6xl mx-auto">
+      <section className="py-20 px-6 sm:px-10 bg-[#0b0c12]">
+        <div className="max-w-7xl mx-auto">
           {/* Section Header */}
-          <div className="text-center mb-14">
-            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full border border-[#2c3244] bg-[#141620] text-amber-300 text-[11px] font-bold uppercase tracking-widest mb-4">
+          <div className="text-left mb-14">
+            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full border border-[#2c3244] bg-[#141620] text-amber-300 text-[11px] font-bold uppercase tracking-widest mb-3">
               <Zap className="w-3.5 h-3.5 text-[#f59e0b]" />
               <span>Court-Admissible Legal Suites</span>
             </div>
-            <h2 className="text-3xl sm:text-4xl md:text-5xl font-black text-white mb-4 tracking-tight">
+            <h2 className="text-3xl sm:text-4xl md:text-5xl font-black text-white mb-3 tracking-tight">
               Real Legal Leverage for <span className="text-[#f59e0b]">Every Indian Citizen</span>
             </h2>
-            <p className="text-gray-400 text-sm sm:text-base max-w-xl mx-auto leading-relaxed">
+            <p className="text-gray-400 text-sm sm:text-base max-w-2xl leading-relaxed">
               Engineered with exact statutory citations, court-standard templates, and mathematical evidence verification.
             </p>
           </div>
@@ -215,8 +245,8 @@ export default function Home() {
       </section>
 
       {/* SOLID FOOTER */}
-      <footer className="py-12 px-6 border-t border-[#1a1d27] bg-[#08090d]">
-        <div className="max-w-6xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-6">
+      <footer className="py-12 px-6 sm:px-10 border-t border-[#1a1d27] bg-[#07080b]">
+        <div className="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-6">
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 rounded-xl bg-[#12141c] border border-[#262a38] flex items-center justify-center">
               <Scale className="w-5 h-5 text-[#f59e0b]" />
