@@ -9,6 +9,7 @@ import {
 } from 'lucide-react';
 import { getCases, createCase, deleteCase, Case, CaseCreate } from '@/lib/api';
 import TiltCard from '@/components/ui/TiltCard';
+import UnifiedNavbar from '@/components/layout/UnifiedNavbar';
 import LanguageSelector from '@/components/LanguageSelector';
 import { useLanguage } from '@/context/LanguageContext';
 
@@ -92,31 +93,8 @@ export default function CasesPage() {
   };
 
   return (
-    <div className="min-h-screen bg-[#030304] text-white">
-      {/* Header */}
-      <header className="sticky top-0 z-50 border-b border-white/5 backdrop-blur-xl bg-[#030304]/80">
-        <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
-          <Link href="/" className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-purple-500 via-pink-500 to-orange-500 flex items-center justify-center">
-              <Scale className="w-5 h-5 text-white" />
-            </div>
-            <div>
-              <span className="font-bold text-lg text-gradient-hero">{t.hero.title}</span>
-              <span className="hidden sm:block text-[11px] text-white/40">{t.features.caseTracking}</span>
-            </div>
-          </Link>
-          
-          <nav className="flex items-center gap-4">
-            <Link href="/chat" className="px-4 py-2 text-sm text-white/50 hover:text-white transition-colors">
-              {t.nav.chat}
-            </Link>
-            <Link href="/search" className="px-4 py-2 text-sm text-white/50 hover:text-white transition-colors">
-              Search Laws
-            </Link>
-            <LanguageSelector />
-          </nav>
-        </div>
-      </header>
+    <div className="min-h-screen bg-[#070709] text-white font-sans">
+      <UnifiedNavbar />
 
       <main className="max-w-7xl mx-auto px-6 py-8">
         {/* Page Title & Actions */}

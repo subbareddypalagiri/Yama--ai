@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { Scale, BookOpen, ChevronRight, ChevronDown, Loader2, ChevronLeft } from 'lucide-react';
 import { getActs, getSectionsByAct } from '@/lib/api';
+import UnifiedNavbar from '@/components/layout/UnifiedNavbar';
 import type { LawSection } from '@/types';
 
 export default function ExplorePage() {
@@ -26,29 +27,8 @@ export default function ExplorePage() {
   };
 
   return (
-    <div className="min-h-screen bg-justice-dark text-white">
-      <header className="border-b border-white/[0.07] glass-dark sticky top-0 z-10">
-        <div className="max-w-6xl mx-auto px-4 py-3 flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <Link href="/" className="text-white/40 hover:text-white transition-colors p-1.5 rounded-lg hover:bg-white/5">
-              <ChevronLeft className="w-5 h-5" />
-            </Link>
-            <div className="flex items-center gap-2.5">
-              <div className="w-8 h-8 rounded-lg bg-gold-gradient flex items-center justify-center shadow-gold">
-                <Scale className="w-4 h-4 text-justice-dark" />
-              </div>
-              <div>
-                <h1 className="text-sm font-bold leading-none">YAMA AI</h1>
-                <p className="text-[10px] text-white/35 mt-0.5">Section Explorer</p>
-              </div>
-            </div>
-          </div>
-          <nav className="flex gap-1">
-            <Link href="/chat"   className="px-3 py-1.5 text-white/45 hover:text-white hover:bg-white/5 rounded-lg text-xs transition-colors">Chat</Link>
-            <Link href="/search" className="px-3 py-1.5 text-white/45 hover:text-white hover:bg-white/5 rounded-lg text-xs transition-colors">Search Laws</Link>
-          </nav>
-        </div>
-      </header>
+    <div className="min-h-screen bg-[#070709] text-white">
+      <UnifiedNavbar />
 
       <div className="max-w-6xl mx-auto px-4 py-10">
         <h2 className="text-2xl font-bold text-white mb-1">Explore Indian Acts</h2>

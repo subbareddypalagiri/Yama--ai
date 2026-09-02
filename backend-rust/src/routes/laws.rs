@@ -518,3 +518,66 @@ pub async fn get_categories_handler(
     }
     Json(categories)
 }
+
+// 7. Get All Sections for an Act (For /explore)
+pub async fn get_sections_by_act_handler(
+    State(state): State<Arc<AppState>>,
+    axum::extract::Path(act_name): axum::extract::Path<String>,
+) -> impl IntoResponse {
+    let mut sections: Vec<LawSectionDTO> = Vec::new();
+    let conn_guard = state.legal_db.get_conn().await;
+    if let Some(conn) = conn_guard.as_ref() {
+        let query = "SELECT id, act_name, section_number, title, description, category, punishment, old_law_reference, keywords \
+                     FROM central_acts WHERE LOWER(act_name) = LOWER(?1) \
+                     ORDER BY CAST(section_number AS INTEGER) ASC, section_number ASC";
+        if let Ok(mut stmt) = conn.prepare(query) {
+            let rows = stmt.query_map([&act_name], |row| {
+                Ok(LawSectionDTO {
+                    id: row.get(0)?,
+                    act_name: row.get(1)?,
+                    section_number: row.get(2)?,
+                    title: row.get(3)?,
+                    description: row.get(4)?,
+                    category: row.get(5)?,
+                    punishment: row.get(6)?,
+                    old_law_reference: row.get(7)?,
+                    keywords: row.get(8)?,
+                })
+            });
+            if let Ok(iter) = rows {
+                for item in iter.flatten() { sections.push(item); }
+            }
+        }
+    }
+    Json(sections)
+}
+
+// 8. Get Single Law Section by ID
+pub async fn get_law_by_id_handler(
+    State(state): State<Arc<AppState>>,
+    axum::extract::Path(id): axum::extract::Path<i64>,
+) -> impl IntoResponse {
+    let conn_guard = state.legal_db.get_conn().await;
+    if let Some(conn) = conn_guard.as_ref() {
+        let query = "SELECT id, act_name, section_number, title, description, category, punishment, old_law_reference, keywords \
+                     FROM central_acts WHERE id = ?1";
+        if let Ok(mut stmt) = conn.prepare(query) {
+            if let Ok(section) = stmt.query_row([id], |row| {
+                Ok(LawSectionDTO {
+                    id: row.get(0)?,
+                    act_name: row.get(1)?,
+                    section_number: row.get(2)?,
+                    title: row.get(3)?,
+                    description: row.get(4)?,
+                    category: row.get(5)?,
+                    punishment: row.get(6)?,
+                    old_law_reference: row.get(7)?,
+                    keywords: row.get(8)?,
+                })
+            }) {
+                return Json(json!(section)).into_response();
+            }
+        }
+    }
+    (axum::http::StatusCode::NOT_FOUND, Json(json!({"error": "Law section not found"}))).into_response()
+}

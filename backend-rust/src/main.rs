@@ -45,6 +45,12 @@ async fn main() {
         .route("/api/v1/laws/stats", axum::routing::get(routes::laws::get_enterprise_stats_handler))
         .route("/api/v1/laws/acts", axum::routing::get(routes::laws::get_acts_handler))
         .route("/api/v1/laws/categories", axum::routing::get(routes::laws::get_categories_handler))
+        .route("/api/v1/laws/sections/:act_name", axum::routing::get(routes::laws::get_sections_by_act_handler))
+        .route("/api/v1/laws/:id", axum::routing::get(routes::laws::get_law_by_id_handler))
+        // Cases (Case Diary & Client Case Manager)
+        .route("/api/v1/cases", axum::routing::get(routes::cases::list_cases_handler).post(routes::cases::create_case_handler))
+        .route("/api/v1/cases/:case_uid", axum::routing::get(routes::cases::get_case_handler).patch(routes::cases::update_case_handler).delete(routes::cases::delete_case_handler))
+        .route("/api/v1/cases/:case_uid/events", axum::routing::get(routes::cases::get_case_events_handler).post(routes::cases::create_case_event_handler))
         .route("/api/v1/health", axum::routing::get(|| async { axum::Json(serde_json::json!({ "status": "ok", "backend": "rust-axum" })) }))
         .layer(cors)
         .with_state(state);
