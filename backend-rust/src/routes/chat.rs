@@ -164,8 +164,37 @@ Structure your response strictly as:
                 .unwrap()
         },
         Err(e) => {
-            use axum::http::StatusCode;
-            (StatusCode::INTERNAL_SERVER_ERROR, Json(json!({"error": e}))).into_response()
+            use axum::body::Body;
+            use axum::response::Response;
+            
+            let guidance_text = if e.contains("leaked") || e.contains("API key") || e.contains("403") || e.contains("PERMISSION_DENIED") {
+                "⚠️ **Google Gemini API Key Alert:**\nThe system API key was reported as leaked/revoked by Google.\n\n👉 **To activate live AI responses instantly:**\n1. Click the **⚙️ Settings icon** in the top-right header.\n2. Paste your free **Gemini API Key** (from [Google AI Studio](https://aistudio.google.com/app/apikey)).\n3. Click Save — it stores securely in your browser and starts streaming responses immediately!\n\n*(In the meantime, you can explore all 12,036+ verified laws, High Courts, and Supreme Court rulings in the **Laws** tab above!)*".to_string()
+            } else {
+                format!("⚠️ **AI Service Notice:** {}\n\nPlease check your internet connection or update your Gemini API key in Settings (⚙️).", e)
+            };
+
+            let sse_chunk = format!("data: {}\n\n", json!({
+                "candidates": [{
+                    "content": {
+                        "parts": [{ "text": guidance_text }]
+                    }
+                }]
+            }));
+            let done_chunk = "data: [DONE]\n\n".to_string();
+
+            let stream = futures_util::stream::iter(vec![
+                Ok::<_, Infallible>(bytes::Bytes::from(sse_chunk)),
+                Ok::<_, Infallible>(bytes::Bytes::from(done_chunk)),
+            ]);
+
+            let body = Body::from_stream(stream);
+
+            Response::builder()
+                .header("Content-Type", "text/event-stream")
+                .header("Cache-Control", "no-cache")
+                .header("Connection", "keep-alive")
+                .body(body)
+                .unwrap()
         }
     }
 }
