@@ -1,6 +1,7 @@
 'use client';
 
 import Link from 'next/link';
+import dynamic from 'next/dynamic';
 import {
   Scale, Zap, ArrowRight, Briefcase, Search, BookOpen, FolderOpen,
   Home as HomeIcon, Car, ShieldAlert, Lock, CheckCircle2
@@ -8,6 +9,11 @@ import {
 import LegalChatInput from '@/components/LegalChatInput';
 import UnifiedNavbar from '@/components/layout/UnifiedNavbar';
 import { useLanguage } from '@/context/LanguageContext';
+
+const NeuralBackground = dynamic(() => import('@/components/NeuralBackground'), {
+  ssr: false,
+  loading: () => <div className="absolute inset-0 bg-[#090a0f]" />,
+});
 
 export default function Home() {
   const { t } = useLanguage();
@@ -86,9 +92,14 @@ export default function Home() {
       {/* 100% Solid Precision Navbar */}
       <UnifiedNavbar />
 
-      {/* HERO SECTION - SOLID MINIMALIST EXECUTIVE AESTHETIC */}
-      <section className="relative flex flex-col items-center justify-center px-6 pt-16 pb-20 border-b border-[#1b1f2b]">
-        <div className="w-full max-w-4xl mx-auto text-center">
+      {/* HERO SECTION - INTERACTIVE NEURAL NETWORK */}
+      <section className="relative flex flex-col items-center justify-center min-h-[85vh] px-6 pt-16 pb-20 overflow-hidden border-b border-[#1b1f2b]">
+        <NeuralBackground particleCount={800} connectionDistance={120} speed={0.2} />
+        
+        {/* Subtle Ambient Contrast Fade */}
+        <div className="absolute inset-0 bg-gradient-to-b from-[#090a0f]/60 via-transparent to-[#090a0f] pointer-events-none z-[1]" />
+
+        <div className="relative z-10 w-full max-w-4xl mx-auto text-center">
           {/* Status Badge */}
           <div className="inline-flex items-center gap-2.5 px-4 py-1.5 rounded-full border border-[#2a2f40] bg-[#11131b] mb-8">
             <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
