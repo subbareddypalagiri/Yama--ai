@@ -7,7 +7,8 @@ import {
   FileText, Shield, Zap, ChevronDown, Copy, Check, RotateCcw,
   AlertCircle, BookOpen, Gavel, HelpCircle, X, Plus, Loader2,
   Settings2, PhoneCall, ExternalLink, MessageSquare, ChevronRight,
-  Award, FileCheck, Swords, Paperclip, Mic, MicOff, Volume2, VolumeX, ArrowLeftRight, Calculator
+  Award, FileCheck, Swords, Paperclip, Mic, MicOff, Volume2, VolumeX, ArrowLeftRight, Calculator,
+  Home, Car, Lock
 } from 'lucide-react';
 import ReactMarkdown from 'react-markdown';
 import { API_BASE, sendChatMessageStream, type ChatResponseStyle } from '@/lib/api';
@@ -17,6 +18,10 @@ import BsaEvidenceCertificateModal from '@/components/intelligence/BsaEvidenceCe
 import CourtroomSimulatorModal from '@/components/intelligence/CourtroomSimulatorModal';
 import DualLawConverterModal from '@/components/intelligence/DualLawConverterModal';
 import CourtFeeCalculatorModal from '@/components/intelligence/CourtFeeCalculatorModal';
+import TenantDepositRecoveryModal from '@/components/intelligence/TenantDepositRecoveryModal';
+import TrafficChallanWaiverModal from '@/components/intelligence/TrafficChallanWaiverModal';
+import PoliceSosShieldModal from '@/components/intelligence/PoliceSosShieldModal';
+import EvidenceVaultModal from '@/components/intelligence/EvidenceVaultModal';
 
 // ─── Types ───────────────────────────────────────────────────────────────────
 interface Message {
@@ -258,6 +263,10 @@ function LawyerChat({ profile, onReset }: { profile: ClientProfile; onReset: () 
   const [isSimulatorOpen, setIsSimulatorOpen] = useState(false);
   const [isDualLawOpen, setIsDualLawOpen] = useState(false);
   const [isCourtFeeOpen, setIsCourtFeeOpen] = useState(false);
+  const [isTenantDepositOpen, setIsTenantDepositOpen] = useState(false);
+  const [isChallanWaiverOpen, setIsChallanWaiverOpen] = useState(false);
+  const [isPoliceSosOpen, setIsPoliceSosOpen] = useState(false);
+  const [isEvidenceVaultOpen, setIsEvidenceVaultOpen] = useState(false);
   const [attachedFile, setAttachedFile] = useState<{ file: File; name: string; size: string; content?: string } | null>(null);
   const [isListening, setIsListening] = useState(false);
   const [speakingMsgId, setSpeakingMsgId] = useState<string | null>(null);
@@ -583,6 +592,38 @@ function LawyerChat({ profile, onReset }: { profile: ClientProfile; onReset: () 
             <Calculator className="w-3.5 h-3.5 text-amber-400" />
             <span>Court Fees Calculator</span>
           </button>
+
+          <button
+            onClick={() => setIsTenantDepositOpen(true)}
+            className="flex items-center gap-1.5 px-3 py-1 rounded-xl bg-emerald-500/15 border border-emerald-500/30 text-emerald-200 hover:bg-emerald-500/25 transition-all text-xs font-semibold shadow-sm"
+          >
+            <Home className="w-3.5 h-3.5 text-emerald-400" />
+            <span>Tenant Deposit Notice</span>
+          </button>
+
+          <button
+            onClick={() => setIsChallanWaiverOpen(true)}
+            className="flex items-center gap-1.5 px-3 py-1 rounded-xl bg-amber-500/15 border border-amber-500/30 text-amber-200 hover:bg-amber-500/25 transition-all text-xs font-semibold shadow-sm"
+          >
+            <Car className="w-3.5 h-3.5 text-amber-400" />
+            <span>Challan Lok Adalat Waiver</span>
+          </button>
+
+          <button
+            onClick={() => setIsPoliceSosOpen(true)}
+            className="flex items-center gap-1.5 px-3 py-1 rounded-xl bg-red-500/15 border border-red-500/30 text-red-200 hover:bg-red-500/25 transition-all text-xs font-semibold shadow-sm animate-pulse"
+          >
+            <ShieldAlert className="w-3.5 h-3.5 text-red-400" />
+            <span>1-Tap Police SOS</span>
+          </button>
+
+          <button
+            onClick={() => setIsEvidenceVaultOpen(true)}
+            className="flex items-center gap-1.5 px-3 py-1 rounded-xl bg-cyan-500/15 border border-cyan-500/30 text-cyan-200 hover:bg-cyan-500/25 transition-all text-xs font-semibold shadow-sm"
+          >
+            <Lock className="w-3.5 h-3.5 text-cyan-400" />
+            <span>SHA-256 Vault</span>
+          </button>
         </div>
 
         <span className="text-[10px] text-white/30 hidden md:inline font-mono">
@@ -879,6 +920,32 @@ function LawyerChat({ profile, onReset }: { profile: ClientProfile; onReset: () 
       <CourtFeeCalculatorModal
         isOpen={isCourtFeeOpen}
         onClose={() => setIsCourtFeeOpen(false)}
+        defaultState={profile.state}
+      />
+
+      <TenantDepositRecoveryModal
+        isOpen={isTenantDepositOpen}
+        onClose={() => setIsTenantDepositOpen(false)}
+        defaultState={profile.state}
+        defaultClientName={profile.name}
+      />
+
+      <TrafficChallanWaiverModal
+        isOpen={isChallanWaiverOpen}
+        onClose={() => setIsChallanWaiverOpen(false)}
+        defaultState={profile.state}
+      />
+
+      <PoliceSosShieldModal
+        isOpen={isPoliceSosOpen}
+        onClose={() => setIsPoliceSosOpen(false)}
+        defaultState={profile.state}
+      />
+
+      <EvidenceVaultModal
+        isOpen={isEvidenceVaultOpen}
+        onClose={() => setIsEvidenceVaultOpen(false)}
+        defaultClientName={profile.name}
         defaultState={profile.state}
       />
 
