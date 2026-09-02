@@ -89,6 +89,32 @@ function ChatPageInner() {
     localStorage.setItem('yama_ai_settings', JSON.stringify({ apiKey, model }));
   };
 
+  // Load saved chat messages on mount
+  useEffect(() => {
+    try {
+      const saved = localStorage.getItem('yama_chat_messages');
+      if (saved) {
+        const parsed = JSON.parse(saved);
+        if (Array.isArray(parsed) && parsed.length > 0) {
+          setMessages(parsed);
+        }
+      }
+    } catch (e) {
+      console.error('Failed to parse chat messages', e);
+    }
+  }, []);
+
+  // Persist messages whenever messages state updates
+  useEffect(() => {
+    if (messages.length > 0) {
+      try {
+        localStorage.setItem('yama_chat_messages', JSON.stringify(messages));
+      } catch (e) {
+        console.error('Failed to save chat messages', e);
+      }
+    }
+  }, [messages]);
+
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages]);
@@ -210,6 +236,7 @@ function ChatPageInner() {
   };
 
   const clearChat = () => {
+    localStorage.removeItem('yama_chat_messages');
     setMessages([]);
     setSessionId(undefined);
     setError(null);

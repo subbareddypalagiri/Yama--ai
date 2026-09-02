@@ -274,8 +274,25 @@ function LawyerChat({ profile, onReset }: { profile: ClientProfile; onReset: () 
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
 
-  // Welcome message on mount
+  // Load saved chat history on mount or fallback to welcome message
   useEffect(() => {
+    try {
+      const saved = localStorage.getItem('yama_lawyer_chat_history');
+      if (saved) {
+        const parsed = JSON.parse(saved);
+        if (Array.isArray(parsed) && parsed.length > 0) {
+          const restored = parsed.map((m: any) => ({
+            ...m,
+            timestamp: new Date(m.timestamp),
+          }));
+          setMessages(restored);
+          return;
+        }
+      }
+    } catch (err) {
+      console.error('Failed to load chat history:', err);
+    }
+
     const welcome: Message = {
       id: 'welcome',
       role: 'lawyer',
@@ -285,6 +302,31 @@ function LawyerChat({ profile, onReset }: { profile: ClientProfile; onReset: () 
     };
     setMessages([welcome]);
   }, []);
+
+  // Persist messages whenever messages state updates
+  useEffect(() => {
+    if (messages.length > 0) {
+      try {
+        localStorage.setItem('yama_lawyer_chat_history', JSON.stringify(messages));
+      } catch (err) {
+        console.error('Failed to save chat history:', err);
+      }
+    }
+  }, [messages]);
+
+  const handleNewConsultation = () => {
+    if (confirm('Start a fresh consultation with Advocate YAMA? This will clear the active chat history.')) {
+      localStorage.removeItem('yama_lawyer_chat_history');
+      const welcome: Message = {
+        id: 'welcome',
+        role: 'lawyer',
+        content: `Namaste ${profile.name} 🙏 I am **Advocate YAMA**, your personal AI legal strategist.\n\nI have locked your jurisdiction to **${profile.state}** and your primary concern to **${profile.concern}**.\n\nTell me your new legal matter — I am ready to advise you.`,
+        timestamp: new Date(),
+        mode: 'quick',
+      };
+      setMessages([welcome]);
+    }
+  };
 
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -523,6 +565,16 @@ function LawyerChat({ profile, onReset }: { profile: ClientProfile; onReset: () 
             title="Configure Gemini API Key"
           >
             <Settings2 className="w-4 h-4" />
+          </button>
+
+          {/* New Case / Reset Chat Button */}
+          <button
+            onClick={handleNewConsultation}
+            className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-violet-500/15 border border-violet-500/30 text-violet-300 hover:bg-violet-500/25 text-xs font-semibold transition-all shadow-sm"
+            title="Start Fresh Consultation with Advocate YAMA"
+          >
+            <Plus className="w-3.5 h-3.5" />
+            <span className="hidden md:inline">New Case</span>
           </button>
 
           {/* Profile Details Toggle */}
@@ -978,6 +1030,7 @@ export default function LawyerPage() {
   const handleReset = () => {
     setProfile(null);
     localStorage.removeItem('yama_lawyer_profile');
+    localStorage.removeItem('yama_lawyer_chat_history');
   };
 
   if (!profile) {
