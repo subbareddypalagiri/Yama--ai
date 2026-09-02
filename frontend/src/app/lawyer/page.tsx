@@ -6,7 +6,8 @@ import {
   Scale, Briefcase, ArrowLeft, Send, Sparkles, User, MapPin,
   FileText, Shield, Zap, ChevronDown, Copy, Check, RotateCcw,
   AlertCircle, BookOpen, Gavel, HelpCircle, X, Plus, Loader2,
-  Settings2, PhoneCall, ExternalLink, MessageSquare, ChevronRight
+  Settings2, PhoneCall, ExternalLink, MessageSquare, ChevronRight,
+  Award, FileCheck, Swords
 } from 'lucide-react';
 import ReactMarkdown from 'react-markdown';
 import { API_BASE, sendChatMessageStream, type ChatResponseStyle } from '@/lib/api';
