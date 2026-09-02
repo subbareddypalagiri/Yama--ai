@@ -90,6 +90,10 @@ impl LegalDatabase {
         }
     }
 
+    pub async fn get_conn(&self) -> tokio::sync::MutexGuard<'_, Option<Connection>> {
+        self.conn.lock().await
+    }
+
     pub async fn unified_search(
         &self,
         query: &str,

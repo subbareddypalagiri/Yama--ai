@@ -38,6 +38,10 @@ async fn main() {
     let app = Router::new()
         .route("/api/v1/chat/", post(chat_handler))
         .route("/api/v1/lawyer/", post(chat_handler))
+        .route("/api/v1/laws/search", axum::routing::get(routes::laws::search_laws_handler))
+        .route("/api/v1/laws/acts", axum::routing::get(routes::laws::get_acts_handler))
+        .route("/api/v1/laws/categories", axum::routing::get(routes::laws::get_categories_handler))
+        .route("/api/v1/health", axum::routing::get(|| async { axum::Json(serde_json::json!({ "status": "ok", "backend": "rust-axum" })) }))
         .layer(cors)
         .with_state(state);
 
