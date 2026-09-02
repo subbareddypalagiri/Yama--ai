@@ -137,31 +137,32 @@ export async function uploadChatMessage(
   }
 }
 
-export async function searchLaws(query: string, category?: string, limit = 20) {
-  const params = new URLSearchParams({ q: query, limit: String(limit) });
+export async function searchLaws(query: string, category?: string, actName?: string, page = 1, limit = 40) {
+  const params = new URLSearchParams({ q: query, page: String(page), limit: String(limit) });
   if (category) params.set('category', category);
+  if (actName) params.set('act_name', actName);
   const res = await fetch(`${API_BASE}/laws/search?${params}`);
   if (!res.ok) throw new Error(`Search failed: ${res.statusText}`);
   return res.json();
 }
 
-export async function searchStateLaws(query: string, stateCode?: string, limit = 20) {
-  const params = new URLSearchParams({ q: query, limit: String(limit) });
+export async function searchStateLaws(query: string, stateCode?: string, page = 1, limit = 40) {
+  const params = new URLSearchParams({ q: query, page: String(page), limit: String(limit) });
   if (stateCode) params.set('state_code', stateCode);
   const res = await fetch(`${API_BASE}/laws/state?${params}`);
   if (!res.ok) throw new Error(`State search failed: ${res.statusText}`);
   return res.json();
 }
 
-export async function searchSupremeCourt(query: string, limit = 20) {
-  const params = new URLSearchParams({ q: query, limit: String(limit) });
+export async function searchSupremeCourt(query: string, page = 1, limit = 40) {
+  const params = new URLSearchParams({ q: query, page: String(page), limit: String(limit) });
   const res = await fetch(`${API_BASE}/laws/supreme-court?${params}`);
   if (!res.ok) throw new Error(`Supreme Court search failed: ${res.statusText}`);
   return res.json();
 }
 
-export async function searchHighCourts(query: string, courtCode?: string, stateCode?: string, limit = 20) {
-  const params = new URLSearchParams({ q: query, limit: String(limit) });
+export async function searchHighCourts(query: string, courtCode?: string, stateCode?: string, page = 1, limit = 40) {
+  const params = new URLSearchParams({ q: query, page: String(page), limit: String(limit) });
   if (courtCode) params.set('court_code', courtCode);
   if (stateCode) params.set('state_code', stateCode);
   const res = await fetch(`${API_BASE}/laws/high-courts?${params}`);

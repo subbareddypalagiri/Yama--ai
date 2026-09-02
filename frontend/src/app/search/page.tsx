@@ -4,10 +4,11 @@ import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { 
   Scale, Search, Loader2, ChevronLeft, AlertCircle, X, ArrowRight, FileText,
-  Shield, Lock, Car, Users, ShoppingBag, Briefcase, Gavel, FileCheck, Landmark, Building2, BookOpen
+  Shield, Lock, Car, Users, ShoppingBag, Briefcase, Gavel, FileCheck, Landmark, Building2, BookOpen,
+  ChevronRight, ChevronsLeft, ChevronsRight, Layers
 } from 'lucide-react';
 import { 
-  searchLaws, searchStateLaws, searchSupremeCourt, searchHighCourts, getLegalDatabaseStats 
+  searchLaws, searchStateLaws, searchSupremeCourt, searchHighCourts, getLegalDatabaseStats, getActs 
 } from '@/lib/api';
 import type { LawSection } from '@/types';
 import TiltCard from '@/components/ui/TiltCard';
@@ -55,44 +56,68 @@ const CATEGORIES = [
   { slug: 'cyber', label: 'Cyber & IT Law' },
   { slug: 'motor_vehicle', label: 'Motor Vehicle Law' },
   { slug: 'civil', label: 'Civil Law' },
-  { slug: 'family', label: 'Family Law' },
+  { slug: 'property', label: 'Property & Real Estate' },
+  { slug: 'corporate', label: 'Corporate & Insolvency' },
+  { slug: 'financial', label: 'Financial & Cheques' },
+  { slug: 'evidence', label: 'Evidence & Forensic' },
 ];
 
 export default function SearchPage() {
   const [activeTab, setActiveTab] = useState<'central' | 'state' | 'sc' | 'hc'>('central');
   const [query, setQuery] = useState('');
   const [category, setCategory] = useState('');
+  const [selectedAct, setSelectedAct] = useState('');
   const [selectedState, setSelectedState] = useState('');
   const [selectedCourt, setSelectedCourt] = useState('');
   
+  const [page, setPage] = useState(1);
+  const [pageSize, setPageSize] = useState(40);
+  const [totalCount, setTotalCount] = useState(0);
+  const [totalPages, setTotalPages] = useState(1);
+
   const [centralResults, setCentralResults] = useState<any[]>([]);
   const [stateResults, setStateResults] = useState<any[]>([]);
   const [scResults, setScResults] = useState<any[]>([]);
   const [hcResults, setHcResults] = useState<any[]>([]);
   
+  const [actsList, setActsList] = useState<any[]>([]);
   const [stats, setStats] = useState<any>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [selectedItem, setSelectedItem] = useState<any | null>(null);
 
   useEffect(() => {
     getLegalDatabaseStats().then(setStats).catch(() => {});
+    getActs().then(setActsList).catch(() => {});
   }, []);
+
+  // Reset page when switching tabs or filters
+  useEffect(() => {
+    setPage(1);
+  }, [activeTab, category, selectedAct, selectedState, selectedCourt]);
 
   const executeSearch = async () => {
     setIsLoading(true);
     try {
       if (activeTab === 'central') {
-        const data = await searchLaws(query, category || undefined, 30);
+        const data = await searchLaws(query, category || undefined, selectedAct || undefined, page, pageSize);
         setCentralResults(data.results || []);
+        setTotalCount(data.total || 0);
+        setTotalPages(data.total_pages || 1);
       } else if (activeTab === 'state') {
-        const data = await searchStateLaws(query, selectedState || undefined, 30);
+        const data = await searchStateLaws(query, selectedState || undefined, page, pageSize);
         setStateResults(data.results || []);
+        setTotalCount(data.total || 0);
+        setTotalPages(data.total_pages || 1);
       } else if (activeTab === 'sc') {
-        const data = await searchSupremeCourt(query, 30);
+        const data = await searchSupremeCourt(query, page, pageSize);
         setScResults(data.results || []);
+        setTotalCount(data.total || 0);
+        setTotalPages(data.total_pages || 1);
       } else if (activeTab === 'hc') {
-        const data = await searchHighCourts(query, selectedCourt || undefined, selectedState || undefined, 30);
+        const data = await searchHighCourts(query, selectedCourt || undefined, selectedState || undefined, page, pageSize);
         setHcResults(data.results || []);
+        setTotalCount(data.total || 0);
+        setTotalPages(data.total_pages || 1);
       }
     } catch (err) {
       console.error(err);
@@ -103,10 +128,11 @@ export default function SearchPage() {
 
   useEffect(() => {
     executeSearch();
-  }, [activeTab, category, selectedState, selectedCourt]);
+  }, [activeTab, category, selectedAct, selectedState, selectedCourt, page, pageSize]);
 
   const handleSearchSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    setPage(1);
     executeSearch();
   };
 
@@ -144,13 +170,15 @@ export default function SearchPage() {
               <span>National Law &amp; Court Precedents Repository</span>
               <span className="text-[11px] px-2 py-0.5 rounded-full bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 font-normal">Live Zero-Latency</span>
             </h2>
-            <p className="text-white/45 text-xs mt-1">Search through verified Central Acts, 28 State Enactments, Supreme Court, and all 25 State High Courts.</p>
+            <p className="text-white/45 text-xs mt-1">
+              Showing <strong>{totalCount.toLocaleString()}</strong> verified records across Central Acts, 28 State Enactments, Supreme Court, and 25 High Courts.
+            </p>
           </div>
 
           {stats && (
             <div className="flex items-center gap-2 bg-white/[0.03] border border-white/[0.08] p-2 rounded-xl text-[11px]">
               <div className="px-2.5 py-1 text-center border-r border-white/[0.08]">
-                <span className="text-gold-400 font-bold block">{stats.central_acts_count}</span>
+                <span className="text-gold-400 font-bold block">{stats.central_acts_count.toLocaleString()}</span>
                 <span className="text-white/40 text-[9px]">Central Acts</span>
               </div>
               <div className="px-2.5 py-1 text-center border-r border-white/[0.08]">
@@ -192,67 +220,102 @@ export default function SearchPage() {
         </div>
 
         {/* Search Bar & Dynamic Tier Filters */}
-        <form onSubmit={handleSearchSubmit} className="flex flex-col md:flex-row gap-2.5 mb-8">
-          <div className="relative flex-1">
-            <Search className="w-4 h-4 text-white/30 absolute left-3.5 top-1/2 -translate-y-1/2" />
-            <input
-              type="text"
-              value={query}
-              onChange={(e) => setQuery(e.target.value)}
-              placeholder={
-                activeTab === 'central' ? 'Search Central Acts (e.g., theft, 318, 420, bail, salary, FIR)...' :
-                activeTab === 'state' ? 'Search State Acts (e.g., tenant eviction, land grabbing, dharani)...' :
-                activeTab === 'sc' ? 'Search Supreme Court Rulings (e.g., mandatory FIR, bail guidelines, privacy)...' :
-                'Search 25 High Courts (e.g., demolition, bank account freeze, tech termination)...'
-              }
-              className="w-full pl-10 pr-4 py-2.5 rounded-xl bg-white/[0.04] border border-white/[0.1] text-sm text-white placeholder-white/25 focus:outline-none focus:border-gold-500/50 transition-colors"
-            />
+        <form onSubmit={handleSearchSubmit} className="flex flex-col gap-2.5 mb-6">
+          <div className="flex flex-col md:flex-row gap-2.5">
+            <div className="relative flex-1">
+              <Search className="w-4 h-4 text-white/30 absolute left-3.5 top-1/2 -translate-y-1/2" />
+              <input
+                type="text"
+                value={query}
+                onChange={(e) => setQuery(e.target.value)}
+                placeholder={
+                  activeTab === 'central' ? 'Search by section (e.g., 318, 420, 138, 100) or topic (theft, bail, salary, FIR)...' :
+                  activeTab === 'state' ? 'Search State Acts (e.g., tenant eviction, land grabbing, dharani)...' :
+                  activeTab === 'sc' ? 'Search Supreme Court Rulings (e.g., mandatory FIR, bail guidelines, privacy)...' :
+                  'Search 25 High Courts (e.g., demolition, bank account freeze, tech termination)...'
+                }
+                className="w-full pl-10 pr-4 py-2.5 rounded-xl bg-white/[0.04] border border-white/[0.1] text-sm text-white placeholder-white/25 focus:outline-none focus:border-gold-500/50 transition-colors"
+              />
+            </div>
+
+            {activeTab === 'central' && actsList.length > 0 && (
+              <select
+                value={selectedAct}
+                onChange={(e) => setSelectedAct(e.target.value)}
+                className="px-3.5 py-2.5 rounded-xl bg-white/[0.04] border border-white/[0.1] text-xs text-white/80 focus:outline-none focus:border-gold-500/50 transition-colors max-w-xs"
+              >
+                <option value="" className="bg-justice-dark text-white">All Acts ({actsList.length} Codes)</option>
+                {actsList.map((a) => (
+                  <option key={a.act_name} value={a.act_name} className="bg-justice-dark text-white">
+                    {a.act_name} ({a.section_count} Secs)
+                  </option>
+                ))}
+              </select>
+            )}
+
+            {activeTab === 'central' && (
+              <select
+                value={category}
+                onChange={(e) => setCategory(e.target.value)}
+                className="px-3.5 py-2.5 rounded-xl bg-white/[0.04] border border-white/[0.1] text-xs text-white/80 focus:outline-none focus:border-gold-500/50 transition-colors"
+              >
+                {CATEGORIES.map((c) => (
+                  <option key={c.slug} value={c.slug} className="bg-justice-dark text-white">{c.label}</option>
+                ))}
+              </select>
+            )}
+
+            {activeTab === 'state' && (
+              <select
+                value={selectedState}
+                onChange={(e) => setSelectedState(e.target.value)}
+                className="px-3.5 py-2.5 rounded-xl bg-white/[0.04] border border-white/[0.1] text-xs text-white/80 focus:outline-none focus:border-gold-500/50 transition-colors"
+              >
+                {STATES.map((s) => (
+                  <option key={s.code} value={s.code} className="bg-justice-dark text-white">{s.name}</option>
+                ))}
+              </select>
+            )}
+
+            {activeTab === 'hc' && (
+              <select
+                value={selectedCourt}
+                onChange={(e) => setSelectedCourt(e.target.value)}
+                className="px-3.5 py-2.5 rounded-xl bg-white/[0.04] border border-white/[0.1] text-xs text-white/80 focus:outline-none focus:border-gold-500/50 transition-colors"
+              >
+                {HIGH_COURTS.map((h) => (
+                  <option key={h.code} value={h.code} className="bg-justice-dark text-white">{h.name}</option>
+                ))}
+              </select>
+            )}
+
+            <button
+              type="submit"
+              className="px-6 py-2.5 rounded-xl bg-gold-gradient text-justice-dark font-bold text-xs hover:brightness-110 transition-all flex items-center justify-center gap-1.5 shadow-gold"
+            >
+              {isLoading ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Search className="w-3.5 h-3.5" />}
+              <span>Search</span>
+            </button>
           </div>
-
-          {activeTab === 'central' && (
-            <select
-              value={category}
-              onChange={(e) => setCategory(e.target.value)}
-              className="px-3.5 py-2.5 rounded-xl bg-white/[0.04] border border-white/[0.1] text-xs text-white/80 focus:outline-none focus:border-gold-500/50 transition-colors"
-            >
-              {CATEGORIES.map((c) => (
-                <option key={c.slug} value={c.slug} className="bg-justice-dark text-white">{c.label}</option>
-              ))}
-            </select>
-          )}
-
-          {activeTab === 'state' && (
-            <select
-              value={selectedState}
-              onChange={(e) => setSelectedState(e.target.value)}
-              className="px-3.5 py-2.5 rounded-xl bg-white/[0.04] border border-white/[0.1] text-xs text-white/80 focus:outline-none focus:border-gold-500/50 transition-colors"
-            >
-              {STATES.map((s) => (
-                <option key={s.code} value={s.code} className="bg-justice-dark text-white">{s.name}</option>
-              ))}
-            </select>
-          )}
-
-          {activeTab === 'hc' && (
-            <select
-              value={selectedCourt}
-              onChange={(e) => setSelectedCourt(e.target.value)}
-              className="px-3.5 py-2.5 rounded-xl bg-white/[0.04] border border-white/[0.1] text-xs text-white/80 focus:outline-none focus:border-gold-500/50 transition-colors"
-            >
-              {HIGH_COURTS.map((h) => (
-                <option key={h.code} value={h.code} className="bg-justice-dark text-white">{h.name}</option>
-              ))}
-            </select>
-          )}
-
-          <button
-            type="submit"
-            className="px-6 py-2.5 rounded-xl bg-gold-gradient text-justice-dark font-bold text-xs hover:brightness-110 transition-all flex items-center justify-center gap-1.5 shadow-gold"
-          >
-            {isLoading ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Search className="w-3.5 h-3.5" />}
-            <span>Search</span>
-          </button>
         </form>
+
+        {/* Status & Pagination Info */}
+        <div className="flex items-center justify-between text-xs text-white/40 mb-4 px-1">
+          <span>Showing Page <strong>{page}</strong> of <strong>{totalPages}</strong> ({totalCount.toLocaleString()} matching records)</span>
+          <div className="flex items-center gap-2">
+            <span>Per page:</span>
+            <select
+              value={pageSize}
+              onChange={(e) => { setPageSize(Number(e.target.value)); setPage(1); }}
+              className="bg-white/[0.04] border border-white/[0.1] rounded px-2 py-0.5 text-xs text-white/70"
+            >
+              <option value="20" className="bg-justice-dark">20</option>
+              <option value="40" className="bg-justice-dark">40</option>
+              <option value="80" className="bg-justice-dark">80</option>
+              <option value="150" className="bg-justice-dark">150</option>
+            </select>
+          </div>
+        </div>
 
         {/* Results Container */}
         {isLoading ? (
@@ -267,7 +330,7 @@ export default function SearchPage() {
               <div className="grid grid-cols-1 md:grid-cols-2 gap-3.5">
                 {centralResults.map((item) => (
                   <div
-                    key={item.id}
+                    key={`${item.act_name}-${item.section_number}-${item.id}`}
                     onClick={() => setSelectedItem({ type: 'central', ...item })}
                     className="p-4 rounded-xl bg-white/[0.02] border border-white/[0.07] hover:border-gold-500/40 hover:bg-white/[0.04] transition-all cursor-pointer group flex flex-col justify-between"
                   >
@@ -403,6 +466,51 @@ export default function SearchPage() {
                 <AlertCircle className="w-8 h-8 text-white/20 mb-2" />
                 <p className="text-sm font-medium text-white/60">No records found for &quot;{query}&quot;</p>
                 <p className="text-xs text-white/30 mt-0.5">Try searching for broader keywords like &quot;eviction&quot;, &quot;salary&quot;, &quot;fraud&quot;, or &quot;bail&quot;.</p>
+              </div>
+            )}
+
+            {/* Pagination Controls */}
+            {totalPages > 1 && (
+              <div className="mt-8 pt-4 border-t border-white/[0.08] flex items-center justify-between flex-wrap gap-3">
+                <button
+                  onClick={() => setPage((p) => Math.max(1, p - 1))}
+                  disabled={page === 1}
+                  className="px-4 py-2 rounded-xl bg-white/[0.04] border border-white/[0.1] text-xs font-semibold hover:bg-white/[0.08] disabled:opacity-30 disabled:cursor-not-allowed transition-all flex items-center gap-1.5"
+                >
+                  <ChevronLeft className="w-4 h-4" />
+                  <span>Previous</span>
+                </button>
+
+                <div className="flex items-center gap-1.5">
+                  {Array.from({ length: Math.min(7, totalPages) }, (_, i) => {
+                    let pageNum = page <= 4 ? i + 1 : page >= totalPages - 3 ? totalPages - 6 + i : page - 3 + i;
+                    if (pageNum > 0 && pageNum <= totalPages) {
+                      return (
+                        <button
+                          key={pageNum}
+                          onClick={() => setPage(pageNum)}
+                          className={`w-8 h-8 rounded-lg text-xs font-bold transition-all ${
+                            page === pageNum
+                              ? 'bg-gold-gradient text-justice-dark shadow-gold font-extrabold'
+                              : 'bg-white/[0.03] text-white/60 hover:text-white hover:bg-white/[0.07]'
+                          }`}
+                        >
+                          {pageNum}
+                        </button>
+                      );
+                    }
+                    return null;
+                  })}
+                </div>
+
+                <button
+                  onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
+                  disabled={page === totalPages}
+                  className="px-4 py-2 rounded-xl bg-white/[0.04] border border-white/[0.1] text-xs font-semibold hover:bg-white/[0.08] disabled:opacity-30 disabled:cursor-not-allowed transition-all flex items-center gap-1.5"
+                >
+                  <span>Next</span>
+                  <ChevronRight className="w-4 h-4" />
+                </button>
               </div>
             )}
           </div>
