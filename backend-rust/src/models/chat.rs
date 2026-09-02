@@ -14,6 +14,10 @@ pub struct ChatRequest {
     pub response_language: Option<String>,
     pub custom_api_key: Option<String>,
     pub custom_model: Option<String>,
+    pub state_code: Option<String>,
+    pub mode: Option<String>,
+    pub lawyer_context: Option<String>,
+    pub client_profile: Option<serde_json::Value>,
 }
 
 #[derive(Debug, Serialize)]

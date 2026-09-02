@@ -6,8 +6,11 @@ import {
   Scale, Briefcase, ArrowLeft, Send, Sparkles, User, MapPin,
   FileText, Shield, Zap, ChevronDown, Copy, Check, RotateCcw,
   AlertCircle, BookOpen, Gavel, HelpCircle, X, Plus, Loader2,
+  Settings2, PhoneCall, ExternalLink, MessageSquare, ChevronRight
 } from 'lucide-react';
-import { API_BASE } from '@/lib/api';
+import ReactMarkdown from 'react-markdown';
+import { API_BASE, sendChatMessageStream, type ChatResponseStyle } from '@/lib/api';
+import { SettingsModal } from '@/components/chat/SettingsModal';
 
 // ─── Types ───────────────────────────────────────────────────────────────────
 interface Message {
@@ -31,7 +34,7 @@ const MODES: { id: LawyerMode; label: string; icon: React.ReactNode; desc: strin
     id: 'quick',
     label: 'Quick Advice',
     icon: <Zap className="w-4 h-4" />,
-    desc: 'Fast, direct answer to your question',
+    desc: 'Fast, direct answer with exact statutory sections',
     color: 'from-violet-500 to-purple-600',
   },
   {
@@ -45,14 +48,14 @@ const MODES: { id: LawyerMode; label: string; icon: React.ReactNode; desc: strin
     id: 'rights',
     label: 'Know Your Rights',
     icon: <Shield className="w-4 h-4" />,
-    desc: 'What are your rights in this situation?',
+    desc: 'What are your statutory rights & evidence protections?',
     color: 'from-orange-500 to-amber-600',
   },
   {
     id: 'document',
     label: 'Draft / Review',
     icon: <FileText className="w-4 h-4" />,
-    desc: 'Draft legal notices, agreements or FIR templates',
+    desc: 'Draft formal police complaints, FIRs, or legal notices',
     color: 'from-teal-500 to-cyan-600',
   },
 ];
@@ -68,15 +71,14 @@ function LawyerAvatar({ pulse = false }: { pulse?: boolean }) {
         )}
         <Briefcase className="relative w-5 h-5 text-white drop-shadow-lg" />
       </div>
-      {/* Online indicator */}
-      <span className="absolute -bottom-0.5 -right-0.5 w-3 h-3 bg-green-500 rounded-full border-2 border-[#0a0a0b]" />
+      <span className="absolute -bottom-0.5 -right-0.5 w-3 h-3 bg-emerald-500 rounded-full border-2 border-[#0a0a0b]" />
     </div>
   );
 }
 
 function TypingDots() {
   return (
-    <div className="flex items-center gap-1 px-4 py-3">
+    <div className="flex items-center gap-1.5 px-4 py-3">
       {[0, 150, 300].map((delay) => (
         <span
           key={delay}
@@ -99,145 +101,134 @@ function OnboardingScreen({ onStart }: { onStart: (profile: ClientProfile) => vo
     'Andhra Pradesh','Arunachal Pradesh','Assam','Bihar','Chhattisgarh',
     'Goa','Gujarat','Haryana','Himachal Pradesh','Jharkhand','Karnataka',
     'Kerala','Madhya Pradesh','Maharashtra','Manipur','Meghalaya','Mizoram',
-    'Nagaland','Odisha','Punjab','Rajasthan','Sikkim','Tamil Nadu','Telangana',
-    'Tripura','Uttar Pradesh','Uttarakhand','West Bengal',
-    'Delhi','Jammu & Kashmir','Ladakh','Puducherry','Chandigarh',
+    'Nagaland','Odisha','Punjab','Rajasthan','Sikkim','Tamil Nadu',
+    'Telangana','Tripura','Uttar Pradesh','Uttarakhand','West Bengal',
+    'Delhi NCR','Chandigarh','Jammu & Kashmir','Ladakh','Puducherry',
   ];
 
   const CONCERNS = [
-    'Criminal / FIR', 'Civil Dispute', 'Property / Land', 'Family / Divorce',
-    'Consumer Rights', 'Labour / Employment', 'Cyber Crime', 'Motor Accident',
-    'Tax / Finance', 'Constitutional Rights', 'Corporate / Business', 'Other',
+    { id: 'Cyber Crime & Hacking', label: 'Cyber Crime, Hacking & Online Fraud', icon: '💻' },
+    { id: 'Property & Tenancy', label: 'Property, Tenancy & Eviction', icon: '🏠' },
+    { id: 'Employment & Salary', label: 'Employment, Salary & Wrongful Termination', icon: '💼' },
+    { id: 'Criminal & Police', label: 'Criminal Law, Police FIR & Bail Rights', icon: '⚖️' },
+    { id: 'Consumer & Cheque Bounce', label: 'Cheque Bounce (Sec 138) & Consumer Issues', icon: '💳' },
+    { id: 'Family & Matrimonial', label: 'Family, Matrimonial & Domestic Matters', icon: '👨‍👩‍👧' },
+    { id: 'Other', label: 'Other Legal Guidance', icon: '📋' },
   ];
 
   const steps = [
     {
-      title: "What's your name?",
-      subtitle: 'Your lawyer needs to know who they\'re helping',
+      title: 'What should your lawyer call you?',
+      subtitle: 'Your advocate will address you with this name.',
       content: (
         <input
-          autoFocus
+          type="text"
           value={name}
           onChange={(e) => setName(e.target.value)}
+          placeholder="Enter your name..."
+          className="w-full px-4 py-3.5 rounded-2xl bg-white/[0.04] border border-white/[0.1] text-white placeholder-white/30 text-base focus:outline-none focus:border-violet-500/60 focus:bg-white/[0.06] transition-all"
+          autoFocus
           onKeyDown={(e) => e.key === 'Enter' && name.trim() && setStep(1)}
-          placeholder="Enter your name…"
-          className="w-full bg-white/[0.04] border border-white/10 rounded-2xl px-5 py-4 text-white placeholder-white/30 text-lg focus:outline-none focus:border-violet-500/50 focus:bg-white/[0.06] transition-all"
         />
       ),
-      canProceed: !!name.trim(),
+      isValid: name.trim().length > 0,
     },
     {
-      title: `Which state are you in, ${name}?`,
-      subtitle: 'Laws vary by state — this helps give you accurate advice',
+      title: 'Which Indian State or UT are you in?',
+      subtitle: 'Enables precise application of 28 State Acts & your specific High Court precedents.',
       content: (
-        <div className="grid grid-cols-2 sm:grid-cols-3 gap-2 max-h-64 overflow-y-auto pr-1 custom-scroll">
+        <select
+          value={state}
+          onChange={(e) => setState(e.target.value)}
+          className="w-full px-4 py-3.5 rounded-2xl bg-[#131316] border border-white/[0.1] text-white text-base focus:outline-none focus:border-violet-500/60 transition-all"
+        >
+          <option value="" disabled>Select your State / UT...</option>
           {INDIAN_STATES.map((s) => (
-            <button
-              key={s}
-              onClick={() => { setState(s); }}
-              className={`px-3 py-2.5 rounded-xl text-sm font-medium transition-all text-left ${
-                state === s
-                  ? 'bg-violet-500/30 border border-violet-500/60 text-violet-300'
-                  : 'bg-white/[0.03] border border-white/[0.06] text-white/60 hover:bg-white/[0.07] hover:text-white/80'
-              }`}
-            >
-              <MapPin className="w-3 h-3 inline mr-1.5 opacity-60" />
-              {s}
-            </button>
+            <option key={s} value={s} className="bg-[#131316] text-white">{s}</option>
           ))}
-        </div>
+        </select>
       ),
-      canProceed: !!state,
+      isValid: state.length > 0,
     },
     {
-      title: 'What\'s your primary concern?',
-      subtitle: 'This helps your lawyer focus on the most relevant laws',
+      title: 'What is your primary legal concern?',
+      subtitle: 'Your advocate will tailor statutory strategies to this field.',
       content: (
-        <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5 max-h-60 overflow-y-auto pr-1">
           {CONCERNS.map((c) => (
             <button
-              key={c}
-              onClick={() => setConcern(c)}
-              className={`px-3 py-2.5 rounded-xl text-sm font-medium transition-all text-left ${
-                concern === c
-                  ? 'bg-gradient-to-r from-violet-500/30 to-pink-500/20 border border-violet-500/60 text-violet-300'
-                  : 'bg-white/[0.03] border border-white/[0.06] text-white/60 hover:bg-white/[0.07] hover:text-white/80'
+              key={c.id}
+              onClick={() => setConcern(c.id)}
+              className={`flex items-center gap-3 p-3 rounded-xl border text-left text-sm transition-all ${
+                concern === c.id
+                  ? 'bg-violet-500/20 border-violet-500/60 text-white'
+                  : 'bg-white/[0.02] border-white/[0.06] text-white/60 hover:text-white hover:bg-white/[0.05]'
               }`}
             >
-              {c}
+              <span className="text-xl">{c.icon}</span>
+              <span className="font-medium text-xs leading-snug">{c.label}</span>
             </button>
           ))}
         </div>
       ),
-      canProceed: !!concern,
+      isValid: concern.length > 0,
     },
   ];
 
-  const current = steps[step];
-
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen px-6 bg-[#0a0a0b] text-white">
-      {/* Ambient glow */}
-      <div className="fixed inset-0 pointer-events-none">
-        <div className="absolute top-1/4 left-1/3 w-[500px] h-[500px] bg-violet-600/[0.07] rounded-full blur-[150px]" />
-        <div className="absolute bottom-1/4 right-1/3 w-[400px] h-[400px] bg-fuchsia-600/[0.05] rounded-full blur-[120px]" />
-      </div>
-
-      <div className="relative w-full max-w-lg">
-        {/* Logo */}
-        <div className="flex items-center justify-center gap-3 mb-12">
-          <div className="relative w-12 h-12 rounded-xl flex items-center justify-center overflow-hidden">
-            <div className="absolute inset-0 bg-gradient-to-br from-violet-500 via-fuchsia-500 to-pink-500" />
-            <div className="absolute inset-0 bg-gradient-to-br from-violet-500 via-fuchsia-500 to-pink-500 blur-xl opacity-60" />
-            <Briefcase className="relative w-6 h-6 text-white" />
+    <div className="min-h-screen bg-[#070709] flex flex-col items-center justify-center p-4 relative overflow-hidden font-sans">
+      <div className="absolute top-1/3 left-1/2 -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-violet-600/10 rounded-full blur-3xl pointer-events-none" />
+      
+      <div className="w-full max-w-lg relative z-10">
+        <div className="flex items-center justify-center gap-2.5 mb-8">
+          <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-violet-500 to-pink-500 flex items-center justify-center shadow-lg shadow-violet-500/20">
+            <Briefcase className="w-5 h-5 text-white" />
           </div>
-          <div>
-            <p className="font-bold text-xl tracking-tight text-gradient-hero">Your Lawyer</p>
-            <p className="text-[11px] text-white/40">Powered by YAMA AI</p>
-          </div>
+          <span className="font-extrabold text-xl tracking-tight text-white">Your Personal Lawyer</span>
+          <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-violet-500/20 text-violet-300 border border-violet-500/30">
+            PRO
+          </span>
         </div>
 
-        {/* Step progress dots */}
-        <div className="flex items-center justify-center gap-2 mb-8">
-          {steps.map((_, i) => (
-            <div
-              key={i}
-              className={`h-1.5 rounded-full transition-all duration-300 ${
-                i === step ? 'w-8 bg-violet-500' : i < step ? 'w-4 bg-violet-500/50' : 'w-4 bg-white/10'
-              }`}
-            />
-          ))}
-        </div>
+        <div className="bg-white/[0.03] border border-white/[0.08] backdrop-blur-xl rounded-3xl p-8 shadow-2xl">
+          <div className="flex gap-1.5 mb-6">
+            {steps.map((_, i) => (
+              <div
+                key={i}
+                className={`h-1 flex-1 rounded-full transition-all duration-300 ${
+                  i <= step ? 'bg-gradient-to-r from-violet-500 to-pink-500' : 'bg-white/10'
+                }`}
+              />
+            ))}
+          </div>
 
-        {/* Card */}
-        <div className="card-premium rounded-3xl p-8">
-          <h2 className="text-2xl font-bold text-white mb-2">{current.title}</h2>
-          <p className="text-white/40 text-sm mb-6">{current.subtitle}</p>
+          <h2 className="text-xl font-bold text-white mb-1.5">{steps[step].title}</h2>
+          <p className="text-xs text-white/50 mb-6">{steps[step].subtitle}</p>
 
-          {current.content}
+          <div className="mb-8">{steps[step].content}</div>
 
-          <div className="flex items-center gap-3 mt-6">
-            {step > 0 && (
+          <div className="flex items-center justify-between">
+            {step > 0 ? (
               <button
-                onClick={() => setStep(s => s - 1)}
-                className="px-5 py-3 rounded-xl text-sm font-medium text-white/50 hover:text-white bg-white/[0.03] border border-white/[0.06] hover:bg-white/[0.07] transition-all"
+                onClick={() => setStep((s) => s - 1)}
+                className="px-4 py-2 rounded-xl text-xs font-semibold text-white/50 hover:text-white transition-colors"
               >
-                Back
+                ← Back
               </button>
-            )}
+            ) : <div />}
+
             <button
-              disabled={!current.canProceed}
               onClick={() => {
-                if (step < steps.length - 1) setStep(s => s + 1);
-                else onStart({ name, state, concern });
+                if (step < steps.length - 1) {
+                  setStep((s) => s + 1);
+                } else {
+                  onStart({ name, state, concern });
+                }
               }}
-              className={`flex-1 px-5 py-3 rounded-xl text-sm font-semibold transition-all ${
-                current.canProceed
-                  ? 'btn-glow text-white'
-                  : 'bg-white/[0.03] text-white/20 cursor-not-allowed border border-white/[0.06]'
-              }`}
+              disabled={!steps[step].isValid}
+              className="px-6 py-2.5 rounded-xl bg-gradient-to-r from-violet-500 to-pink-500 text-white font-bold text-xs hover:brightness-110 disabled:opacity-40 disabled:cursor-not-allowed transition-all shadow-lg shadow-violet-500/20"
             >
-              {step < steps.length - 1 ? 'Continue →' : 'Meet Your Lawyer →'}
+              {step < steps.length - 1 ? 'Continue →' : 'Meet Your Advocate →'}
             </button>
           </div>
         </div>
@@ -255,7 +246,7 @@ function LawyerChat({ profile, onReset }: { profile: ClientProfile; onReset: () 
   const [sessionId] = useState(() => Math.random().toString(36).slice(2));
   const [copiedId, setCopiedId] = useState<string | null>(null);
   const [showProfile, setShowProfile] = useState(false);
-  const [error, setError] = useState<string | null>(null);
+  const [isSettingsOpen, setIsSettingsOpen] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
 
@@ -264,12 +255,11 @@ function LawyerChat({ profile, onReset }: { profile: ClientProfile; onReset: () 
     const welcome: Message = {
       id: 'welcome',
       role: 'lawyer',
-      content: `Namaste ${profile.name} 🙏 I'm your personal legal advisor powered by YAMA AI.\n\nI can see you're based in **${profile.state}** and your primary concern is **${profile.concern}**. I'm fully aware of applicable central laws and ${profile.state} state laws.\n\nYou can ask me anything — describe your situation in your own words, even in Telugu, Hindi, or English. I'll give you honest, clear legal guidance.\n\n*Disclaimer: This is legal information, not formal legal advice. For court matters, consult a licensed advocate.*`,
+      content: `Namaste ${profile.name} 🙏 I am **Advocate YAMA**, your personal AI legal strategist.\n\nI have locked your jurisdiction to **${profile.state}** and your primary concern to **${profile.concern}**.\n\nI am connected directly to our **12,036+ National Legal Knowledge Base** covering all Central Bare Acts (BNS, BNSS, BSA, IT Act), ${profile.state} State Enactments, and High Court Precedents.\n\nTell me what happened in your own words (English, Telugu, or Hindi) — I will give you immediate, actionable legal leverage.`,
       timestamp: new Date(),
       mode: 'quick',
     };
     setMessages([welcome]);
-  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {
@@ -286,67 +276,64 @@ function LawyerChat({ profile, onReset }: { profile: ClientProfile; onReset: () 
       content: messageText,
       timestamp: new Date(),
     };
-    setMessages(prev => [...prev, userMsg]);
+    setMessages((prev) => [...prev, userMsg]);
     setInput('');
-    setError(null);
     setIsLoading(true);
     if (textareaRef.current) textareaRef.current.style.height = 'auto';
 
-    try {
-      // Build lawyer-specific system context
-      const lawyerContext = `You are a personal legal advisor for ${profile.name}, based in ${profile.state}, India. Their primary concern area is ${profile.concern}. Mode: ${mode}. ${
-        mode === 'quick' ? 'Give a direct, concise answer in 3-5 sentences.' :
-        mode === 'deep' ? 'Give a full IRAC analysis with relevant sections, case laws, and step-by-step guidance.' :
-        mode === 'rights' ? 'Focus specifically on their legal rights and what protections the law offers them.' :
-        'Help draft or review the legal document they describe.'
-      } Always mention specific Indian law sections (IPC/BNS, CrPC/BNSS, etc). Speak like a trusted personal lawyer, not a formal AI.`;
-
-      const res = await fetch(`${API_BASE}/lawyer/`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          message: messageText,
-          session_id: sessionId,
-          lawyer_context: lawyerContext,
-          mode,
-          client_profile: profile,
-        }),
-      });
-
-      if (!res.ok) throw new Error('Lawyer API failed');
-      const data = await res.json();
-
-      const lawyerMsg: Message = {
-        id: (Date.now() + 1).toString(),
+    const lawyerMsgId = (Date.now() + 1).toString();
+    setMessages((prev) => [
+      ...prev,
+      {
+        id: lawyerMsgId,
         role: 'lawyer',
-        content: data.analysis || data.response || 'I need more details about your situation. Can you describe what happened?',
+        content: '',
         timestamp: new Date(),
         mode,
+      },
+    ]);
+
+    try {
+      const stateCodeMap: Record<string, string> = {
+        'Telangana': 'TG', 'Andhra Pradesh': 'AP', 'Maharashtra': 'MH', 'Delhi NCR': 'DL',
+        'Karnataka': 'KA', 'Tamil Nadu': 'TN', 'West Bengal': 'WB', 'Uttar Pradesh': 'UP',
+        'Kerala': 'KL', 'Gujarat': 'GJ', 'Rajasthan': 'RJ', 'Punjab': 'PB', 'Haryana': 'HR',
       };
-      setMessages(prev => [...prev, lawyerMsg]);
-    } catch {
-      // Fallback: use main chat endpoint
-      try {
-        const res = await fetch(`${API_BASE}/chat/`, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            message: `[Personal Lawyer Mode - ${mode}] Client: ${profile.name}, State: ${profile.state}, Concern: ${profile.concern}. Question: ${messageText}`,
-            session_id: sessionId,
-          }),
-        });
-        if (!res.ok) throw new Error();
-        const data = await res.json();
-        setMessages(prev => [...prev, {
-          id: (Date.now() + 1).toString(),
-          role: 'lawyer',
-          content: data.analysis,
-          timestamp: new Date(),
-          mode,
-        }]);
-      } catch {
-        setError('Could not reach your lawyer right now. Please check if the backend is running.');
-      }
+      const stateCode = stateCodeMap[profile.state] || '';
+
+      const settings = typeof window !== 'undefined' ? JSON.parse(localStorage.getItem('yama_ai_settings') || '{}') : {};
+      const customKey = settings.apiKey || '';
+      const customModel = settings.model || '';
+
+      let streamedText = '';
+
+      await sendChatMessageStream(
+        `[Mode: ${mode.toUpperCase()} | Client: ${profile.name} | State: ${profile.state} (${stateCode}) | Concern: ${profile.concern}] ${messageText}`,
+        (chunk) => {
+          streamedText += chunk;
+          setMessages((prev) =>
+            prev.map((m) => (m.id === lawyerMsgId ? { ...m, content: streamedText } : m))
+          );
+        },
+        sessionId,
+        'default',
+        undefined,
+        customKey || undefined,
+        customModel || undefined
+      );
+    } catch (err: any) {
+      console.error('Lawyer streaming failed:', err);
+      setMessages((prev) =>
+        prev.map((m) =>
+          m.id === lawyerMsgId && !m.content
+            ? {
+                ...m,
+                content:
+                  '⚠️ **Advocate YAMA Alert:** Could not stream response. Please ensure backend is running or update your Gemini API key via the Settings gear (⚙️) above.',
+              }
+            : m
+        )
+      );
     } finally {
       setIsLoading(false);
     }
@@ -358,59 +345,108 @@ function LawyerChat({ profile, onReset }: { profile: ClientProfile; onReset: () 
     setTimeout(() => setCopiedId(null), 2000);
   };
 
-  const handleKeyDown = (e: React.KeyboardEvent) => {
-    if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); handleSubmit(); }
+  const getSuggestedQuestions = (concern: string) => {
+    if (concern.includes('Cyber')) {
+      return [
+        'My account was hacked and they are extorting money. What do I do right now?',
+        'How do I file an FIR under IT Act Section 66C/66D?',
+        'Can police freeze the extortionist bank or UPI account via 1930?',
+      ];
+    }
+    if (concern.includes('Property') || concern.includes('Tenancy')) {
+      return [
+        'Can my landlord evict me without 15-day notice or court decree?',
+        'My landlord disconnected electricity and water. What is my legal remedy?',
+        'How to recover my security deposit from an uncooperative landlord?',
+      ];
+    }
+    if (concern.includes('Employment')) {
+      return [
+        'My company terminated me without 30-day notice or severance pay.',
+        'Employer is refusing to release my experience letter and gratuity.',
+        'Is putting an employee on 30-day PIP and firing legally valid?',
+      ];
+    }
+    return [
+      'What are my immediate legal rights in this situation?',
+      'Which exact sections of Indian law penalize this action?',
+      'Draft a formal legal notice / police complaint for me.',
+    ];
   };
 
-  const currentMode = MODES.find(m => m.id === mode)!;
-
   return (
-    <div className="flex flex-col h-screen bg-[#0a0a0b] text-white overflow-hidden">
-      {/* Ambient background */}
-      <div className="fixed inset-0 pointer-events-none overflow-hidden">
-        <div className="absolute top-0 left-1/4 w-[500px] h-[500px] bg-violet-600/[0.07] rounded-full blur-[150px]" />
-        <div className="absolute bottom-0 right-1/4 w-[400px] h-[400px] bg-fuchsia-600/[0.05] rounded-full blur-[120px]" />
-      </div>
-
-      {/* ── Header ── */}
-      <header className="relative z-20 flex-shrink-0 border-b border-white/[0.04]">
-        <div className="absolute inset-0 bg-gradient-to-b from-[#0a0a0b] via-[#0a0a0b]/95 to-transparent" />
-        <div className="relative flex items-center gap-4 px-4 py-3">
-          {/* Back */}
+    <div className="min-h-screen bg-[#070709] text-white flex flex-col font-sans">
+      {/* Header */}
+      <header className="h-16 px-4 border-b border-white/[0.08] bg-[#0c0c0f]/90 backdrop-blur-md flex items-center justify-between sticky top-0 z-30">
+        <div className="flex items-center gap-3">
           <Link
             href="/"
-            className="flex items-center gap-1.5 text-white/40 hover:text-white transition-colors text-sm"
+            className="flex items-center gap-1 text-xs text-white/50 hover:text-white px-2.5 py-1.5 rounded-lg hover:bg-white/[0.05] transition-all"
           >
             <ArrowLeft className="w-4 h-4" />
             <span className="hidden sm:inline">Home</span>
           </Link>
-
-          {/* Lawyer identity */}
-          <div className="flex items-center gap-3 flex-1">
+          <div className="h-4 w-px bg-white/10" />
+          <div className="flex items-center gap-2.5">
             <LawyerAvatar />
             <div>
-              <p className="font-semibold text-white text-sm leading-tight">Your Lawyer</p>
-              <div className="flex items-center gap-1.5">
-                <span className="w-1.5 h-1.5 bg-green-500 rounded-full" />
-                <span className="text-[11px] text-green-400">Available now</span>
+              <div className="flex items-center gap-2">
+                <span className="font-bold text-sm text-white">Advocate YAMA</span>
+                <span className="px-1.5 py-0.5 rounded text-[9px] font-extrabold bg-violet-500/20 text-violet-300 border border-violet-500/30">
+                  {profile.state}
+                </span>
               </div>
+              <p className="text-[10px] text-white/40">12,036+ Indian Laws &amp; Precedents Active</p>
             </div>
           </div>
+        </div>
 
-          {/* Profile button */}
-          <button
-            onClick={() => setShowProfile(p => !p)}
-            className="flex items-center gap-2 px-3 py-1.5 rounded-xl bg-white/[0.04] border border-white/[0.06] hover:bg-white/[0.07] transition-all text-sm text-white/60 hover:text-white"
+        {/* Header Right Actions */}
+        <div className="flex items-center gap-2">
+          {/* Cyber Emergency 1930 Pill */}
+          <a
+            href="tel:1930"
+            className="hidden md:flex items-center gap-1.5 px-3 py-1 rounded-lg bg-red-500/15 border border-red-500/30 text-red-300 text-xs font-semibold hover:bg-red-500/25 transition-all"
+            title="National Cyber Crime Helpline"
           >
-            <User className="w-3.5 h-3.5" />
+            <PhoneCall className="w-3.5 h-3.5" />
+            <span>Cyber Helpline: 1930</span>
+          </a>
+
+          {/* Laws Explore Link */}
+          <Link
+            href="/search"
+            className="flex items-center gap-1.5 px-3 py-1 rounded-lg bg-white/[0.04] border border-white/[0.08] text-white/70 hover:text-white text-xs font-semibold transition-all"
+          >
+            <BookOpen className="w-3.5 h-3.5 text-gold-400" />
+            <span className="hidden sm:inline">Bare Acts &amp; Precedents</span>
+          </Link>
+
+          {/* Settings Modal Toggle */}
+          <button
+            onClick={() => setIsSettingsOpen(true)}
+            className="p-2 rounded-xl text-white/50 hover:text-white hover:bg-white/[0.06] transition-all"
+            title="Configure Gemini API Key"
+          >
+            <Settings2 className="w-4 h-4" />
+          </button>
+
+          {/* Profile Details Toggle */}
+          <button
+            onClick={() => setShowProfile((p) => !p)}
+            className="flex items-center gap-1.5 px-3 py-1 rounded-lg bg-white/[0.04] border border-white/[0.08] text-white/70 hover:text-white text-xs font-medium transition-all"
+          >
+            <User className="w-3.5 h-3.5 text-violet-400" />
             <span className="hidden sm:inline">{profile.name}</span>
           </button>
 
-          {/* Reset */}
+          {/* Reset Profile */}
           <button
-            onClick={() => { if (confirm('Start fresh with a new profile?')) onReset(); }}
-            title="Change profile"
-            className="p-2 rounded-xl text-white/30 hover:text-white/70 hover:bg-white/[0.05] transition-all"
+            onClick={() => {
+              if (confirm('Start fresh with a new client profile?')) onReset();
+            }}
+            title="Reset Profile"
+            className="p-2 rounded-xl text-white/30 hover:text-white hover:bg-white/[0.06] transition-all"
           >
             <RotateCcw className="w-4 h-4" />
           </button>
@@ -422,53 +458,45 @@ function LawyerChat({ profile, onReset }: { profile: ClientProfile; onReset: () 
         <aside
           className={`absolute sm:relative top-0 bottom-0 left-0 z-30 w-72 flex-shrink-0 transition-transform duration-300 ${
             showProfile ? 'translate-x-0' : '-translate-x-full sm:translate-x-0 sm:hidden'
-          } bg-[#0e0e10] border-r border-white/[0.05] flex flex-col`}
+          } bg-[#0c0c0f] border-r border-white/[0.08] flex flex-col`}
         >
-          <div className="p-5 border-b border-white/[0.05] flex items-center justify-between">
-            <span className="font-semibold text-sm text-white/80">Client Profile</span>
+          <div className="p-4 border-b border-white/[0.08] flex items-center justify-between">
+            <span className="font-bold text-xs text-white/80 uppercase tracking-wider">Client Context</span>
             <button onClick={() => setShowProfile(false)} className="sm:hidden text-white/40 hover:text-white">
               <X className="w-4 h-4" />
             </button>
           </div>
-          <div className="p-5 space-y-4">
-            <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-violet-500/20 to-pink-500/20 border border-violet-500/20 flex items-center justify-center">
-                <User className="w-5 h-5 text-violet-400" />
-              </div>
-              <div>
-                <p className="font-semibold text-white">{profile.name}</p>
-                <p className="text-xs text-white/40">Client</p>
-              </div>
+          <div className="p-4 space-y-4 overflow-y-auto">
+            <div className="p-3 rounded-xl bg-white/[0.03] border border-white/[0.06]">
+              <p className="text-[10px] text-white/35 uppercase tracking-wider mb-1 flex items-center gap-1.5">
+                <MapPin className="w-3 h-3 text-violet-400" /> Jurisdiction
+              </p>
+              <p className="text-sm font-semibold text-white">{profile.state}</p>
             </div>
 
-            <div className="space-y-2.5">
-              <div className="p-3 rounded-xl bg-white/[0.03] border border-white/[0.06]">
-                <p className="text-[10px] text-white/30 uppercase tracking-wider mb-1 flex items-center gap-1.5">
-                  <MapPin className="w-3 h-3" /> State Jurisdiction
-                </p>
-                <p className="text-sm text-white/80 font-medium">{profile.state}</p>
-              </div>
-              <div className="p-3 rounded-xl bg-white/[0.03] border border-white/[0.06]">
-                <p className="text-[10px] text-white/30 uppercase tracking-wider mb-1 flex items-center gap-1.5">
-                  <Gavel className="w-3 h-3" /> Primary Concern
-                </p>
-                <p className="text-sm text-white/80 font-medium">{profile.concern}</p>
-              </div>
+            <div className="p-3 rounded-xl bg-white/[0.03] border border-white/[0.06]">
+              <p className="text-[10px] text-white/35 uppercase tracking-wider mb-1 flex items-center gap-1.5">
+                <Gavel className="w-3 h-3 text-pink-400" /> Primary Matter
+              </p>
+              <p className="text-sm font-semibold text-white">{profile.concern}</p>
             </div>
 
-            {/* Suggested questions */}
             <div>
-              <p className="text-[10px] text-white/30 uppercase tracking-wider mb-2 flex items-center gap-1.5">
-                <HelpCircle className="w-3 h-3" /> Suggested Questions
+              <p className="text-[10px] text-white/40 uppercase tracking-wider mb-2 flex items-center gap-1.5">
+                <HelpCircle className="w-3 h-3" /> Quick Questions
               </p>
               <div className="space-y-1.5">
                 {getSuggestedQuestions(profile.concern).map((q, i) => (
                   <button
                     key={i}
-                    onClick={() => { handleSubmit(q); setShowProfile(false); }}
-                    className="w-full text-left px-3 py-2 rounded-lg text-xs text-white/50 hover:text-white/80 bg-white/[0.02] hover:bg-white/[0.05] border border-white/[0.04] hover:border-violet-500/20 transition-all"
+                    onClick={() => {
+                      handleSubmit(q);
+                      setShowProfile(false);
+                    }}
+                    className="w-full text-left px-3 py-2 rounded-xl text-xs text-white/60 hover:text-white bg-white/[0.02] hover:bg-white/[0.05] border border-white/[0.05] hover:border-violet-500/30 transition-all flex items-center justify-between group"
                   >
-                    {q}
+                    <span className="line-clamp-2">{q}</span>
+                    <ChevronRight className="w-3.5 h-3.5 text-white/20 group-hover:text-violet-400 flex-shrink-0" />
                   </button>
                 ))}
               </div>
@@ -476,49 +504,57 @@ function LawyerChat({ profile, onReset }: { profile: ClientProfile; onReset: () 
           </div>
         </aside>
 
-        {/* ── Messages ── */}
+        {/* ── Messages Stream ── */}
         <main className="flex-1 flex flex-col overflow-hidden">
-          <div className="flex-1 overflow-y-auto px-4 py-4 space-y-4 scroll-smooth">
+          <div className="flex-1 overflow-y-auto px-4 py-6 space-y-5 scroll-smooth">
             {messages.map((msg) => (
               <div
                 key={msg.id}
-                className={`flex gap-3 ${msg.role === 'user' ? 'flex-row-reverse' : ''}`}
+                className={`flex gap-3 max-w-4xl mx-auto ${msg.role === 'user' ? 'flex-row-reverse' : ''}`}
               >
                 {/* Avatar */}
                 {msg.role === 'lawyer' ? (
-                  <LawyerAvatar />
+                  <LawyerAvatar pulse={isLoading && msg.id === messages[messages.length - 1]?.id} />
                 ) : (
-                  <div className="relative flex-shrink-0 w-10 h-10 rounded-xl bg-white/[0.06] border border-white/[0.08] flex items-center justify-center">
-                    <User className="w-5 h-5 text-white/50" />
+                  <div className="w-9 h-9 rounded-xl bg-white/[0.06] border border-white/[0.08] flex items-center justify-center flex-shrink-0">
+                    <User className="w-4 h-4 text-white/60" />
                   </div>
                 )}
 
                 {/* Bubble */}
-                <div className={`group max-w-[75%] ${msg.role === 'user' ? 'items-end' : 'items-start'} flex flex-col gap-1`}>
+                <div className={`group max-w-[85%] md:max-w-[78%] flex flex-col gap-1.5 ${msg.role === 'user' ? 'items-end' : 'items-start'}`}>
                   {msg.role === 'lawyer' && msg.mode && msg.id !== 'welcome' && (
-                    <span className={`text-[10px] px-2 py-0.5 rounded-full font-medium bg-gradient-to-r ${MODES.find(m => m.id === msg.mode)?.color} bg-opacity-20 text-white/60`}>
-                      {MODES.find(m => m.id === msg.mode)?.label}
+                    <span className="text-[10px] px-2 py-0.5 rounded-full font-bold bg-violet-500/15 text-violet-300 border border-violet-500/25 uppercase tracking-wider">
+                      {MODES.find((m) => m.id === msg.mode)?.label}
                     </span>
                   )}
+
                   <div
-                    className={`relative px-4 py-3 rounded-2xl text-sm leading-relaxed whitespace-pre-wrap ${
+                    className={`px-5 py-4 rounded-2xl text-sm leading-relaxed ${
                       msg.role === 'user'
-                        ? 'bg-gradient-to-br from-violet-600/40 to-fuchsia-600/30 border border-violet-500/20 text-white rounded-tr-sm'
-                        : 'bg-white/[0.04] border border-white/[0.07] text-white/85 rounded-tl-sm'
+                        ? 'bg-gradient-to-br from-violet-600/40 to-fuchsia-600/30 border border-violet-500/30 text-white rounded-tr-sm shadow-md'
+                        : 'bg-white/[0.03] border border-white/[0.08] text-white/90 rounded-tl-sm shadow-xl'
                     }`}
                   >
-                    {msg.content}
+                    {msg.role === 'lawyer' ? (
+                      <div className="prose prose-invert prose-sm max-w-none prose-headings:font-bold prose-headings:text-white prose-p:text-white/80 prose-li:text-white/80 prose-strong:text-violet-300">
+                        <ReactMarkdown>{msg.content || '...'}</ReactMarkdown>
+                      </div>
+                    ) : (
+                      <div className="whitespace-pre-wrap">{msg.content}</div>
+                    )}
                   </div>
-                  <div className="flex items-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
-                    <span className="text-[10px] text-white/20">
+
+                  <div className="flex items-center gap-2 px-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                    <span className="text-[10px] text-white/30">
                       {msg.timestamp.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                     </span>
-                    {msg.role === 'lawyer' && (
+                    {msg.role === 'lawyer' && msg.content && (
                       <button
                         onClick={() => copyMessage(msg.id, msg.content)}
-                        className="flex items-center gap-1 text-[10px] text-white/30 hover:text-white/60 transition-colors"
+                        className="flex items-center gap-1 text-[10px] text-white/40 hover:text-white transition-colors"
                       >
-                        {copiedId === msg.id ? <Check className="w-3 h-3 text-green-400" /> : <Copy className="w-3 h-3" />}
+                        {copiedId === msg.id ? <Check className="w-3 h-3 text-emerald-400" /> : <Copy className="w-3 h-3" />}
                         {copiedId === msg.id ? 'Copied' : 'Copy'}
                       </button>
                     )}
@@ -527,151 +563,116 @@ function LawyerChat({ profile, onReset }: { profile: ClientProfile; onReset: () 
               </div>
             ))}
 
-            {/* Typing indicator */}
-            {isLoading && (
-              <div className="flex gap-3">
+            {/* Typing indicator when waiting for stream */}
+            {isLoading && messages[messages.length - 1]?.role === 'user' && (
+              <div className="flex gap-3 max-w-4xl mx-auto">
                 <LawyerAvatar pulse />
-                <div className="bg-white/[0.04] border border-white/[0.07] rounded-2xl rounded-tl-sm">
+                <div className="bg-white/[0.03] border border-white/[0.08] rounded-2xl rounded-tl-sm">
                   <TypingDots />
                 </div>
-              </div>
-            )}
-
-            {/* Error */}
-            {error && (
-              <div className="flex items-center gap-3 px-4 py-3 rounded-xl bg-red-500/10 border border-red-500/20 text-red-400 text-sm">
-                <AlertCircle className="w-4 h-4 flex-shrink-0" />
-                {error}
               </div>
             )}
 
             <div ref={messagesEndRef} />
           </div>
 
-          {/* ── Mode selector + Input ── */}
-          <div className="flex-shrink-0 p-4 border-t border-white/[0.04]">
-            {/* Mode pills */}
-            <div className="flex gap-2 mb-3 overflow-x-auto pb-1 no-scrollbar">
-              {MODES.map((m) => (
-                <button
-                  key={m.id}
-                  onClick={() => setMode(m.id)}
-                  title={m.desc}
-                  className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-medium whitespace-nowrap transition-all flex-shrink-0 ${
-                    mode === m.id
-                      ? `bg-gradient-to-r ${m.color} text-white shadow-lg shadow-violet-500/20`
-                      : 'bg-white/[0.03] border border-white/[0.06] text-white/40 hover:text-white/70 hover:bg-white/[0.06]'
-                  }`}
-                >
-                  {m.icon}
-                  {m.label}
-                </button>
-              ))}
-            </div>
+          {/* ── Mode selector + Input Bar ── */}
+          <div className="flex-shrink-0 p-4 border-t border-white/[0.08] bg-[#0c0c0f]/90 backdrop-blur-md">
+            <div className="max-w-4xl mx-auto">
+              {/* Mode Pills */}
+              <div className="flex gap-2 mb-3 overflow-x-auto pb-1 no-scrollbar">
+                {MODES.map((m) => (
+                  <button
+                    key={m.id}
+                    onClick={() => setMode(m.id)}
+                    title={m.desc}
+                    className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold whitespace-nowrap transition-all flex-shrink-0 ${
+                      mode === m.id
+                        ? 'bg-gradient-to-r from-violet-500 to-pink-500 text-white shadow-lg shadow-violet-500/20'
+                        : 'bg-white/[0.03] border border-white/[0.07] text-white/50 hover:text-white hover:bg-white/[0.06]'
+                    }`}
+                  >
+                    {m.icon}
+                    <span>{m.label}</span>
+                  </button>
+                ))}
+              </div>
 
-            {/* Input box */}
-            <div
-              className={`relative flex items-end gap-3 px-4 py-3 rounded-2xl border transition-all ${
-                input
-                  ? 'bg-white/[0.05] border-violet-500/30'
-                  : 'bg-white/[0.03] border-white/[0.08]'
-              }`}
-            >
-              <textarea
-                ref={textareaRef}
-                value={input}
-                onChange={(e) => {
-                  setInput(e.target.value);
-                  e.target.style.height = 'auto';
-                  e.target.style.height = Math.min(e.target.scrollHeight, 160) + 'px';
+              {/* Input Box */}
+              <form
+                onSubmit={(e) => {
+                  e.preventDefault();
+                  handleSubmit();
                 }}
-                onKeyDown={handleKeyDown}
-                placeholder={`Ask your lawyer… (${currentMode.label})`}
-                rows={1}
-                className="flex-1 bg-transparent resize-none text-white placeholder-white/25 text-sm focus:outline-none leading-relaxed"
-                style={{ maxHeight: '160px' }}
-              />
-              <button
-                onClick={() => handleSubmit()}
-                disabled={!input.trim() || isLoading}
-                className={`flex-shrink-0 w-9 h-9 rounded-xl flex items-center justify-center transition-all ${
-                  input.trim() && !isLoading
-                    ? `bg-gradient-to-br ${currentMode.color} text-white shadow-lg hover:scale-105`
-                    : 'bg-white/[0.04] text-white/20 cursor-not-allowed'
-                }`}
+                className="relative flex items-center rounded-2xl bg-white/[0.04] border border-white/[0.1] focus-within:border-violet-500/60 focus-within:bg-white/[0.06] transition-all p-1"
               >
-                {isLoading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Send className="w-4 h-4" />}
-              </button>
-            </div>
+                <textarea
+                  ref={textareaRef}
+                  value={input}
+                  onChange={(e) => {
+                    setInput(e.target.value);
+                    e.target.style.height = 'auto';
+                    e.target.style.height = `${Math.min(e.target.scrollHeight, 120)}px`;
+                  }}
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter' && !e.shiftKey) {
+                      e.preventDefault();
+                      handleSubmit();
+                    }
+                  }}
+                  rows={1}
+                  placeholder={`Consult your advocate (${MODES.find((m) => m.id === mode)?.label})...`}
+                  className="flex-1 bg-transparent px-4 py-2.5 text-sm text-white placeholder-white/30 focus:outline-none resize-none max-h-32"
+                />
 
-            <p className="text-center text-[10px] text-white/20 mt-2">
-              Legal information only — not a substitute for a licensed advocate
-            </p>
+                <button
+                  type="submit"
+                  disabled={!input.trim() || isLoading}
+                  className="p-2.5 rounded-xl bg-gradient-to-r from-violet-500 to-pink-500 text-white hover:brightness-110 disabled:opacity-30 disabled:cursor-not-allowed transition-all shadow-md flex-shrink-0"
+                >
+                  {isLoading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Send className="w-4 h-4" />}
+                </button>
+              </form>
+            </div>
           </div>
         </main>
       </div>
+
+      {/* Settings Modal */}
+      <SettingsModal
+        isOpen={isSettingsOpen}
+        onClose={() => setIsSettingsOpen(false)}
+        onSave={() => setIsSettingsOpen(false)}
+      />
     </div>
   );
 }
 
-// ─── Suggested questions per concern ─────────────────────────────────────────
-function getSuggestedQuestions(concern: string): string[] {
-  const map: Record<string, string[]> = {
-    'Criminal / FIR': [
-      'Police refused to file my FIR. What can I do?',
-      'Can I get anticipatory bail? How?',
-      'What happens after an FIR is filed against me?',
-    ],
-    'Civil Dispute': [
-      'My neighbour is encroaching on my land. What are my options?',
-      'How do I file a civil suit? What are the steps?',
-      'What is the time limit to file a case?',
-    ],
-    'Property / Land': [
-      'Seller is refusing to register the property. What can I do?',
-      'What documents should I check before buying land?',
-      'How do I add a co-owner to my property?',
-    ],
-    'Family / Divorce': [
-      'What are the grounds for divorce in India?',
-      'How is custody of children decided?',
-      'What is my wife\'s right in my property?',
-    ],
-    'Consumer Rights': [
-      'The company is not refunding my money. What to do?',
-      'How do I file a consumer complaint?',
-      'Can I get compensation for mental harassment by a company?',
-    ],
-    'Labour / Employment': [
-      'My employer is not paying my salary. What can I do?',
-      'I was wrongfully terminated. Do I have a case?',
-      'What is the minimum wage in my state?',
-    ],
-    'Cyber Crime': [
-      'Someone is blackmailing me online. What should I do?',
-      'My bank account was hacked. Who do I report to?',
-      'Is posting someone\'s private photos online a crime?',
-    ],
-    'Motor Accident': [
-      'I was hit by a vehicle. How do I claim compensation?',
-      'The other driver has no insurance. Now what?',
-      'What is the time limit for a motor accident claim?',
-    ],
-  };
-  return map[concern] || [
-    'What are my basic legal rights as a citizen?',
-    'How do I file a complaint in court?',
-    'What is the difference between civil and criminal cases?',
-  ];
-}
-
-// ─── Root component ───────────────────────────────────────────────────────────
-export default function YourLawyerPage() {
+export default function LawyerPage() {
   const [profile, setProfile] = useState<ClientProfile | null>(null);
 
+  useEffect(() => {
+    const saved = localStorage.getItem('yama_lawyer_profile');
+    if (saved) {
+      try {
+        setProfile(JSON.parse(saved));
+      } catch {}
+    }
+  }, []);
+
+  const handleStart = (p: ClientProfile) => {
+    setProfile(p);
+    localStorage.setItem('yama_lawyer_profile', JSON.stringify(p));
+  };
+
+  const handleReset = () => {
+    setProfile(null);
+    localStorage.removeItem('yama_lawyer_profile');
+  };
+
   if (!profile) {
-    return <OnboardingScreen onStart={setProfile} />;
+    return <OnboardingScreen onStart={handleStart} />;
   }
 
-  return <LawyerChat profile={profile} onReset={() => setProfile(null)} />;
+  return <LawyerChat profile={profile} onReset={handleReset} />;
 }
