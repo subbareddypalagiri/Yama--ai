@@ -12,6 +12,8 @@ use crate::routes::chat::AppState;
 pub struct SearchParams {
     pub q: Option<String>,
     pub category: Option<String>,
+    pub state_code: Option<String>,
+    pub court_code: Option<String>,
     pub limit: Option<usize>,
 }
 
@@ -28,6 +30,50 @@ pub struct LawSectionDTO {
     pub keywords: Option<String>,
 }
 
+#[derive(Debug, Serialize)]
+pub struct StateLawDTO {
+    pub id: i64,
+    pub state_name: String,
+    pub state_code: String,
+    pub act_name: String,
+    pub section_number: String,
+    pub title: String,
+    pub description: String,
+    pub category: String,
+    pub punishment: Option<String>,
+    pub keywords: Option<String>,
+}
+
+#[derive(Debug, Serialize)]
+pub struct SupremeCourtDTO {
+    pub id: i64,
+    pub case_name: String,
+    pub citation: String,
+    pub year: i64,
+    pub bench: Option<String>,
+    pub headnotes: Option<String>,
+    pub ratio_decidendi: String,
+    pub sections_referred: Option<String>,
+    pub verdict: Option<String>,
+}
+
+#[derive(Debug, Serialize)]
+pub struct HighCourtDTO {
+    pub id: i64,
+    pub high_court_name: String,
+    pub court_code: String,
+    pub state_code: String,
+    pub case_name: String,
+    pub citation: String,
+    pub year: i64,
+    pub bench: Option<String>,
+    pub summary: String,
+    pub ratio_decidendi: String,
+    pub sections_referred: Option<String>,
+    pub disposition: Option<String>,
+}
+
+// 1. Central Laws Search Handler
 pub async fn search_laws_handler(
     State(state): State<Arc<AppState>>,
     Query(params): Query<SearchParams>,
@@ -50,7 +96,6 @@ pub async fn search_laws_handler(
         keywords: None,
     }).collect();
 
-    // If query is empty or gave few results, load default sections
     if results.is_empty() && q.is_empty() {
         let conn_guard = state.legal_db.get_conn().await;
         if let Some(conn) = conn_guard.as_ref() {
@@ -80,28 +125,26 @@ pub async fn search_laws_handler(
                         }
                     }
                 }
-            } else {
-                if let Ok(mut stmt) = conn.prepare(
-                    "SELECT id, act_name, section_number, title, description, category, punishment, old_law_reference, keywords 
-                     FROM central_acts 
-                     LIMIT ?1"
-                ) {
-                    if let Ok(rows) = stmt.query_map(rusqlite::params![limit as i64], |row| {
-                        Ok(LawSectionDTO {
-                            id: row.get(0)?,
-                            act_name: row.get(1)?,
-                            section_number: row.get(2)?,
-                            title: row.get(3)?,
-                            description: row.get(4)?,
-                            category: row.get(5)?,
-                            punishment: row.get(6).ok(),
-                            old_law_reference: row.get(7).ok(),
-                            keywords: row.get(8).ok(),
-                        })
-                    }) {
-                        for item in rows.flatten() {
-                            results.push(item);
-                        }
+            } else if let Ok(mut stmt) = conn.prepare(
+                "SELECT id, act_name, section_number, title, description, category, punishment, old_law_reference, keywords 
+                 FROM central_acts 
+                 LIMIT ?1"
+            ) {
+                if let Ok(rows) = stmt.query_map(rusqlite::params![limit as i64], |row| {
+                    Ok(LawSectionDTO {
+                        id: row.get(0)?,
+                        act_name: row.get(1)?,
+                        section_number: row.get(2)?,
+                        title: row.get(3)?,
+                        description: row.get(4)?,
+                        category: row.get(5)?,
+                        punishment: row.get(6).ok(),
+                        old_law_reference: row.get(7).ok(),
+                        keywords: row.get(8).ok(),
+                    })
+                }) {
+                    for item in rows.flatten() {
+                        results.push(item);
                     }
                 }
             }
@@ -117,6 +160,287 @@ pub async fn search_laws_handler(
     }))
 }
 
+// 2. State Laws Search Handler (28 States)
+pub async fn search_state_laws_handler(
+    State(state): State<Arc<AppState>>,
+    Query(params): Query<SearchParams>,
+) -> impl IntoResponse {
+    let q = params.q.unwrap_or_default().trim().to_string();
+    let state_filter = params.state_code.unwrap_or_default().trim().to_uppercase();
+    let limit = params.limit.unwrap_or(20).min(100);
+
+    let mut results: Vec<StateLawDTO> = Vec::new();
+    let conn_guard = state.legal_db.get_conn().await;
+    if let Some(conn) = conn_guard.as_ref() {
+        let q_pattern = format!("%{}%", q.to_lowercase());
+        
+        if !state_filter.is_empty() && !q.is_empty() {
+            if let Ok(mut stmt) = conn.prepare(
+                "SELECT id, state_name, state_code, act_name, section_number, title, description, category, punishment, keywords 
+                 FROM state_acts 
+                 WHERE state_code = ?1 AND (LOWER(title) LIKE ?2 OR LOWER(keywords) LIKE ?2 OR LOWER(act_name) LIKE ?2) 
+                 LIMIT ?3"
+            ) {
+                if let Ok(rows) = stmt.query_map(rusqlite::params![state_filter, q_pattern, limit as i64], |row| {
+                    Ok(StateLawDTO {
+                        id: row.get(0)?, state_name: row.get(1)?, state_code: row.get(2)?, act_name: row.get(3)?,
+                        section_number: row.get(4)?, title: row.get(5)?, description: row.get(6)?, category: row.get(7)?,
+                        punishment: row.get(8).ok(), keywords: row.get(9).ok(),
+                    })
+                }) {
+                    for item in rows.flatten() { results.push(item); }
+                }
+            }
+        } else if !state_filter.is_empty() {
+            if let Ok(mut stmt) = conn.prepare(
+                "SELECT id, state_name, state_code, act_name, section_number, title, description, category, punishment, keywords 
+                 FROM state_acts 
+                 WHERE state_code = ?1 
+                 LIMIT ?2"
+            ) {
+                if let Ok(rows) = stmt.query_map(rusqlite::params![state_filter, limit as i64], |row| {
+                    Ok(StateLawDTO {
+                        id: row.get(0)?, state_name: row.get(1)?, state_code: row.get(2)?, act_name: row.get(3)?,
+                        section_number: row.get(4)?, title: row.get(5)?, description: row.get(6)?, category: row.get(7)?,
+                        punishment: row.get(8).ok(), keywords: row.get(9).ok(),
+                    })
+                }) {
+                    for item in rows.flatten() { results.push(item); }
+                }
+            }
+        } else if !q.is_empty() {
+            if let Ok(mut stmt) = conn.prepare(
+                "SELECT id, state_name, state_code, act_name, section_number, title, description, category, punishment, keywords 
+                 FROM state_acts 
+                 WHERE (LOWER(title) LIKE ?1 OR LOWER(keywords) LIKE ?1 OR LOWER(act_name) LIKE ?1 OR LOWER(state_name) LIKE ?1) 
+                 LIMIT ?2"
+            ) {
+                if let Ok(rows) = stmt.query_map(rusqlite::params![q_pattern, limit as i64], |row| {
+                    Ok(StateLawDTO {
+                        id: row.get(0)?, state_name: row.get(1)?, state_code: row.get(2)?, act_name: row.get(3)?,
+                        section_number: row.get(4)?, title: row.get(5)?, description: row.get(6)?, category: row.get(7)?,
+                        punishment: row.get(8).ok(), keywords: row.get(9).ok(),
+                    })
+                }) {
+                    for item in rows.flatten() { results.push(item); }
+                }
+            }
+        } else if let Ok(mut stmt) = conn.prepare(
+            "SELECT id, state_name, state_code, act_name, section_number, title, description, category, punishment, keywords 
+             FROM state_acts 
+             LIMIT ?1"
+        ) {
+            if let Ok(rows) = stmt.query_map(rusqlite::params![limit as i64], |row| {
+                Ok(StateLawDTO {
+                    id: row.get(0)?, state_name: row.get(1)?, state_code: row.get(2)?, act_name: row.get(3)?,
+                    section_number: row.get(4)?, title: row.get(5)?, description: row.get(6)?, category: row.get(7)?,
+                    punishment: row.get(8).ok(), keywords: row.get(9).ok(),
+                })
+            }) {
+                for item in rows.flatten() { results.push(item); }
+            }
+        }
+    }
+
+    let total = results.len();
+    Json(json!({ "query": q, "state_code": if state_filter.is_empty() { None } else { Some(state_filter) }, "total": total, "results": results }))
+}
+
+// 3. Supreme Court Judgments Handler
+pub async fn search_supreme_court_handler(
+    State(state): State<Arc<AppState>>,
+    Query(params): Query<SearchParams>,
+) -> impl IntoResponse {
+    let q = params.q.unwrap_or_default().trim().to_string();
+    let limit = params.limit.unwrap_or(20).min(100);
+
+    let mut results: Vec<SupremeCourtDTO> = Vec::new();
+    let conn_guard = state.legal_db.get_conn().await;
+    if let Some(conn) = conn_guard.as_ref() {
+        let q_pattern = format!("%{}%", q.to_lowercase());
+        
+        if !q.is_empty() {
+            if let Ok(mut stmt) = conn.prepare(
+                "SELECT id, case_name, citation, year, bench, headnotes, ratio_decidendi, sections_referred, verdict 
+                 FROM supreme_court_judgments 
+                 WHERE (LOWER(case_name) LIKE ?1 OR LOWER(headnotes) LIKE ?1 OR LOWER(ratio_decidendi) LIKE ?1 OR LOWER(sections_referred) LIKE ?1 OR LOWER(citation) LIKE ?1) 
+                 LIMIT ?2"
+            ) {
+                if let Ok(rows) = stmt.query_map(rusqlite::params![q_pattern, limit as i64], |row| {
+                    Ok(SupremeCourtDTO {
+                        id: row.get(0)?, case_name: row.get(1)?, citation: row.get(2)?, year: row.get(3)?,
+                        bench: row.get(4).ok(), headnotes: row.get(5).ok(), ratio_decidendi: row.get(6)?,
+                        sections_referred: row.get(7).ok(), verdict: row.get(8).ok(),
+                    })
+                }) {
+                    for item in rows.flatten() { results.push(item); }
+                }
+            }
+        } else if let Ok(mut stmt) = conn.prepare(
+            "SELECT id, case_name, citation, year, bench, headnotes, ratio_decidendi, sections_referred, verdict 
+             FROM supreme_court_judgments 
+             LIMIT ?1"
+        ) {
+            if let Ok(rows) = stmt.query_map(rusqlite::params![limit as i64], |row| {
+                Ok(SupremeCourtDTO {
+                    id: row.get(0)?, case_name: row.get(1)?, citation: row.get(2)?, year: row.get(3)?,
+                    bench: row.get(4).ok(), headnotes: row.get(5).ok(), ratio_decidendi: row.get(6)?,
+                    sections_referred: row.get(7).ok(), verdict: row.get(8).ok(),
+                })
+            }) {
+                for item in rows.flatten() { results.push(item); }
+            }
+        }
+    }
+
+    let total = results.len();
+    Json(json!({ "query": q, "total": total, "results": results }))
+}
+
+// 4. 25 State High Courts Judgments Handler
+pub async fn search_high_courts_handler(
+    State(state): State<Arc<AppState>>,
+    Query(params): Query<SearchParams>,
+) -> impl IntoResponse {
+    let q = params.q.unwrap_or_default().trim().to_string();
+    let court_filter = params.court_code.unwrap_or_default().trim().to_uppercase();
+    let state_filter = params.state_code.unwrap_or_default().trim().to_uppercase();
+    let limit = params.limit.unwrap_or(20).min(100);
+
+    let mut results: Vec<HighCourtDTO> = Vec::new();
+    let conn_guard = state.legal_db.get_conn().await;
+    if let Some(conn) = conn_guard.as_ref() {
+        let q_pattern = format!("%{}%", q.to_lowercase());
+        
+        if !court_filter.is_empty() && !q.is_empty() {
+            if let Ok(mut stmt) = conn.prepare(
+                "SELECT id, high_court_name, court_code, state_code, case_name, citation, year, bench, summary, ratio_decidendi, sections_referred, disposition 
+                 FROM high_court_judgments 
+                 WHERE court_code = ?1 AND (LOWER(case_name) LIKE ?2 OR LOWER(summary) LIKE ?2 OR LOWER(ratio_decidendi) LIKE ?2 OR LOWER(sections_referred) LIKE ?2) 
+                 LIMIT ?3"
+            ) {
+                if let Ok(rows) = stmt.query_map(rusqlite::params![court_filter, q_pattern, limit as i64], |row| {
+                    Ok(HighCourtDTO {
+                        id: row.get(0)?, high_court_name: row.get(1)?, court_code: row.get(2)?, state_code: row.get(3)?,
+                        case_name: row.get(4)?, citation: row.get(5)?, year: row.get(6)?, bench: row.get(7).ok(),
+                        summary: row.get(8)?, ratio_decidendi: row.get(9)?, sections_referred: row.get(10).ok(),
+                        disposition: row.get(11).ok(),
+                    })
+                }) {
+                    for item in rows.flatten() { results.push(item); }
+                }
+            }
+        } else if !court_filter.is_empty() {
+            if let Ok(mut stmt) = conn.prepare(
+                "SELECT id, high_court_name, court_code, state_code, case_name, citation, year, bench, summary, ratio_decidendi, sections_referred, disposition 
+                 FROM high_court_judgments 
+                 WHERE court_code = ?1 
+                 LIMIT ?2"
+            ) {
+                if let Ok(rows) = stmt.query_map(rusqlite::params![court_filter, limit as i64], |row| {
+                    Ok(HighCourtDTO {
+                        id: row.get(0)?, high_court_name: row.get(1)?, court_code: row.get(2)?, state_code: row.get(3)?,
+                        case_name: row.get(4)?, citation: row.get(5)?, year: row.get(6)?, bench: row.get(7).ok(),
+                        summary: row.get(8)?, ratio_decidendi: row.get(9)?, sections_referred: row.get(10).ok(),
+                        disposition: row.get(11).ok(),
+                    })
+                }) {
+                    for item in rows.flatten() { results.push(item); }
+                }
+            }
+        } else if !state_filter.is_empty() {
+            if let Ok(mut stmt) = conn.prepare(
+                "SELECT id, high_court_name, court_code, state_code, case_name, citation, year, bench, summary, ratio_decidendi, sections_referred, disposition 
+                 FROM high_court_judgments 
+                 WHERE state_code = ?1 
+                 LIMIT ?2"
+            ) {
+                if let Ok(rows) = stmt.query_map(rusqlite::params![state_filter, limit as i64], |row| {
+                    Ok(HighCourtDTO {
+                        id: row.get(0)?, high_court_name: row.get(1)?, court_code: row.get(2)?, state_code: row.get(3)?,
+                        case_name: row.get(4)?, citation: row.get(5)?, year: row.get(6)?, bench: row.get(7).ok(),
+                        summary: row.get(8)?, ratio_decidendi: row.get(9)?, sections_referred: row.get(10).ok(),
+                        disposition: row.get(11).ok(),
+                    })
+                }) {
+                    for item in rows.flatten() { results.push(item); }
+                }
+            }
+        } else if !q.is_empty() {
+            if let Ok(mut stmt) = conn.prepare(
+                "SELECT id, high_court_name, court_code, state_code, case_name, citation, year, bench, summary, ratio_decidendi, sections_referred, disposition 
+                 FROM high_court_judgments 
+                 WHERE (LOWER(case_name) LIKE ?1 OR LOWER(summary) LIKE ?1 OR LOWER(ratio_decidendi) LIKE ?1 OR LOWER(high_court_name) LIKE ?1 OR LOWER(sections_referred) LIKE ?1) 
+                 LIMIT ?2"
+            ) {
+                if let Ok(rows) = stmt.query_map(rusqlite::params![q_pattern, limit as i64], |row| {
+                    Ok(HighCourtDTO {
+                        id: row.get(0)?, high_court_name: row.get(1)?, court_code: row.get(2)?, state_code: row.get(3)?,
+                        case_name: row.get(4)?, citation: row.get(5)?, year: row.get(6)?, bench: row.get(7).ok(),
+                        summary: row.get(8)?, ratio_decidendi: row.get(9)?, sections_referred: row.get(10).ok(),
+                        disposition: row.get(11).ok(),
+                    })
+                }) {
+                    for item in rows.flatten() { results.push(item); }
+                }
+            }
+        } else if let Ok(mut stmt) = conn.prepare(
+            "SELECT id, high_court_name, court_code, state_code, case_name, citation, year, bench, summary, ratio_decidendi, sections_referred, disposition 
+             FROM high_court_judgments 
+             LIMIT ?1"
+        ) {
+            if let Ok(rows) = stmt.query_map(rusqlite::params![limit as i64], |row| {
+                Ok(HighCourtDTO {
+                    id: row.get(0)?, high_court_name: row.get(1)?, court_code: row.get(2)?, state_code: row.get(3)?,
+                    case_name: row.get(4)?, citation: row.get(5)?, year: row.get(6)?, bench: row.get(7).ok(),
+                    summary: row.get(8)?, ratio_decidendi: row.get(9)?, sections_referred: row.get(10).ok(),
+                    disposition: row.get(11).ok(),
+                })
+            }) {
+                for item in rows.flatten() { results.push(item); }
+            }
+        }
+    }
+
+    let total = results.len();
+    Json(json!({ "query": q, "court_code": if court_filter.is_empty() { None } else { Some(court_filter) }, "total": total, "results": results }))
+}
+
+// 5. Enterprise Stats Handler
+pub async fn get_enterprise_stats_handler(
+    State(state): State<Arc<AppState>>,
+) -> impl IntoResponse {
+    let mut central_count = 0;
+    let mut state_count = 0;
+    let mut sc_count = 0;
+    let mut hc_count = 0;
+
+    let conn_guard = state.legal_db.get_conn().await;
+    if let Some(conn) = conn_guard.as_ref() {
+        if let Ok(mut stmt) = conn.prepare("SELECT count(*) FROM central_acts") {
+            if let Ok(cnt) = stmt.query_row([], |r| r.get::<_, i64>(0)) { central_count = cnt; }
+        }
+        if let Ok(mut stmt) = conn.prepare("SELECT count(*) FROM state_acts") {
+            if let Ok(cnt) = stmt.query_row([], |r| r.get::<_, i64>(0)) { state_count = cnt; }
+        }
+        if let Ok(mut stmt) = conn.prepare("SELECT count(*) FROM supreme_court_judgments") {
+            if let Ok(cnt) = stmt.query_row([], |r| r.get::<_, i64>(0)) { sc_count = cnt; }
+        }
+        if let Ok(mut stmt) = conn.prepare("SELECT count(*) FROM high_court_judgments") {
+            if let Ok(cnt) = stmt.query_row([], |r| r.get::<_, i64>(0)) { hc_count = cnt; }
+        }
+    }
+
+    Json(json!({
+        "central_acts_count": central_count,
+        "state_acts_count": state_count,
+        "supreme_court_count": sc_count,
+        "high_courts_count": hc_count,
+        "total_database_records": central_count + state_count + sc_count + hc_count
+    }))
+}
+
+// 6. Acts & Categories Helpers
 pub async fn get_acts_handler(
     State(state): State<Arc<AppState>>,
 ) -> impl IntoResponse {
@@ -127,15 +451,10 @@ pub async fn get_acts_handler(
             let rows = stmt.query_map([], |row| {
                 let name: String = row.get(0)?;
                 let count: i64 = row.get(1)?;
-                Ok(json!({
-                    "act_name": name,
-                    "section_count": count
-                }))
+                Ok(json!({ "act_name": name, "section_count": count }))
             });
             if let Ok(iter) = rows {
-                for item in iter.flatten() {
-                    acts.push(item);
-                }
+                for item in iter.flatten() { acts.push(item); }
             }
         }
     }
@@ -154,9 +473,7 @@ pub async fn get_categories_handler(
                 Ok(json!({ "name": cat, "slug": cat.to_lowercase().replace(' ', "_") }))
             });
             if let Ok(iter) = rows {
-                for item in iter.flatten() {
-                    categories.push(item);
-                }
+                for item in iter.flatten() { categories.push(item); }
             }
         }
     }

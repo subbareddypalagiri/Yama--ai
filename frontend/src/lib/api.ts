@@ -137,11 +137,41 @@ export async function uploadChatMessage(
   }
 }
 
-export async function searchLaws(query: string, category?: string, limit = 10) {
+export async function searchLaws(query: string, category?: string, limit = 20) {
   const params = new URLSearchParams({ q: query, limit: String(limit) });
   if (category) params.set('category', category);
   const res = await fetch(`${API_BASE}/laws/search?${params}`);
   if (!res.ok) throw new Error(`Search failed: ${res.statusText}`);
+  return res.json();
+}
+
+export async function searchStateLaws(query: string, stateCode?: string, limit = 20) {
+  const params = new URLSearchParams({ q: query, limit: String(limit) });
+  if (stateCode) params.set('state_code', stateCode);
+  const res = await fetch(`${API_BASE}/laws/state?${params}`);
+  if (!res.ok) throw new Error(`State search failed: ${res.statusText}`);
+  return res.json();
+}
+
+export async function searchSupremeCourt(query: string, limit = 20) {
+  const params = new URLSearchParams({ q: query, limit: String(limit) });
+  const res = await fetch(`${API_BASE}/laws/supreme-court?${params}`);
+  if (!res.ok) throw new Error(`Supreme Court search failed: ${res.statusText}`);
+  return res.json();
+}
+
+export async function searchHighCourts(query: string, courtCode?: string, stateCode?: string, limit = 20) {
+  const params = new URLSearchParams({ q: query, limit: String(limit) });
+  if (courtCode) params.set('court_code', courtCode);
+  if (stateCode) params.set('state_code', stateCode);
+  const res = await fetch(`${API_BASE}/laws/high-courts?${params}`);
+  if (!res.ok) throw new Error(`High Court search failed: ${res.statusText}`);
+  return res.json();
+}
+
+export async function getLegalDatabaseStats() {
+  const res = await fetch(`${API_BASE}/laws/stats`);
+  if (!res.ok) throw new Error(`Stats fetch failed: ${res.statusText}`);
   return res.json();
 }
 
