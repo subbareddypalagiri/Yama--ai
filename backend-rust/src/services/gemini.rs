@@ -26,8 +26,27 @@ impl GeminiClient {
         custom_api_key: Option<String>,
         custom_model: Option<String>,
     ) -> Result<impl Stream<Item = Result<bytes::Bytes, String>> + use<>, String> {
-        let api_key = custom_api_key.unwrap_or_else(|| self.default_api_key.clone());
-        let model = custom_model.unwrap_or_else(|| self.default_model.clone());
+        let api_key = match custom_api_key {
+            Some(ref k) if !k.trim().is_empty() => k.trim().to_string(),
+            _ => {
+                if !self.default_api_key.trim().is_empty() {
+                    self.default_api_key.clone()
+                } else {
+                    std::env::var("GOOGLE_API_KEY").unwrap_or_else(|_| "AIzaSyDuUX9eeFapUJMgmckRUy_wUxNMI_p3CME".to_string())
+                }
+            }
+        };
+
+        let model = match custom_model {
+            Some(ref m) if !m.trim().is_empty() => m.trim().to_string(),
+            _ => {
+                if !self.default_model.trim().is_empty() {
+                    self.default_model.clone()
+                } else {
+                    "gemini-2.5-flash".to_string()
+                }
+            }
+        };
 
         if api_key.is_empty() {
             return Err("No API key provided".to_string());

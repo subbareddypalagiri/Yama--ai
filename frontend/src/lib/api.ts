@@ -65,9 +65,8 @@ export async function sendChatMessageStream(
           message,
           session_id: sessionId,
           response_style: responseStyle,
-          response_language: responseLanguage,
-          custom_api_key: customApiKey,
-          custom_model: customModel
+          custom_api_key: customApiKey?.trim() || undefined,
+          custom_model: customModel?.trim() || undefined
         }),
         onmessage(ev) {
           if (ev.data === '[DONE]') return;

@@ -18,8 +18,11 @@ use std::path::Path;
 
 #[tokio::main]
 async fn main() {
-    // Try to load the .env file from the python backend folder where the keys are stored
+    // Try to load the .env file from local or backend folder
+    dotenv::dotenv().ok();
     dotenv::from_filename("../backend/.env").ok();
+    dotenv::from_filename("backend/.env").ok();
+    dotenv::from_filename(".env").ok();
     
     let cors = CorsLayer::new()
         .allow_origin(Any)
