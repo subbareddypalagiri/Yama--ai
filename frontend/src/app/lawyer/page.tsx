@@ -11,6 +11,9 @@ import {
 import ReactMarkdown from 'react-markdown';
 import { API_BASE, sendChatMessageStream, type ChatResponseStyle } from '@/lib/api';
 import { SettingsModal } from '@/components/chat/SettingsModal';
+import LegalNoticeGeneratorModal from '@/components/intelligence/LegalNoticeGeneratorModal';
+import BsaEvidenceCertificateModal from '@/components/intelligence/BsaEvidenceCertificateModal';
+import CourtroomSimulatorModal from '@/components/intelligence/CourtroomSimulatorModal';
 
 // ─── Types ───────────────────────────────────────────────────────────────────
 interface Message {
@@ -247,6 +250,9 @@ function LawyerChat({ profile, onReset }: { profile: ClientProfile; onReset: () 
   const [copiedId, setCopiedId] = useState<string | null>(null);
   const [showProfile, setShowProfile] = useState(false);
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
+  const [isLegalNoticeOpen, setIsLegalNoticeOpen] = useState(false);
+  const [isBsaCertificateOpen, setIsBsaCertificateOpen] = useState(false);
+  const [isSimulatorOpen, setIsSimulatorOpen] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
 
@@ -453,6 +459,42 @@ function LawyerChat({ profile, onReset }: { profile: ClientProfile; onReset: () 
         </div>
       </header>
 
+      {/* ── ADVOCATE POWERS ARSENAL BAR ── */}
+      <div className="bg-gradient-to-r from-violet-950/40 via-purple-950/30 to-black border-b border-white/[0.07] px-4 py-2 flex items-center justify-between overflow-x-auto no-scrollbar gap-2 z-20">
+        <div className="flex items-center gap-2 text-xs text-white/60 whitespace-nowrap">
+          <span className="flex items-center gap-1 font-bold text-violet-300 uppercase tracking-wider text-[10px]">
+            <Award className="w-3.5 h-3.5" /> Advocate Powers:
+          </span>
+          <button
+            onClick={() => setIsLegalNoticeOpen(true)}
+            className="flex items-center gap-1.5 px-3 py-1 rounded-xl bg-violet-500/15 border border-violet-500/30 text-violet-200 hover:bg-violet-500/25 transition-all text-xs font-semibold shadow-sm"
+          >
+            <FileText className="w-3.5 h-3.5 text-violet-400" />
+            <span>1-Click Legal Notice Draft</span>
+          </button>
+
+          <button
+            onClick={() => setIsBsaCertificateOpen(true)}
+            className="flex items-center gap-1.5 px-3 py-1 rounded-xl bg-emerald-500/15 border border-emerald-500/30 text-emerald-200 hover:bg-emerald-500/25 transition-all text-xs font-semibold shadow-sm"
+          >
+            <FileCheck className="w-3.5 h-3.5 text-emerald-400" />
+            <span>Section 63 BSA Digital Certificate</span>
+          </button>
+
+          <button
+            onClick={() => setIsSimulatorOpen(true)}
+            className="flex items-center gap-1.5 px-3 py-1 rounded-xl bg-pink-500/15 border border-pink-500/30 text-pink-200 hover:bg-pink-500/25 transition-all text-xs font-semibold shadow-sm"
+          >
+            <Swords className="w-3.5 h-3.5 text-pink-400" />
+            <span>360° Courtroom Simulator</span>
+          </button>
+        </div>
+
+        <span className="text-[10px] text-white/30 hidden md:inline font-mono">
+          State: {profile.state} • Bar Status: Active
+        </span>
+      </div>
+
       <div className="flex flex-1 overflow-hidden relative z-10">
         {/* ── Profile Sidebar ── */}
         <aside
@@ -550,13 +592,31 @@ function LawyerChat({ profile, onReset }: { profile: ClientProfile; onReset: () 
                       {msg.timestamp.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                     </span>
                     {msg.role === 'lawyer' && msg.content && (
-                      <button
-                        onClick={() => copyMessage(msg.id, msg.content)}
-                        className="flex items-center gap-1 text-[10px] text-white/40 hover:text-white transition-colors"
-                      >
-                        {copiedId === msg.id ? <Check className="w-3 h-3 text-emerald-400" /> : <Copy className="w-3 h-3" />}
-                        {copiedId === msg.id ? 'Copied' : 'Copy'}
-                      </button>
+                      <div className="flex items-center gap-2">
+                        <button
+                          onClick={() => copyMessage(msg.id, msg.content)}
+                          className="flex items-center gap-1 text-[10px] text-white/40 hover:text-white transition-colors"
+                        >
+                          {copiedId === msg.id ? <Check className="w-3 h-3 text-emerald-400" /> : <Copy className="w-3 h-3" />}
+                          <span>{copiedId === msg.id ? 'Copied' : 'Copy'}</span>
+                        </button>
+
+                        <button
+                          onClick={() => setIsLegalNoticeOpen(true)}
+                          className="flex items-center gap-1 text-[10px] text-violet-400/80 hover:text-violet-300 transition-colors"
+                        >
+                          <FileText className="w-3 h-3" />
+                          <span>Generate Notice</span>
+                        </button>
+
+                        <button
+                          onClick={() => setIsBsaCertificateOpen(true)}
+                          className="flex items-center gap-1 text-[10px] text-emerald-400/80 hover:text-emerald-300 transition-colors"
+                        >
+                          <FileCheck className="w-3 h-3" />
+                          <span>Sec 63 Certificate</span>
+                        </button>
+                      </div>
                     )}
                   </div>
                 </div>
@@ -639,6 +699,27 @@ function LawyerChat({ profile, onReset }: { profile: ClientProfile; onReset: () 
       </div>
 
       {/* Settings Modal */}
+      {/* ── ADVOCATE POWERS MODALS ── */}
+      <LegalNoticeGeneratorModal
+        isOpen={isLegalNoticeOpen}
+        onClose={() => setIsLegalNoticeOpen(false)}
+        defaultClientName={profile.name}
+        defaultState={profile.state}
+        defaultConcern={profile.concern}
+      />
+
+      <BsaEvidenceCertificateModal
+        isOpen={isBsaCertificateOpen}
+        onClose={() => setIsBsaCertificateOpen(false)}
+        defaultClientName={profile.name}
+        defaultState={profile.state}
+      />
+
+      <CourtroomSimulatorModal
+        isOpen={isSimulatorOpen}
+        onClose={() => setIsSimulatorOpen(false)}
+      />
+
       <SettingsModal
         isOpen={isSettingsOpen}
         onClose={() => setIsSettingsOpen(false)}
