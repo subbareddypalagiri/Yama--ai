@@ -1,6 +1,7 @@
 'use client';
 
 import Link from 'next/link';
+import dynamic from 'next/dynamic';
 import {
   Scale, Zap, ArrowRight, Briefcase, Search, BookOpen, FolderOpen,
   Home as HomeIcon, Car, ShieldAlert, Lock, CheckCircle2
@@ -8,6 +9,15 @@ import {
 import LegalChatInput from '@/components/LegalChatInput';
 import UnifiedNavbar from '@/components/layout/UnifiedNavbar';
 import { useLanguage } from '@/context/LanguageContext';
+
+const GlobeStudy = dynamic(() => import('@/components/ui/GlobeStudy'), {
+  ssr: false,
+  loading: () => (
+    <div className="w-full h-full flex items-center justify-center bg-[#08090a] text-gray-500 text-xs font-mono">
+      Initializing 3D Jurisprudence Globe...
+    </div>
+  ),
+});
 
 export default function Home() {
   const { t } = useLanguage();
@@ -86,48 +96,82 @@ export default function Home() {
       {/* 100% Solid Precision Navbar */}
       <UnifiedNavbar />
 
-      {/* HERO SECTION - SOLID MINIMALIST EXECUTIVE AESTHETIC */}
-      <section className="relative flex flex-col items-center justify-center px-6 pt-16 pb-20 border-b border-[#1b1f2b]">
-        <div className="w-full max-w-4xl mx-auto text-center">
-          {/* Status Badge */}
-          <div className="inline-flex items-center gap-2.5 px-4 py-1.5 rounded-full border border-[#2a2f40] bg-[#11131b] mb-8">
-            <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
-            <span className="text-[11px] font-bold text-gray-200 tracking-wider uppercase">
-              BHARAT&apos;S SENIOR AI LEGAL STRATEGIST • 12,036+ LIVE RECORDS
-            </span>
-          </div>
+      {/* HERO SECTION - SPLIT ARCHITECTURE WITH 3D GLOBE */}
+      <section className="relative px-4 sm:px-6 lg:px-8 pt-12 pb-20 border-b border-[#1b1f2b]">
+        <div className="max-w-7xl mx-auto">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-8 items-center">
+            
+            {/* Left Column: Intelligence, Headline & Legal Input (col-span-7) */}
+            <div className="lg:col-span-7 flex flex-col items-start text-left">
+              {/* Status Badge */}
+              <div className="inline-flex items-center gap-2.5 px-3.5 py-1.5 rounded-full border border-[#2a2f40] bg-[#11131b] mb-6">
+                <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+                <span className="text-[11px] font-bold text-gray-200 tracking-wider uppercase font-mono">
+                  BHARAT&apos;S SENIOR AI ADVOCATE • 12,036+ LAWS
+                </span>
+              </div>
 
-          {/* Master Headline */}
-          <h1 className="text-4xl sm:text-5xl md:text-6xl font-black tracking-tight leading-[1.08] mb-6 font-display">
-            <span className="text-white">The Intelligence of a</span>{' '}
-            <span className="text-[#f59e0b]">
-              Senior Advocate.
-            </span>
-            <br />
-            <span className="text-gray-300">The Speed of Pure AI.</span>
-          </h1>
+              {/* Master Headline */}
+              <h1 className="text-4xl sm:text-5xl xl:text-6xl font-black tracking-tight leading-[1.08] mb-6 font-display">
+                <span className="text-white">The Intelligence of a</span>{' '}
+                <span className="text-[#f59e0b]">
+                  Senior Advocate.
+                </span>
+                <br />
+                <span className="text-gray-300">The Speed of Pure AI.</span>
+              </h1>
 
-          <p className="text-sm sm:text-base text-gray-400 max-w-2xl mx-auto mb-10 leading-relaxed font-normal">
-            Autonomous statutory defense under the 2023 Sanhitas &amp; 28 State Acts, instant contract clause audits, court-standard notice drafting with gold seals, and Lok Adalat waivers.
-          </p>
+              <p className="text-sm sm:text-base text-gray-400 max-w-xl mb-8 leading-relaxed font-normal">
+                Autonomous statutory defense under the 2023 Sanhitas &amp; 28 State Acts, instant contract clause audits, court-standard notice drafting with gold seals, and Lok Adalat waivers.
+              </p>
 
-          {/* Chat Input */}
-          <LegalChatInput />
+              {/* Chat Input */}
+              <div className="w-full max-w-2xl mb-6">
+                <LegalChatInput />
+              </div>
 
-          {/* Quick Metrics */}
-          <div className="mt-8 flex flex-wrap items-center justify-center gap-6 text-xs text-gray-400 font-medium">
-            <span className="flex items-center gap-2">
-              <CheckCircle2 className="w-4 h-4 text-emerald-400" />
-              BNS, BNSS &amp; BSA 2023 Compliant
-            </span>
-            <span className="flex items-center gap-2">
-              <CheckCircle2 className="w-4 h-4 text-[#d4af37]" />
-              28 State Acts &amp; 25 High Courts
-            </span>
-            <span className="flex items-center gap-2">
-              <CheckCircle2 className="w-4 h-4 text-blue-400" />
-              English &amp; తెలుగు Native Voice
-            </span>
+              {/* Quick Metrics */}
+              <div className="flex flex-wrap items-center gap-6 text-xs text-gray-400 font-medium pt-2">
+                <span className="flex items-center gap-2">
+                  <CheckCircle2 className="w-4 h-4 text-emerald-400" />
+                  BNS, BNSS &amp; BSA 2023 Compliant
+                </span>
+                <span className="flex items-center gap-2">
+                  <CheckCircle2 className="w-4 h-4 text-[#d4af37]" />
+                  28 State Acts &amp; 25 High Courts
+                </span>
+                <span className="flex items-center gap-2">
+                  <CheckCircle2 className="w-4 h-4 text-blue-400" />
+                  English &amp; తెలుగు Native Voice
+                </span>
+              </div>
+            </div>
+
+            {/* Right Column: Interactive 3D Typographic Globe Study (col-span-5) */}
+            <div className="lg:col-span-5 flex flex-col items-center justify-center w-full">
+              <div className="w-full aspect-square max-w-[480px] rounded-3xl bg-[#08090a] border border-[#1f2332] relative overflow-hidden shadow-2xl flex flex-col">
+                {/* Globe Top Micro-bar */}
+                <div className="flex items-center justify-between px-4 py-2.5 border-b border-[#1b1f2b] bg-[#0c0e14] text-[11px] font-mono text-gray-400">
+                  <div className="flex items-center gap-2">
+                    <span className="w-2 h-2 rounded-full bg-[#f59e0b] animate-pulse" />
+                    <span className="text-gray-300 font-semibold uppercase tracking-wider">JURISPRUDENCE GLOBE</span>
+                  </div>
+                  <span className="text-[10px] text-gray-500 font-bold">FIG 06 • 3D CANVAS</span>
+                </div>
+
+                {/* The Globe Canvas Container */}
+                <div className="relative flex-1 w-full h-full min-h-[340px] bg-[#08090a]">
+                  <GlobeStudy mode="dark" scale={1} opacity={1} />
+                </div>
+
+                {/* Globe Bottom Interactive Caption */}
+                <div className="px-4 py-2.5 border-t border-[#1b1f2b] bg-[#0c0e14] flex items-center justify-between text-[10px] font-mono text-gray-500">
+                  <span>DRAG • SCROLL ZOOM • CLICK PIN</span>
+                  <span className="text-amber-400 font-bold uppercase tracking-wider">ALL INDIA NETWORK</span>
+                </div>
+              </div>
+            </div>
+
           </div>
         </div>
       </section>
