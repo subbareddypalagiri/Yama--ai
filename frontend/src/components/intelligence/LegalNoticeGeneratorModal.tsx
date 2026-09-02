@@ -149,21 +149,116 @@ ADVOCATE FOR CLIENT`;
     const printWindow = window.open('', '_blank');
     if (!printWindow) return;
     printWindow.document.write(`
+      <!DOCTYPE html>
       <html>
         <head>
-          <title>Legal Notice - YAMA AI</title>
+          <title>Legal Notice - Chambers of Advocate YAMA</title>
           <style>
-            body { font-family: 'Times New Roman', serif; padding: 40px; line-height: 1.6; font-size: 13pt; color: #000; }
-            pre { white-space: pre-wrap; font-family: inherit; }
-            .header { text-align: center; border-bottom: 2px solid #000; padding-bottom: 10px; margin-bottom: 25px; }
+            @page { size: A4; margin: 25mm 20mm; }
+            body {
+              font-family: 'Times New Roman', Times, serif;
+              padding: 20px 40px;
+              line-height: 1.7;
+              font-size: 12.5pt;
+              color: #111;
+              position: relative;
+            }
+            .watermark {
+              position: fixed;
+              top: 45%;
+              left: 50%;
+              transform: translate(-50%, -50%) rotate(-35deg);
+              font-size: 55pt;
+              color: rgba(0, 0, 0, 0.04);
+              font-weight: bold;
+              white-space: nowrap;
+              pointer-events: none;
+              text-transform: uppercase;
+              letter-spacing: 5px;
+            }
+            .letterhead {
+              text-align: center;
+              border-bottom: 2.5px double #222;
+              padding-bottom: 14px;
+              margin-bottom: 25px;
+            }
+            .letterhead h1 {
+              margin: 0;
+              font-size: 20pt;
+              letter-spacing: 2px;
+              text-transform: uppercase;
+              font-weight: bold;
+              color: #1a1a24;
+            }
+            .letterhead .sub {
+              font-size: 10pt;
+              margin: 4px 0 0 0;
+              color: #444;
+              font-style: italic;
+            }
+            .letterhead .bar-reg {
+              font-size: 9.5pt;
+              font-weight: bold;
+              color: #222;
+              margin-top: 4px;
+            }
+            pre {
+              white-space: pre-wrap;
+              font-family: 'Times New Roman', Times, serif;
+              font-size: 12.5pt;
+              line-height: 1.7;
+            }
+            .seal-container {
+              margin-top: 40px;
+              display: flex;
+              justify-content: space-between;
+              align-items: flex-end;
+              page-break-inside: avoid;
+            }
+            .seal-stamp {
+              width: 110px;
+              height: 110px;
+              border: 3px solid #8B0000;
+              border-radius: 50%;
+              display: flex;
+              flex-direction: column;
+              align-items: center;
+              justify-content: center;
+              color: #8B0000;
+              font-weight: bold;
+              font-size: 8pt;
+              text-align: center;
+              text-transform: uppercase;
+              padding: 6px;
+              transform: rotate(-12deg);
+              box-shadow: inset 0 0 0 1px #8B0000;
+            }
+            .sig-box {
+              text-align: right;
+              font-weight: bold;
+              font-size: 11pt;
+            }
           </style>
         </head>
         <body>
-          <div class="header">
-            <h2 style="margin:0;">CHAMBERS OF ADVOCATE YAMA</h2>
-            <p style="margin:4px 0; font-size:10pt;">Advocates &amp; Legal Consultants • Supreme Court of India &amp; High Courts</p>
+          <div class="watermark">LEGAL DEMAND NOTICE</div>
+          <div class="letterhead">
+            <h1>CHAMBERS OF ADVOCATE YAMA</h1>
+            <p class="sub">Advocates &amp; Legal Consultants • Supreme Court of India &amp; High Courts</p>
+            <p class="bar-reg">Enrolment No: AP/BCI/2021/984 • Jurisdictional Chambers: ${defaultState}</p>
           </div>
           <pre>${generateNoticeContent()}</pre>
+          <div class="seal-container">
+            <div class="seal-stamp">
+              <div>★ ADVOCATE ★</div>
+              <div style="font-size: 7pt; margin: 2px 0;">CHAMBERS OF YAMA</div>
+              <div>BAR ENROLLED</div>
+            </div>
+            <div class="sig-box">
+              <p>For Chambers of Advocate YAMA</p>
+              <p style="margin-top: 50px;">(ADVOCATE SIGNATURE &amp; SEAL)</p>
+            </div>
+          </div>
         </body>
       </html>
     `);

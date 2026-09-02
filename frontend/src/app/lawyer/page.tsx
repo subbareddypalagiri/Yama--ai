@@ -7,7 +7,7 @@ import {
   FileText, Shield, Zap, ChevronDown, Copy, Check, RotateCcw,
   AlertCircle, BookOpen, Gavel, HelpCircle, X, Plus, Loader2,
   Settings2, PhoneCall, ExternalLink, MessageSquare, ChevronRight,
-  Award, FileCheck, Swords
+  Award, FileCheck, Swords, Paperclip, Mic, MicOff, Volume2, VolumeX, ArrowLeftRight, Calculator
 } from 'lucide-react';
 import ReactMarkdown from 'react-markdown';
 import { API_BASE, sendChatMessageStream, type ChatResponseStyle } from '@/lib/api';
@@ -15,6 +15,8 @@ import { SettingsModal } from '@/components/chat/SettingsModal';
 import LegalNoticeGeneratorModal from '@/components/intelligence/LegalNoticeGeneratorModal';
 import BsaEvidenceCertificateModal from '@/components/intelligence/BsaEvidenceCertificateModal';
 import CourtroomSimulatorModal from '@/components/intelligence/CourtroomSimulatorModal';
+import DualLawConverterModal from '@/components/intelligence/DualLawConverterModal';
+import CourtFeeCalculatorModal from '@/components/intelligence/CourtFeeCalculatorModal';
 
 // ─── Types ───────────────────────────────────────────────────────────────────
 interface Message {
@@ -254,6 +256,12 @@ function LawyerChat({ profile, onReset }: { profile: ClientProfile; onReset: () 
   const [isLegalNoticeOpen, setIsLegalNoticeOpen] = useState(false);
   const [isBsaCertificateOpen, setIsBsaCertificateOpen] = useState(false);
   const [isSimulatorOpen, setIsSimulatorOpen] = useState(false);
+  const [isDualLawOpen, setIsDualLawOpen] = useState(false);
+  const [isCourtFeeOpen, setIsCourtFeeOpen] = useState(false);
+  const [attachedFile, setAttachedFile] = useState<{ file: File; name: string; size: string; content?: string } | null>(null);
+  const [isListening, setIsListening] = useState(false);
+  const [speakingMsgId, setSpeakingMsgId] = useState<string | null>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
 
@@ -272,6 +280,70 @@ function LawyerChat({ profile, onReset }: { profile: ClientProfile; onReset: () 
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages, isLoading]);
+
+  const handleFileSelect = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    let textContent = '';
+    try {
+      if (file.type.includes('text') || file.name.endsWith('.txt') || file.name.endsWith('.md')) {
+        textContent = await file.text();
+      } else {
+        textContent = `[Attached Legal Document: ${file.name}, Size: ${(file.size / 1024).toFixed(1)} KB]`;
+      }
+    } catch {
+      textContent = `[Attached Legal Document: ${file.name}]`;
+    }
+    setAttachedFile({
+      file,
+      name: file.name,
+      size: `${(file.size / 1024).toFixed(1)} KB`,
+      content: textContent,
+    });
+  };
+
+  const startListening = () => {
+    if (typeof window === 'undefined') return;
+    const SpeechRecognition = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
+    if (!SpeechRecognition) {
+      alert('Speech recognition is not supported in this browser. Please use Chrome or Edge.');
+      return;
+    }
+    if (isListening) {
+      setIsListening(false);
+      return;
+    }
+    const recognition = new SpeechRecognition();
+    recognition.continuous = false;
+    recognition.interimResults = false;
+    recognition.lang = profile.state === 'Andhra Pradesh' || profile.state === 'Telangana' ? 'te-IN' : 'en-IN';
+    recognition.onstart = () => setIsListening(true);
+    recognition.onresult = (event: any) => {
+      const transcript = event.results[0][0].transcript;
+      setInput((prev) => (prev ? `${prev} ${transcript}` : transcript));
+      setIsListening(false);
+    };
+    recognition.onerror = () => setIsListening(false);
+    recognition.onend = () => setIsListening(false);
+    recognition.start();
+  };
+
+  const handleSpeak = (id: string, text: string) => {
+    if (typeof window === 'undefined' || !('speechSynthesis' in window)) return;
+    if (speakingMsgId === id) {
+      window.speechSynthesis.cancel();
+      setSpeakingMsgId(null);
+      return;
+    }
+    window.speechSynthesis.cancel();
+    const cleanText = text.replace(/[*#_`]/g, '');
+    const utterance = new SpeechSynthesisUtterance(cleanText);
+    utterance.rate = 1.0;
+    utterance.onend = () => setSpeakingMsgId(null);
+    utterance.onerror = () => setSpeakingMsgId(null);
+    setSpeakingMsgId(id);
+    window.speechSynthesis.speak(utterance);
+  };
 
   const handleSubmit = async (text?: string) => {
     const messageText = (text || input).trim();
@@ -314,8 +386,14 @@ function LawyerChat({ profile, onReset }: { profile: ClientProfile; onReset: () 
 
       let streamedText = '';
 
+      let fullPrompt = `[Mode: ${mode.toUpperCase()} | Client: ${profile.name} | State: ${profile.state} (${stateCode}) | Concern: ${profile.concern}] ${messageText}`;
+      if (attachedFile) {
+        fullPrompt = `[ATTACHED LEGAL DOCUMENT / CONTRACT: ${attachedFile.name} (${attachedFile.size})]\n${attachedFile.content || ''}\n\n[LEGAL REVIEW INSTRUCTION]: Perform a rigorous clause-by-clause contract analysis on this document. Identify unfair clauses, penalty liabilities, and missing statutory protections.\n\n[CLIENT QUERY]: ${messageText}`;
+        setAttachedFile(null);
+      }
+
       await sendChatMessageStream(
-        `[Mode: ${mode.toUpperCase()} | Client: ${profile.name} | State: ${profile.state} (${stateCode}) | Concern: ${profile.concern}] ${messageText}`,
+        fullPrompt,
         (chunk) => {
           streamedText += chunk;
           setMessages((prev) =>
@@ -489,6 +567,22 @@ function LawyerChat({ profile, onReset }: { profile: ClientProfile; onReset: () 
             <Swords className="w-3.5 h-3.5 text-pink-400" />
             <span>360° Courtroom Simulator</span>
           </button>
+
+          <button
+            onClick={() => setIsDualLawOpen(true)}
+            className="flex items-center gap-1.5 px-3 py-1 rounded-xl bg-indigo-500/15 border border-indigo-500/30 text-indigo-200 hover:bg-indigo-500/25 transition-all text-xs font-semibold shadow-sm"
+          >
+            <ArrowLeftRight className="w-3.5 h-3.5 text-indigo-400" />
+            <span>BNS ↔ IPC Converter</span>
+          </button>
+
+          <button
+            onClick={() => setIsCourtFeeOpen(true)}
+            className="flex items-center gap-1.5 px-3 py-1 rounded-xl bg-amber-500/15 border border-amber-500/30 text-amber-200 hover:bg-amber-500/25 transition-all text-xs font-semibold shadow-sm"
+          >
+            <Calculator className="w-3.5 h-3.5 text-amber-400" />
+            <span>Court Fees Calculator</span>
+          </button>
         </div>
 
         <span className="text-[10px] text-white/30 hidden md:inline font-mono">
@@ -603,6 +697,15 @@ function LawyerChat({ profile, onReset }: { profile: ClientProfile; onReset: () 
                         </button>
 
                         <button
+                          onClick={() => handleSpeak(msg.id, msg.content)}
+                          className="flex items-center gap-1 text-[10px] text-white/40 hover:text-amber-300 transition-colors"
+                          title="Listen to legal advice"
+                        >
+                          {speakingMsgId === msg.id ? <VolumeX className="w-3 h-3 text-amber-400 animate-pulse" /> : <Volume2 className="w-3 h-3" />}
+                          <span>{speakingMsgId === msg.id ? 'Stop' : 'Listen'}</span>
+                        </button>
+
+                        <button
                           onClick={() => setIsLegalNoticeOpen(true)}
                           className="flex items-center gap-1 text-[10px] text-violet-400/80 hover:text-violet-300 transition-colors"
                         >
@@ -659,6 +762,30 @@ function LawyerChat({ profile, onReset }: { profile: ClientProfile; onReset: () 
                 ))}
               </div>
 
+              {/* Attached Document Preview Chip */}
+              {attachedFile && (
+                <div className="mb-2 flex items-center gap-2 px-3 py-1.5 rounded-xl bg-violet-500/15 border border-violet-500/30 text-xs text-violet-200 max-w-fit">
+                  <FileText className="w-3.5 h-3.5 text-violet-400" />
+                  <span className="font-semibold truncate max-w-xs">{attachedFile.name} ({attachedFile.size})</span>
+                  <button
+                    type="button"
+                    onClick={() => setAttachedFile(null)}
+                    className="p-0.5 rounded text-white/40 hover:text-white"
+                  >
+                    <X className="w-3 h-3" />
+                  </button>
+                </div>
+              )}
+
+              {/* Hidden File Input */}
+              <input
+                type="file"
+                ref={fileInputRef}
+                onChange={handleFileSelect}
+                accept=".pdf,.doc,.docx,.txt,.md,.png,.jpg,.jpeg"
+                className="hidden"
+              />
+
               {/* Input Box */}
               <form
                 onSubmit={(e) => {
@@ -667,6 +794,15 @@ function LawyerChat({ profile, onReset }: { profile: ClientProfile; onReset: () 
                 }}
                 className="relative flex items-center rounded-2xl bg-white/[0.04] border border-white/[0.1] focus-within:border-violet-500/60 focus-within:bg-white/[0.06] transition-all p-1"
               >
+                {/* Paperclip Button */}
+                <button
+                  type="button"
+                  onClick={() => fileInputRef.current?.click()}
+                  className="p-2.5 rounded-xl text-white/40 hover:text-violet-300 hover:bg-white/[0.05] transition-all flex-shrink-0"
+                  title="Attach Agreement / Contract / FIR (PDF/Text/Image)"
+                >
+                  <Paperclip className="w-4 h-4" />
+                </button>
                 <textarea
                   ref={textareaRef}
                   value={input}
@@ -686,9 +822,23 @@ function LawyerChat({ profile, onReset }: { profile: ClientProfile; onReset: () 
                   className="flex-1 bg-transparent px-4 py-2.5 text-sm text-white placeholder-white/30 focus:outline-none resize-none max-h-32"
                 />
 
+                {/* Speech Recognition Mic */}
+                <button
+                  type="button"
+                  onClick={startListening}
+                  className={`p-2.5 rounded-xl transition-all flex-shrink-0 ${
+                    isListening
+                      ? 'bg-red-500 text-white animate-pulse'
+                      : 'text-white/40 hover:text-white hover:bg-white/[0.05]'
+                  }`}
+                  title={isListening ? 'Listening... Speak now' : 'Voice Consultation (Telugu/English)'}
+                >
+                  {isListening ? <MicOff className="w-4 h-4" /> : <Mic className="w-4 h-4" />}
+                </button>
+
                 <button
                   type="submit"
-                  disabled={!input.trim() || isLoading}
+                  disabled={(!input.trim() && !attachedFile) || isLoading}
                   className="p-2.5 rounded-xl bg-gradient-to-r from-violet-500 to-pink-500 text-white hover:brightness-110 disabled:opacity-30 disabled:cursor-not-allowed transition-all shadow-md flex-shrink-0"
                 >
                   {isLoading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Send className="w-4 h-4" />}
@@ -719,6 +869,17 @@ function LawyerChat({ profile, onReset }: { profile: ClientProfile; onReset: () 
       <CourtroomSimulatorModal
         isOpen={isSimulatorOpen}
         onClose={() => setIsSimulatorOpen(false)}
+      />
+
+      <DualLawConverterModal
+        isOpen={isDualLawOpen}
+        onClose={() => setIsDualLawOpen(false)}
+      />
+
+      <CourtFeeCalculatorModal
+        isOpen={isCourtFeeOpen}
+        onClose={() => setIsCourtFeeOpen(false)}
+        defaultState={profile.state}
       />
 
       <SettingsModal
