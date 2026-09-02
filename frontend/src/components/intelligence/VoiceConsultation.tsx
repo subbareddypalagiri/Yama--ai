@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState, useEffect, useRef } from 'react';
+import { Mic, MicOff } from 'lucide-react';
 
 interface VoiceConsultationProps {
   onTranscript: (text: string) => void;
@@ -25,7 +26,7 @@ export default function VoiceConsultation({ onTranscript, language = 'en-US' }: 
   const toggleListening = () => {
     if (isListening) {
       if (recognitionRef.current) {
-        recognitionRef.current.stop();
+        try { recognitionRef.current.stop(); } catch {}
       }
       setIsListening(false);
       return;
@@ -49,7 +50,7 @@ export default function VoiceConsultation({ onTranscript, language = 'en-US' }: 
       };
 
       recognition.onresult = (event: any) => {
-        const transcript = event.results[0][0].transcript;
+        const transcript = event.results?.[0]?.[0]?.transcript;
         if (transcript) {
           onTranscript(transcript);
         }
@@ -91,13 +92,17 @@ export default function VoiceConsultation({ onTranscript, language = 'en-US' }: 
         type="button"
         onClick={toggleListening}
         title={isListening ? 'Listening... Click to stop' : 'Click to speak your legal query'}
-        className={`p-3 rounded-2xl transition-all flex items-center justify-center border ${
+        className={`w-9 h-9 sm:w-10 sm:h-10 rounded-xl transition-all flex items-center justify-center border cursor-pointer ${
           isListening
-            ? 'bg-rose-600 text-white border-rose-400 shadow-[0_0_20px_rgba(244,63,94,0.6)] animate-pulse scale-105'
-            : 'bg-purple-900/40 hover:bg-purple-800/60 text-purple-200 border-purple-500/30'
+            ? 'bg-red-500/20 text-red-400 border-red-500/60 shadow-[0_0_15px_rgba(239,68,68,0.4)] animate-pulse scale-105'
+            : 'bg-white/[0.05] hover:bg-white/[0.1] text-neutral-300 hover:text-[#f59e0b] border-white/[0.1] hover:border-[#f59e0b]/40'
         }`}
       >
-        <span className="text-xl">{isListening ? '🛑' : '🎙️'}</span>
+        {isListening ? (
+          <MicOff className="w-4 h-4 text-red-400 animate-pulse" />
+        ) : (
+          <Mic className="w-4 h-4 text-neutral-300 hover:text-[#f59e0b] transition-colors" />
+        )}
       </button>
 
       {error && (

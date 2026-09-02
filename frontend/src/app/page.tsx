@@ -11,6 +11,7 @@ import {
 } from 'lucide-react';
 import UnifiedNavbar from '@/components/layout/UnifiedNavbar';
 import VoiceConsultation from '@/components/intelligence/VoiceConsultation';
+import BorderBeam from '@/components/ui/BorderBeam';
 
 const NeuralBackground = dynamic(() => import('@/components/NeuralBackground'), {
   ssr: false,
@@ -152,52 +153,61 @@ export default function Home() {
             Autonomous statutory defense under the 2023 Sanhitas &amp; 28 State Acts, instant contract clause audits, court-standard notice drafting with gold seals, and Lok Adalat waivers.
           </p>
 
-          {/* Sleek Command Search Bar */}
+          {/* Sleek Command Search Bar with BorderBeam Animated Glow */}
           <div className="w-full max-w-2xl mx-auto mb-6">
-            <form onSubmit={handleSearchSubmit} className="relative">
-              <div
-                className={`relative flex items-center rounded-2xl bg-[#0c0e14]/90 border transition-all duration-300 p-2 sm:p-2.5 shadow-2xl backdrop-blur-md ${
-                  isFocused
-                    ? 'border-[#f59e0b]/70 shadow-[0_0_30px_rgba(245,158,11,0.18)] bg-[#0f111a]'
-                    : 'border-white/[0.1] hover:border-white/[0.2]'
-                }`}
-              >
-                <div className="pl-3 text-neutral-400">
-                  <Search className="w-5 h-5 text-neutral-400" />
-                </div>
+            <BorderBeam
+              size="md"
+              colorVariant="sunset"
+              theme="dark"
+              duration={3}
+              borderRadius={16}
+              className="w-full"
+            >
+              <form onSubmit={handleSearchSubmit} className="relative w-full">
+                <div
+                  className={`relative flex items-center rounded-2xl bg-[#0c0e14]/95 border transition-all duration-300 p-2 sm:p-2.5 shadow-2xl backdrop-blur-md ${
+                    isFocused
+                      ? 'border-[#f59e0b]/70 shadow-[0_0_30px_rgba(245,158,11,0.18)] bg-[#0f111a]'
+                      : 'border-white/[0.1] hover:border-white/[0.2]'
+                  }`}
+                >
+                  <div className="pl-3 text-neutral-400">
+                    <Search className="w-5 h-5 text-neutral-400" />
+                  </div>
 
-                <input
-                  type="text"
-                  value={query}
-                  onChange={(e) => setQuery(e.target.value)}
-                  onFocus={() => setIsFocused(true)}
-                  onBlur={() => setIsFocused(false)}
-                  onKeyDown={handleKeyDown}
-                  placeholder="Describe your legal situation, dispute, or section (e.g. 318 BNS)..."
-                  className="w-full px-3.5 py-2 bg-transparent text-sm sm:text-base text-white placeholder-neutral-500 focus:outline-none"
-                />
-
-                <div className="flex items-center gap-2 pr-1">
-                  <VoiceConsultation
-                    onTranscript={(transcript) => {
-                      setQuery(transcript);
-                    }}
+                  <input
+                    type="text"
+                    value={query}
+                    onChange={(e) => setQuery(e.target.value)}
+                    onFocus={() => setIsFocused(true)}
+                    onBlur={() => setIsFocused(false)}
+                    onKeyDown={handleKeyDown}
+                    placeholder="Describe your legal situation, dispute, or section (e.g. 318 BNS)..."
+                    className="w-full px-3.5 py-2 bg-transparent text-sm sm:text-base text-white placeholder-neutral-500 focus:outline-none"
                   />
 
-                  <button
-                    type="submit"
-                    disabled={!query.trim()}
-                    className={`w-9 h-9 sm:w-10 sm:h-10 rounded-xl flex items-center justify-center transition-all ${
-                      query.trim()
-                        ? 'bg-[#f59e0b] text-black hover:bg-[#fbbf24] shadow-md shadow-[#f59e0b]/20 cursor-pointer'
-                        : 'bg-white/[0.05] text-neutral-500 cursor-not-allowed'
-                    }`}
-                  >
-                    <ArrowUp className="w-4 h-4 font-bold" />
-                  </button>
+                  <div className="flex items-center gap-2 pr-1">
+                    <VoiceConsultation
+                      onTranscript={(transcript) => {
+                        setQuery(transcript);
+                      }}
+                    />
+
+                    <button
+                      type="submit"
+                      disabled={!query.trim()}
+                      className={`w-9 h-9 sm:w-10 sm:h-10 rounded-xl flex items-center justify-center transition-all ${
+                        query.trim()
+                          ? 'bg-[#f59e0b] text-black hover:bg-[#fbbf24] shadow-md shadow-[#f59e0b]/20 cursor-pointer'
+                          : 'bg-white/[0.05] text-neutral-500 cursor-not-allowed'
+                      }`}
+                    >
+                      <ArrowUp className="w-4 h-4 font-bold" />
+                    </button>
+                  </div>
                 </div>
-              </div>
-            </form>
+              </form>
+            </BorderBeam>
 
             {/* Clean Suggested Prompt Chips - 1 Horizontal Row */}
             <div className="mt-4 flex flex-wrap items-center justify-center gap-2">
