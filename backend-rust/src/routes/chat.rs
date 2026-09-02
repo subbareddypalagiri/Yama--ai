@@ -45,17 +45,35 @@ pub async fn chat_handler(
         });
     }
 
-    // Retrieve verified statutes from Legal Database
-    let retrieved_laws = state.legal_db.search_laws(&payload.message, 6).await;
+    // Retrieve verified statutes & court precedents from Enterprise Legal Database
+    let unified_results = state.legal_db.unified_search(&payload.message, None, 6).await;
     let mut legal_context = String::new();
-    if !retrieved_laws.is_empty() {
-        legal_context.push_str("### 📚 VERIFIED INDIAN STATUTORY LAW & PRECEDENT CONTEXT (Use for absolute accuracy):\n");
-        for law in retrieved_laws {
+    
+    if !unified_results.central_laws.is_empty() || !unified_results.state_laws.is_empty() || !unified_results.precedents.is_empty() {
+        legal_context.push_str("### 📚 VERIFIED INDIAN STATUTORY LAW & COURT PRECEDENT CONTEXT (Use for absolute accuracy):\n");
+        
+        for law in unified_results.central_laws {
             let old_ref = law.old_law_reference.map(|r| format!(" (Old Law Ref: {})", r)).unwrap_or_default();
-            let punishment = law.punishment.map(|p| format!("\n  - Punishment: {}", p)).unwrap_or_default();
+            let punishment = law.punishment.map(|p| format!(" | Punishment: {}", p)).unwrap_or_default();
             legal_context.push_str(&format!(
-                "- **{} Section {}**{}: {}\n  - Summary: {}{}\n",
+                "- [Central Law] **{} Section {}**{}: {} - {}{}\n",
                 law.act_name, law.section_number, old_ref, law.title, law.description, punishment
+            ));
+        }
+
+        for slaw in unified_results.state_laws {
+            let punishment = slaw.punishment.map(|p| format!(" | Relief: {}", p)).unwrap_or_default();
+            legal_context.push_str(&format!(
+                "- [State Law: {}] **{} Section {}**: {} - {}{}\n",
+                slaw.state_name, slaw.act_name, slaw.section_number, slaw.title, slaw.description, punishment
+            ));
+        }
+
+        for prec in unified_results.precedents {
+            let disp = prec.disposition.map(|d| format!(" | Outcome: {}", d)).unwrap_or_default();
+            legal_context.push_str(&format!(
+                "- [{} Landmark Precedent] **{} ({})**: Holding: {}{}\n",
+                prec.court_name, prec.case_name, prec.citation, prec.ratio_decidendi, disp
             ));
         }
     }
