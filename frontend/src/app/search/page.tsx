@@ -12,6 +12,7 @@ import {
 } from '@/lib/api';
 import type { LawSection } from '@/types';
 import TiltCard from '@/components/ui/TiltCard';
+import UnifiedNavbar from '@/components/layout/UnifiedNavbar';
 
 const TABS = [
   { id: 'central', label: 'Central Bare Acts', icon: BookOpen },
@@ -137,30 +138,8 @@ export default function SearchPage() {
   };
 
   return (
-    <div className="min-h-screen bg-justice-dark text-white">
-      {/* Header */}
-      <header className="border-b border-white/[0.07] glass-dark sticky top-0 z-20">
-        <div className="max-w-6xl mx-auto px-4 py-3 flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <Link href="/" className="text-white/40 hover:text-white transition-colors p-1.5 rounded-lg hover:bg-white/5">
-              <ChevronLeft className="w-5 h-5" />
-            </Link>
-            <div className="flex items-center gap-2.5">
-              <div className="w-8 h-8 rounded-lg bg-gold-gradient flex items-center justify-center shadow-gold">
-                <Scale className="w-4 h-4 text-justice-dark" />
-              </div>
-              <div>
-                <h1 className="text-sm font-bold leading-none">YAMA AI</h1>
-                <p className="text-[10px] text-white/35 mt-0.5">Enterprise Indian Legal Knowledge Base</p>
-              </div>
-            </div>
-          </div>
-          <nav className="flex gap-1.5">
-            <Link href="/chat" className="px-3 py-1.5 text-white/60 hover:text-white hover:bg-white/5 rounded-lg text-xs font-medium transition-colors">Chat</Link>
-            <Link href="/lawyer" className="px-3 py-1.5 text-white/60 hover:text-white hover:bg-white/5 rounded-lg text-xs font-medium transition-colors">Your Lawyer</Link>
-          </nav>
-        </div>
-      </header>
+    <div className="min-h-screen bg-[#07070a] text-white font-sans">
+      <UnifiedNavbar />
 
       <div className="max-w-6xl mx-auto px-4 py-8">
         {/* Title & Live Database Stats Banner */}
