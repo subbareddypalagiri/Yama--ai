@@ -207,6 +207,28 @@ export default function Home() {
         </div>
       </section>
 
+      {/* LIVE STATUTORY INTELLIGENCE TICKER */}
+      <div className="w-full bg-[#080a0f] border-y border-[#161a26] py-3.5 overflow-hidden">
+        <div className="max-w-7xl mx-auto px-4 flex flex-wrap items-center justify-center gap-6 sm:gap-10 text-[11px] font-mono text-neutral-400">
+          <div className="flex items-center gap-2">
+            <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse shadow-[0_0_8px_rgba(52,211,153,0.8)]" />
+            <span className="text-white font-bold">12,036+</span> BARE ACTS INDEXED &amp; SYNCED
+          </div>
+          <div className="flex items-center gap-2">
+            <span className="w-2 h-2 rounded-full bg-amber-400 animate-pulse shadow-[0_0_8px_rgba(245,158,11,0.8)]" />
+            <span>CENTRAL SANHITAS 2023 ACTIVE (BNS • BNSS • BSA)</span>
+          </div>
+          <div className="flex items-center gap-2">
+            <span className="w-2 h-2 rounded-full bg-cyan-400 animate-pulse shadow-[0_0_8px_rgba(34,211,238,0.8)]" />
+            <span>25 HIGH COURTS &amp; SC PRECEDENTS</span>
+          </div>
+          <div className="hidden lg:flex items-center gap-2">
+            <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse shadow-[0_0_8px_rgba(52,211,153,0.8)]" />
+            <span>BSA § 63 CRYPTO LEDGER ACTIVE</span>
+          </div>
+        </div>
+      </div>
+
       {/* SUPERPOWERS ARSENAL - 100% SOLID OPAQUE CARDS */}
       <section className="py-20 px-6 bg-[#0a0b10]">
         <div className="max-w-6xl mx-auto">
@@ -224,7 +246,7 @@ export default function Home() {
             </p>
           </div>
 
-          {/* 6 Solid High-Contrast Precision Cards */}
+          {/* 6 Solid High-Contrast Precision Cards with Apple-Grade Physics */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {superPowerCards.map((card, i) => {
               const Icon = card.icon;
@@ -232,12 +254,15 @@ export default function Home() {
                 <Link
                   key={i}
                   href={card.href}
-                  className="group relative p-7 rounded-2xl bg-[#0e1017] border border-[#1b1f2b] hover:border-[#d4af37] hover:bg-[#12151e] transition-all duration-200 flex flex-col justify-between shadow-xl"
+                  className="group relative p-7 rounded-2xl bg-[#0e1017] border border-[#1b1f2b] hover:border-[#d4af37]/70 hover:bg-[#12151e] transition-all duration-300 transform hover:-translate-y-1.5 hover:shadow-[0_20px_45px_rgba(0,0,0,0.6),0_0_25px_rgba(245,158,11,0.08)] flex flex-col justify-between overflow-hidden"
                 >
-                  <div>
+                  {/* Subtle Ambient Radial Backlight on Hover */}
+                  <div className="absolute inset-0 rounded-2xl bg-gradient-to-br from-amber-500/[0.04] via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none" />
+
+                  <div className="relative z-10">
                     {/* Top Row: Medallion Icon & Statutory Tag */}
                     <div className="flex items-center justify-between mb-5">
-                      <div className="w-12 h-12 rounded-xl bg-[#151822] border border-[#252a3a] group-hover:border-[#d4af37]/60 flex items-center justify-center p-3 transition-colors">
+                      <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-[#1a1d28] to-[#12141c] border border-[#252a3a] group-hover:border-[#d4af37]/60 flex items-center justify-center p-3 transition-colors shadow-inner">
                         <Icon className={`w-6 h-6 ${card.iconColor}`} />
                       </div>
                       <span className={`text-[9px] font-black px-2.5 py-1 rounded-full border tracking-wider uppercase ${card.badgeStyle}`}>
@@ -265,7 +290,7 @@ export default function Home() {
                   </div>
 
                   {/* Action Link Footer */}
-                  <div className="mt-6 pt-4 border-t border-[#171a24] flex items-center justify-between text-xs font-semibold text-neutral-400 group-hover:text-amber-200 transition-colors">
+                  <div className="relative z-10 mt-6 pt-4 border-t border-[#171a24] flex items-center justify-between text-xs font-semibold text-neutral-400 group-hover:text-amber-200 transition-colors">
                     <span className="tracking-wide">Launch Power Suite</span>
                     <div className="w-7 h-7 rounded-lg bg-[#151822] group-hover:bg-[#d4af37] flex items-center justify-center transition-colors">
                       <ArrowRight className="w-3.5 h-3.5 text-neutral-300 group-hover:text-black transition-colors" />

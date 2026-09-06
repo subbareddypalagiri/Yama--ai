@@ -15,6 +15,7 @@ import LitigationEstimatorCard from '@/components/intelligence/LitigationEstimat
 import VoiceConsultation from '@/components/intelligence/VoiceConsultation';
 import AdvocateVoicePlayer from '@/components/intelligence/AdvocateVoicePlayer';
 import StatuteDrawer from '@/components/intelligence/StatuteDrawer';
+import CourtNoticeExporter from '@/components/intelligence/CourtNoticeExporter';
 import type { ChatMessage, ChatApiResponse } from '@/types';
 
 
@@ -254,48 +255,62 @@ function ChatPageInner() {
       </div>
 
       {/* Header */}
-      <header className="relative z-20 flex-shrink-0">
-        <div className="absolute inset-0 bg-gradient-to-b from-[#0a0a0b] via-[#0a0a0b]/95 to-transparent" />
-        <div className="relative max-w-4xl mx-auto px-4 py-4 flex items-center justify-between">
+      <header className="relative z-20 flex-shrink-0 border-b border-white/[0.06] bg-[#0a0a0b]/80 backdrop-blur-xl">
+        <div className="relative max-w-5xl mx-auto px-4 py-3.5 flex items-center justify-between">
           <div className="flex items-center gap-4">
             <Link href="/" className="group flex items-center gap-3">
               <div className="relative">
-                <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-violet-500 via-violet-600 to-fuchsia-600 flex items-center justify-center shadow-lg shadow-violet-500/25 group-hover:shadow-violet-500/40 transition-shadow">
-                  <Scale className="w-5 h-5 text-white" />
+                <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-[#d4af37] via-[#f59e0b] to-[#78350f] p-[1.2px] shadow-lg shadow-amber-500/20 group-hover:shadow-amber-500/40 transition-shadow">
+                  <div className="w-full h-full rounded-[10px] bg-[#0c0e14] flex items-center justify-center">
+                    <Scale className="w-5 h-5 text-amber-400 drop-shadow-[0_0_8px_rgba(245,158,11,0.5)]" />
+                  </div>
                 </div>
-                <div className="absolute inset-0 rounded-xl bg-gradient-to-br from-violet-500 to-fuchsia-600 blur-lg opacity-40 group-hover:opacity-60 transition-opacity" />
+                <div className="absolute inset-0 rounded-xl bg-gradient-to-br from-amber-500 to-amber-700 blur-md opacity-30 group-hover:opacity-60 transition-opacity" />
               </div>
               <div className="hidden sm:block">
-                <h1 className="font-semibold text-white tracking-tight">YAMA AI</h1>
-                <p className="text-[11px] text-white/30 -mt-0.5">Legal Intelligence</p>
+                <div className="flex items-center gap-2">
+                  <h1 className="font-bold text-white tracking-tight text-base">YAMA AI</h1>
+                  <span className="text-[9px] font-mono font-extrabold px-1.5 py-0.5 rounded bg-amber-400/10 border border-amber-400/25 text-amber-300">
+                    ADVOCATE
+                  </span>
+                </div>
+                <p className="text-[10px] text-neutral-400 font-medium">Senior Legal Intelligence Bench</p>
               </div>
             </Link>
+          </div>
+
+          {/* Real-time Statutory Engine Indicator */}
+          <div className="hidden md:flex items-center gap-2.5 px-4 py-1.5 rounded-full border border-amber-500/20 bg-amber-950/20 backdrop-blur-md shadow-inner shadow-amber-500/5">
+            <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse shadow-[0_0_8px_rgba(52,211,153,0.8)]" />
+            <span className="text-[10px] font-mono font-bold tracking-widest text-amber-200/90 uppercase">
+              GEMINI 2.5 FLASH • ZERO-LATENCY STATUTORY REASONING
+            </span>
           </div>
           
           <div className="flex items-center gap-2">
             {messages.length > 0 && (
               <button
                 onClick={clearChat}
-                className="flex items-center gap-2 px-3 py-2 text-[13px] text-white/40 hover:text-white/70 rounded-lg hover:bg-white/5 transition-all"
+                className="flex items-center gap-2 px-3 py-1.5 text-[12px] font-medium text-neutral-300 hover:text-white rounded-lg border border-white/[0.08] hover:border-amber-500/40 bg-white/[0.03] hover:bg-amber-500/10 transition-all shadow-sm"
               >
-                <RotateCcw className="w-4 h-4" />
-                <span className="hidden sm:inline">New chat</span>
+                <RotateCcw className="w-3.5 h-3.5 text-amber-400" />
+                <span className="hidden sm:inline">New Brief</span>
               </button>
             )}
-            <button
-              onClick={() => setIsSettingsOpen(true)}
-              className="flex items-center justify-center w-9 h-9 text-white/40 hover:text-white/70 rounded-lg hover:bg-white/5 transition-all"
-              title="Settings"
-            >
-              <Settings2 className="w-5 h-5" />
-            </button>
             <Link 
               href="/search" 
-              className="flex items-center gap-2 px-4 py-2 text-[13px] text-white/40 hover:text-white/70 rounded-lg hover:bg-white/5 transition-all"
+              className="flex items-center gap-2 px-3 py-1.5 text-[12px] font-medium text-neutral-300 hover:text-white rounded-lg border border-white/[0.08] hover:border-amber-500/40 bg-white/[0.03] hover:bg-amber-500/10 transition-all shadow-sm"
             >
-              <BookOpen className="w-4 h-4" />
-              <span className="hidden sm:inline">Laws</span>
+              <BookOpen className="w-3.5 h-3.5 text-amber-400" />
+              <span className="hidden sm:inline">Statutes (12,036+)</span>
             </Link>
+            <button
+              onClick={() => setIsSettingsOpen(true)}
+              className="flex items-center justify-center w-8 h-8 text-neutral-400 hover:text-amber-300 rounded-lg border border-white/[0.08] hover:border-amber-500/40 bg-white/[0.03] hover:bg-amber-500/10 transition-all"
+              title="Settings"
+            >
+              <Settings2 className="w-4 h-4" />
+            </button>
           </div>
         </div>
       </header>
@@ -329,21 +344,21 @@ function ChatPageInner() {
             {/* Glow effect */}
             <div className={`absolute -inset-1 rounded-[28px] transition-all duration-500 ${
               isFocused 
-                ? 'bg-gradient-to-r from-violet-500/30 via-fuchsia-500/30 to-violet-500/30 blur-xl opacity-100' 
+                ? 'bg-gradient-to-r from-amber-500/25 via-amber-400/20 to-amber-600/25 blur-xl opacity-100' 
                 : 'opacity-0'
             }`} />
             
             {/* Border gradient */}
             <div className={`absolute -inset-[1px] rounded-[26px] transition-all duration-300 ${
               isFocused
-                ? 'bg-gradient-to-r from-violet-500/50 via-fuchsia-500/50 to-violet-500/50'
-                : 'bg-gradient-to-r from-white/[0.08] via-white/[0.12] to-white/[0.08]'
+                ? 'bg-gradient-to-r from-[#f59e0b]/70 via-[#fbbf24]/80 to-[#d4af37]/70'
+                : 'bg-gradient-to-r from-white/[0.08] via-amber-500/20 to-white/[0.08]'
             }`} />
             
             {/* Main container */}
-            <div className="relative rounded-[24px] bg-[#111113] overflow-hidden">
+            <div className="relative rounded-[24px] bg-[#0c0e14]/95 border border-white/[0.04] overflow-hidden backdrop-blur-xl shadow-2xl">
               {/* Subtle inner highlight */}
-              <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-white/10 to-transparent" />
+              <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-amber-400/20 to-transparent" />
               
               {/* Attachments */}
               {attachments.length > 0 && (
@@ -354,7 +369,7 @@ function ChatPageInner() {
                         {att.preview ? (
                           <img src={att.preview} alt="" className="w-8 h-8 rounded-lg object-cover ring-1 ring-white/10" />
                         ) : (
-                          <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-violet-500/20 to-fuchsia-500/20 flex items-center justify-center text-violet-400">
+                          <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-amber-500/20 to-amber-700/20 flex items-center justify-center text-amber-400">
                             {getFileIcon(att.file.type)}
                           </div>
                         )}
@@ -373,7 +388,8 @@ function ChatPageInner() {
                 <button
                   onClick={() => fileInputRef.current?.click()}
                   disabled={isLoading || attachments.length >= 5}
-                  className="flex-shrink-0 w-10 h-10 rounded-xl flex items-center justify-center text-white/25 hover:text-white/50 hover:bg-white/[0.04] transition-all disabled:opacity-30"
+                  className="flex-shrink-0 w-10 h-10 rounded-xl flex items-center justify-center text-white/30 hover:text-amber-400 hover:bg-white/[0.04] transition-all disabled:opacity-30"
+                  title="Attach Documents or Photos"
                 >
                   <Paperclip className="w-5 h-5" />
                 </button>
@@ -383,7 +399,6 @@ function ChatPageInner() {
                   onTranscript={(text) => setInput((prev) => (prev ? `${prev} ${text}` : text))}
                 />
 
-
                 <div className="flex-1 min-h-[44px] flex items-center">
                   <textarea
                     ref={textareaRef}
@@ -392,10 +407,10 @@ function ChatPageInner() {
                     onKeyDown={handleKeyDown}
                     onFocus={() => setIsFocused(true)}
                     onBlur={() => setIsFocused(false)}
-                    placeholder="Describe your legal situation..."
+                    placeholder="Describe your legal situation, dispute, or question in plain words..."
                     rows={1}
                     disabled={isLoading}
-                    className="w-full resize-none bg-transparent text-[15px] text-white placeholder-white/20 focus:outline-none leading-relaxed py-2.5 max-h-[200px]"
+                    className="w-full resize-none bg-transparent text-[15px] text-white placeholder-neutral-500 focus:outline-none leading-relaxed py-2.5 max-h-[200px]"
                   />
                 </div>
 
@@ -404,27 +419,36 @@ function ChatPageInner() {
                   disabled={!input.trim() || isLoading}
                   className={`flex-shrink-0 w-10 h-10 rounded-xl flex items-center justify-center transition-all duration-300 ${
                     input.trim() && !isLoading
-                      ? 'bg-gradient-to-br from-violet-500 to-fuchsia-600 text-white shadow-lg shadow-violet-500/30 hover:shadow-violet-500/50 hover:scale-105 active:scale-95'
-                      : 'bg-white/[0.04] text-white/15'
+                      ? 'bg-gradient-to-br from-[#f59e0b] via-[#fbbf24] to-[#d4af37] text-black font-extrabold shadow-lg shadow-amber-500/30 hover:shadow-amber-500/50 hover:scale-105 active:scale-95'
+                      : 'bg-white/[0.04] text-white/20'
                   }`}
                 >
-                  {isLoading ? <Loader2 className="w-5 h-5 animate-spin" /> : <ArrowUp className="w-5 h-5" />}
+                  {isLoading ? <Loader2 className="w-5 h-5 animate-spin text-black" /> : <ArrowUp className="w-5 h-5 font-bold" />}
                 </button>
               </div>
 
-              {/* Response style */}
-              <div className="px-3 pb-3 flex justify-end">
-                <button
-                  type="button"
-                  onClick={() => setResponseStyle((prev) => (prev === 'default' ? 'roman_english' : 'default'))}
-                  className={`text-[11px] px-3 py-1.5 rounded-lg border transition-colors ${
-                    responseStyle === 'roman_english'
-                      ? 'bg-emerald-500/10 text-emerald-300 border-emerald-500/30'
-                      : 'bg-white/[0.02] text-white/45 border-white/[0.08] hover:text-white/70 hover:border-white/20'
-                  }`}
-                >
-                  {responseStyle === 'roman_english' ? 'Reply mode: Roman English' : 'Reply mode: Default'}
-                </button>
+              {/* Bottom bar inside dock */}
+              <div className="px-4 pb-3 pt-1 flex items-center justify-between border-t border-white/[0.04]">
+                <div className="hidden sm:flex items-center gap-2 text-[11px] text-neutral-500 font-mono">
+                  <kbd className="px-1.5 py-0.5 rounded bg-white/[0.06] border border-white/10 text-neutral-300 text-[10px]">⏎</kbd> send
+                  <span className="opacity-30">•</span>
+                  <kbd className="px-1.5 py-0.5 rounded bg-white/[0.06] border border-white/10 text-neutral-300 text-[10px]">Shift + ⏎</kbd> newline
+                </div>
+
+                <div className="flex items-center gap-2">
+                  <button
+                    type="button"
+                    onClick={() => setResponseStyle((prev) => (prev === 'default' ? 'roman_english' : 'default'))}
+                    className={`inline-flex items-center gap-1.5 text-[11px] px-3 py-1 rounded-full border transition-all font-mono font-medium ${
+                      responseStyle === 'roman_english'
+                        ? 'bg-emerald-500/10 text-emerald-300 border-emerald-500/30 shadow-sm shadow-emerald-500/10'
+                        : 'bg-white/[0.02] text-white/45 border-white/[0.08] hover:text-white/70 hover:border-white/20'
+                    }`}
+                  >
+                    <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
+                    {responseStyle === 'roman_english' ? 'ROMAN ENGLISH (ACTIVE)' : 'DEFAULT MODE'}
+                  </button>
+                </div>
               </div>
             </div>
           </div>
@@ -447,42 +471,82 @@ function ChatPageInner() {
 }
 
 function EmptyState({ onSubmit }: { onSubmit: (text: string) => void }) {
-  const examples = [
-    'My landlord refuses to return my security deposit',
-    'Someone posted my private photos online without consent',
-    'My employer hasn\'t paid salary for 3 months',
-    'I received a defective product, seller refusing refund',
+  const scenarios = [
+    {
+      title: 'Tenant Security Deposit Recovery',
+      statute: 'AP/TS Tenancy Act § 21 & Contract Act § 73',
+      badge: '18% PENAL INTEREST',
+      prompt: 'My landlord refuses to return my security deposit after 30 days of vacating the flat.',
+    },
+    {
+      title: 'Challan Lok Adalat Waiver Petition',
+      statute: 'MV Act § 136A & Legal Services Act § 19',
+      badge: '50-75% DISCOUNT',
+      prompt: 'I received an automated speed camera challan without calibration certificate, need Lok Adalat waiver petition.',
+    },
+    {
+      title: 'Police Arrest / Unlawful Summons Shield',
+      statute: 'BNSS § 35, § 43 & Arnesh Kumar',
+      badge: 'ARREST SHIELD',
+      prompt: 'Police called me to the police station without Section 35 BNSS notice of appearance.',
+    },
+    {
+      title: 'BSA Cryptographic Evidence Verification',
+      statute: 'BSA 2023 § 63 & Arjun Panditrao',
+      badge: 'CRYPTO CERTIFIED',
+      prompt: 'Need Section 63 BSA certificate hash for WhatsApp chat screenshots and UPI payment proofs.',
+    },
   ];
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-[65vh] text-center px-4">
-      {/* Logo with glow */}
-      <div className="relative mb-8">
-        <div className="w-20 h-20 rounded-3xl bg-gradient-to-br from-violet-500 via-violet-600 to-fuchsia-600 flex items-center justify-center shadow-2xl shadow-violet-500/30">
-          <Scale className="w-9 h-9 text-white" />
+    <div className="flex flex-col items-center justify-center min-h-[60vh] text-center px-4 py-8">
+      {/* Executive Seal with Gold Rim */}
+      <div className="relative mb-6">
+        <div className="w-20 h-20 rounded-3xl bg-gradient-to-br from-[#d4af37] via-[#f59e0b] to-[#78350f] p-[1.5px] shadow-2xl shadow-amber-500/25">
+          <div className="w-full h-full rounded-[22px] bg-[#0a0b10] flex items-center justify-center">
+            <Scale className="w-9 h-9 text-amber-400 drop-shadow-[0_0_12px_rgba(245,158,11,0.6)]" />
+          </div>
         </div>
-        <div className="absolute inset-0 rounded-3xl bg-gradient-to-br from-violet-500 to-fuchsia-600 blur-2xl opacity-40" />
+        <div className="absolute inset-0 rounded-3xl bg-gradient-to-br from-amber-500 to-amber-700 blur-2xl opacity-30" />
       </div>
 
-      <h2 className="text-3xl font-semibold text-white mb-3 tracking-tight">
-        How can I help you?
+      {/* Pill Badge */}
+      <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full border border-amber-500/30 bg-amber-950/30 text-amber-300 text-[11px] font-mono font-bold tracking-widest uppercase mb-4 shadow-sm">
+        <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse shadow-[0_0_8px_rgba(52,211,153,0.8)]" />
+        SENIOR ADVOCATE BENCH • 12,036+ LAWS ENFORCED
+      </div>
+
+      <h2 className="text-3xl sm:text-4xl font-extrabold text-white mb-3 tracking-tight">
+        Executive Legal Consultation
       </h2>
-      <p className="text-white/30 mb-12 max-w-md text-[15px] leading-relaxed">
-        Describe any legal situation in plain language. I&apos;ll analyze it using Indian laws and the IRAC framework.
+      <p className="text-neutral-400 mb-10 max-w-lg text-[14px] leading-relaxed">
+        Autonomous statutory defense under the 2023 Sanhitas &amp; 28 State Acts. Ask in Roman English, Telugu, or English for immediate legal leverage.
       </p>
       
-      {/* Example cards */}
-      <div className="w-full max-w-lg space-y-3">
-        {examples.map((ex, i) => (
+      {/* High-Contrast Scenario Cards */}
+      <div className="w-full max-w-2xl grid grid-cols-1 sm:grid-cols-2 gap-3 text-left">
+        {scenarios.map((sc, i) => (
           <button
             key={i}
-            onClick={() => onSubmit(ex)}
-            className="group w-full relative overflow-hidden"
+            onClick={() => onSubmit(sc.prompt)}
+            className="group relative p-4 rounded-2xl bg-[#0e1017] border border-[#1d2230] hover:border-amber-500/60 hover:bg-[#131622] transition-all duration-200 flex flex-col justify-between shadow-lg text-left"
           >
-            <div className="absolute inset-0 bg-gradient-to-r from-violet-500/10 to-fuchsia-500/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-            <div className="relative px-5 py-4 rounded-2xl text-left text-[14px] text-white/50 bg-white/[0.02] border border-white/[0.06] group-hover:border-violet-500/30 group-hover:text-white/70 transition-all duration-300 flex items-center justify-between">
-              <span>{ex}</span>
-              <ArrowUp className="w-4 h-4 opacity-0 group-hover:opacity-100 -rotate-45 transition-all" />
+            <div>
+              <div className="flex items-center justify-between gap-2 mb-2">
+                <span className="text-[9px] font-mono font-extrabold px-2 py-0.5 rounded bg-amber-400/10 border border-amber-400/30 text-amber-300 uppercase tracking-wide">
+                  {sc.badge}
+                </span>
+                <ArrowUp className="w-3.5 h-3.5 text-neutral-500 group-hover:text-amber-400 rotate-45 transition-colors" />
+              </div>
+              <h4 className="text-[13px] font-bold text-white group-hover:text-amber-200 transition-colors leading-snug mb-1">
+                {sc.title}
+              </h4>
+              <p className="text-[10px] font-mono font-semibold text-amber-400/80 mb-2">
+                {sc.statute}
+              </p>
+              <p className="text-[12px] text-neutral-400 line-clamp-2 leading-relaxed">
+                &ldquo;{sc.prompt}&rdquo;
+              </p>
             </div>
           </button>
         ))}
@@ -577,193 +641,178 @@ function MessageBubble({ message, isLast }: { message: ChatMessage; isLast: bool
   };
 
   return (
-    <div className={`group relative ${isUser ? '' : ''}`}>
-      <div className={`flex gap-4 ${isUser ? 'flex-row-reverse' : ''}`}>
-        {/* Avatar */}
-        <div className={`flex-shrink-0 relative ${isUser ? '' : ''}`}>
-          <div className={`w-9 h-9 rounded-xl flex items-center justify-center ${
-            isUser 
-              ? 'bg-gradient-to-br from-emerald-400 to-cyan-500' 
-              : 'bg-gradient-to-br from-violet-500 to-fuchsia-600'
-          }`}>
-            {isUser ? (
-              <span className="text-[13px] font-semibold text-white">U</span>
-            ) : (
-              <Sparkles className="w-4 h-4 text-white" />
-            )}
+    <div className={`group relative mb-6 ${isUser ? 'flex justify-end' : 'w-full'}`}>
+      {isUser ? (
+        <div className="flex items-start gap-3 max-w-[85%] sm:max-w-[75%]">
+          <div className="p-4 rounded-2xl rounded-tr-sm bg-gradient-to-br from-[#121c24] to-[#142624] border border-[#1d3d3a] shadow-lg text-white">
+            <div className="flex items-center justify-between gap-4 mb-1 text-[11px] font-mono text-emerald-400">
+              <span className="font-bold">CLIENT INQUIRY</span>
+              <span className="text-gray-500">{new Date(message.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>
+            </div>
+            <p className="text-[14px] leading-relaxed whitespace-pre-wrap font-sans text-gray-100">{message.content}</p>
           </div>
-          {!isUser && (
-            <div className="absolute inset-0 rounded-xl bg-gradient-to-br from-violet-500 to-fuchsia-600 blur-lg opacity-30" />
-          )}
+          <div className="w-8 h-8 rounded-xl bg-gradient-to-br from-emerald-500 to-teal-700 flex items-center justify-center text-xs font-bold text-black shrink-0 shadow-md">
+            U
+          </div>
         </div>
-
-        {/* Content */}
-        <div className={`flex-1 min-w-0 ${isUser ? 'flex justify-end' : ''}`}>
-          <div className={`inline-block max-w-full ${isUser ? 'text-right' : ''}`}>
-            {/* Label */}
-            <div className={`flex items-center gap-2 mb-2 ${isUser ? 'justify-end' : ''}`}>
-              <span className="text-[12px] font-medium text-white/40">
-                {isUser ? 'You' : 'YAMA AI'}
-              </span>
-              {!isUser && isLast && (
-                <span className="px-2 py-0.5 rounded-full bg-violet-500/10 text-violet-400 text-[10px] font-medium">
-                  Latest
-                </span>
-              )}
-            </div>
-
-            {/* Message content */}
-            <div className={`relative rounded-2xl px-5 py-4 ${
-              isUser 
-                ? 'bg-gradient-to-br from-white/[0.08] to-white/[0.04] rounded-tr-md' 
-                : 'bg-gradient-to-br from-white/[0.04] to-transparent border border-white/[0.06] rounded-tl-md'
-            }`}>
-              {isUser ? (
-                <p className="text-[15px] text-white/90 leading-relaxed whitespace-pre-wrap">{message.content}</p>
-              ) : (
-                <div className="prose prose-invert prose-sm max-w-none 
-                  prose-p:text-white/80 prose-p:leading-relaxed prose-p:text-[15px]
-                  prose-headings:text-white prose-headings:font-semibold
-                  prose-strong:text-white prose-strong:font-semibold
-                  prose-li:text-white/75
-                  prose-code:text-violet-300 prose-code:bg-violet-500/10 prose-code:px-1.5 prose-code:py-0.5 prose-code:rounded
-                  prose-pre:bg-black/30 prose-pre:border prose-pre:border-white/10
-                  prose-a:text-violet-400 prose-a:no-underline hover:prose-a:underline
-                ">
-                  <ReactMarkdown>{message.content}</ReactMarkdown>
-                </div>
-              )}
-            </div>
-
-            {/* Actions & 4-in-1 Intelligence Suite Buttons */}
-            {!isUser && (
-              <div className="mt-3 space-y-3">
-                {/* Action Bar */}
-                <div className="flex flex-wrap items-center gap-2">
-                  <button
-                    onClick={copyToClipboard}
-                    className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold text-slate-300 hover:text-white rounded-xl bg-slate-800/80 border border-slate-700/80 hover:border-slate-600 transition-all shadow-sm"
-                  >
-                    {copied ? <Check className="w-3.5 h-3.5 text-emerald-400" /> : <Copy className="w-3.5 h-3.5" />}
-                    <span>{copied ? 'Copied' : 'Copy'}</span>
-                  </button>
-
-                  {/* Feature 3: Advocate Voice-Back (TTS) */}
-                  <AdvocateVoicePlayer text={message.content} />
-
-                  <button
-                    onClick={handleOpenScorecard}
-                    className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-bold text-purple-300 hover:text-white rounded-xl bg-purple-900/40 hover:bg-purple-800/60 border border-purple-500/40 transition-all shadow-sm"
-                  >
-                    <span>📊</span>
-                    <span>{showScorecard ? 'Hide Scorecard' : 'Live Win Probability'}</span>
-                  </button>
-
-                  <button
-                    onClick={handleOpenSimulation}
-                    className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-bold text-indigo-300 hover:text-white rounded-xl bg-indigo-900/40 hover:bg-indigo-800/60 border border-indigo-500/40 transition-all shadow-sm"
-                  >
-                    <span>⚔️</span>
-                    <span>360° Courtroom Simulator</span>
-                  </button>
-
-                  <button
-                    onClick={() => setIsSosOpen(true)}
-                    className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-bold text-rose-300 hover:text-white rounded-xl bg-rose-900/50 hover:bg-rose-800/70 border border-rose-500/50 transition-all shadow-sm animate-pulse"
-                  >
-                    <span>🚨</span>
-                    <span>Emergency SOS Shield</span>
-                  </button>
-
-                  <button
-                    onClick={handleOpenEstimator}
-                    className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-bold text-emerald-300 hover:text-white rounded-xl bg-emerald-900/40 hover:bg-emerald-800/60 border border-emerald-500/40 transition-all shadow-sm"
-                  >
-                    <span>⏳</span>
-                    <span>Timeline & Cost Estimator</span>
-                  </button>
-                </div>
-
-                {/* Feature 4: Interactive Statutory Citations Badges */}
-                {detectedCitations.length > 0 && (
-                  <div className="flex flex-wrap items-center gap-1.5 pt-1">
-                    <span className="text-[10px] font-mono text-amber-400 font-bold uppercase tracking-wider mr-1">
-                      Statutory Citations:
-                    </span>
-                    {detectedCitations.map((c) => (
-                      <button
-                        key={c.key}
-                        onClick={() => setActiveCitation(c.key)}
-                        className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-[11px] font-mono font-bold bg-[#141722] hover:bg-[#1a1f2e] text-amber-300 border border-[#2c344a] hover:border-[#f59e0b]/60 transition-all shadow-sm cursor-pointer"
-                        title="Click to view full statutory text & punishment details"
-                      >
-                        <Scale className="w-3 h-3 text-[#f59e0b]" />
-                        <span>{c.label}</span>
-                      </button>
-                    ))}
-                  </div>
-                )}
-
-                {/* Feature 4: Statute Verification Slide-Over Drawer */}
-                <StatuteDrawer
-                  isOpen={!!activeCitation}
-                  citationKey={activeCitation}
-                  onClose={() => setActiveCitation(null)}
-                />
-
-                {/* Scorecard Container */}
-                {showScorecard && (
-                  <CaseScorecard
-                    scorecard={scorecard}
-                    loading={loadingScorecard}
-                    onRefresh={() => {
-                      setScorecard(null);
-                      handleOpenScorecard();
-                    }}
-                  />
-                )}
-
-                {/* Courtroom Simulator Modal */}
-                <CourtroomSimulatorModal
-                  isOpen={isSimulatorOpen}
-                  onClose={() => setIsSimulatorOpen(false)}
-                  simulation={simulation}
-                  loading={loadingSimulation}
-                  situation={message.content}
-                />
-
-                {/* SOS Shield Modal */}
-                <SosShieldModal
-                  isOpen={isSosOpen}
-                  onClose={() => setIsSosOpen(false)}
-                />
-
-                {/* Litigation Estimator Modal */}
-                <LitigationEstimatorCard
-                  isOpen={isEstimatorOpen}
-                  onClose={() => setIsEstimatorOpen(false)}
-                  estimator={estimator}
-                  loading={loadingEstimator}
-                />
+      ) : (
+        <div className="w-full rounded-2xl bg-[#0c0e15] border border-white/[0.08] hover:border-[#f59e0b]/35 transition-all duration-300 shadow-[0_15px_40px_rgba(0,0,0,0.6)] overflow-hidden">
+          {/* Card Top Header - Senior Counsel Identity */}
+          <div className="px-5 py-3.5 bg-[#0f121b] border-b border-[#1b1f2e] flex flex-wrap items-center justify-between gap-2 text-xs">
+            <div className="flex items-center gap-2.5">
+              <div className="w-7 h-7 rounded-lg bg-[#1a1711] border border-[#3e311a] flex items-center justify-center">
+                <Scale className="w-3.5 h-3.5 text-[#f59e0b]" />
               </div>
-            )}
-
-            {/* Relevant sections */}
-            {message.relevantSections && message.relevantSections.length > 0 && (
-              <div className="mt-4 flex flex-wrap gap-2">
-                {message.relevantSections.slice(0, 5).map((section, i) => (
-                  <span 
-                    key={i} 
-                    className="px-3 py-1.5 rounded-lg bg-gradient-to-r from-violet-500/10 to-fuchsia-500/10 text-violet-300 text-[11px] font-medium border border-violet-500/20"
-                  >
-                    {section.act_name} § {section.section_number}
+              <div>
+                <div className="flex items-center gap-2">
+                  <span className="font-bold text-white tracking-tight">YAMA AI</span>
+                  <span className="px-1.5 py-0.5 rounded text-[8px] font-mono font-bold bg-amber-500/10 text-amber-300 border border-amber-500/20 uppercase">
+                    SENIOR ADVOCATE
                   </span>
-                ))}
+                  <span className="px-1.5 py-0.5 rounded text-[8px] font-mono font-bold bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 uppercase hidden sm:inline">
+                    ROMAN ENGLISH
+                  </span>
+                </div>
               </div>
-            )}
+            </div>
+
+            <div className="flex items-center gap-2 text-gray-400 text-[11px] font-mono">
+              {isLast && (
+                <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" title="Active Analysis" />
+              )}
+              <span>{new Date(message.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>
+            </div>
           </div>
+
+          {/* Analysis Body */}
+          <div className="p-5 sm:p-6 text-gray-200 leading-relaxed text-[14px] font-sans">
+            <div className="prose prose-invert prose-sm max-w-none 
+              prose-p:text-gray-300 prose-p:leading-relaxed prose-p:text-[14px] prose-p:my-2.5
+              prose-headings:text-white prose-headings:font-bold prose-headings:tracking-tight
+              prose-h3:text-base prose-h3:mt-4 prose-h3:mb-2 prose-h3:border-l-2 prose-h3:border-[#f59e0b] prose-h3:pl-2.5
+              prose-h4:text-sm prose-h4:mt-3 prose-h4:mb-1.5 prose-h4:text-amber-200
+              prose-strong:text-white prose-strong:font-bold
+              prose-li:text-gray-300 prose-li:my-1
+              prose-code:text-amber-300 prose-code:bg-[#1a1c26] prose-code:px-1.5 prose-code:py-0.5 prose-code:rounded prose-code:border prose-code:border-[#2b3042]
+              prose-pre:bg-[#07080b] prose-pre:border prose-pre:border-white/10
+              prose-a:text-[#f59e0b] prose-a:underline hover:prose-a:text-amber-300
+            ">
+              <ReactMarkdown>{message.content}</ReactMarkdown>
+            </div>
+          </div>
+
+          {/* Statutory Grounding Citations Strip */}
+          {detectedCitations.length > 0 && (
+            <div className="px-5 sm:px-6 py-2.5 bg-[#090b10] border-t border-[#161a26] flex flex-wrap items-center gap-2 text-xs">
+              <span className="text-[10px] font-mono text-amber-400 font-bold uppercase tracking-wider">
+                Statutory Citations:
+              </span>
+              {detectedCitations.map((c) => (
+                <button
+                  key={c.key}
+                  onClick={() => setActiveCitation(c.key)}
+                  className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-[11px] font-mono font-bold bg-[#12141c] hover:bg-[#1a1f2e] text-amber-300 border border-[#242a3c] hover:border-[#f59e0b]/70 transition-all shadow-sm cursor-pointer"
+                  title="Click to view full statutory text & punishment details"
+                >
+                  <Scale className="w-3 h-3 text-[#f59e0b]" />
+                  <span>{c.label}</span>
+                </button>
+              ))}
+            </div>
+          )}
+
+          {/* Segmented Action Deck */}
+          <div className="px-5 sm:px-6 py-3.5 bg-[#0a0c12] border-t border-[#161a26] flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+            {/* Primary Action Controls: Voice, PDF, Copy */}
+            <div className="flex flex-wrap items-center gap-2">
+              <AdvocateVoicePlayer text={message.content} />
+              <CourtNoticeExporter content={message.content} />
+              <button
+                onClick={copyToClipboard}
+                className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold bg-[#12141c] hover:bg-[#181b26] text-gray-300 hover:text-white border border-[#252a3a] hover:border-[#f59e0b]/50 transition-all shadow-sm"
+              >
+                {copied ? <Check className="w-3.5 h-3.5 text-emerald-400" /> : <Copy className="w-3.5 h-3.5 text-gray-400" />}
+                <span>{copied ? 'Copied' : 'Copy Brief'}</span>
+              </button>
+            </div>
+
+            {/* Secondary Intelligence Tools */}
+            <div className="flex flex-wrap items-center gap-1.5">
+              <button
+                onClick={handleOpenScorecard}
+                className="px-2.5 py-1.5 text-xs font-bold text-purple-300 hover:text-white rounded-lg bg-purple-950/40 hover:bg-purple-900/60 border border-purple-500/30 transition-all shadow-sm cursor-pointer"
+                title="Calculate Case Win Probability"
+              >
+                <span>📊 {showScorecard ? 'Hide Odds' : 'Win Odds'}</span>
+              </button>
+
+              <button
+                onClick={handleOpenSimulation}
+                className="px-2.5 py-1.5 text-xs font-bold text-indigo-300 hover:text-white rounded-lg bg-indigo-950/40 hover:bg-indigo-900/60 border border-indigo-500/30 transition-all shadow-sm cursor-pointer"
+                title="360° Courtroom Simulator"
+              >
+                <span>⚔️ Simulator</span>
+              </button>
+
+              <button
+                onClick={() => setIsSosOpen(true)}
+                className="px-2.5 py-1.5 text-xs font-bold text-rose-300 hover:text-white rounded-lg bg-rose-950/40 hover:bg-rose-900/60 border border-rose-500/30 transition-all shadow-sm cursor-pointer animate-pulse"
+                title="Emergency SOS Police Arrest Rights"
+              >
+                <span>🚨 SOS</span>
+              </button>
+
+              <button
+                onClick={handleOpenEstimator}
+                className="px-2.5 py-1.5 text-xs font-bold text-emerald-300 hover:text-white rounded-lg bg-emerald-950/40 hover:bg-emerald-900/60 border border-emerald-500/30 transition-all shadow-sm cursor-pointer"
+                title="Litigation Timeline & Court Cost Estimator"
+              >
+                <span>⏳ Timeline</span>
+              </button>
+            </div>
+          </div>
+
+          {/* Attached Modals */}
+          <StatuteDrawer
+            isOpen={!!activeCitation}
+            citationKey={activeCitation}
+            onClose={() => setActiveCitation(null)}
+          />
+
+          {showScorecard && (
+            <div className="p-4 border-t border-[#161a26] bg-[#07080b]">
+              <CaseScorecard
+                scorecard={scorecard}
+                loading={loadingScorecard}
+                onRefresh={() => {
+                  setScorecard(null);
+                  handleOpenScorecard();
+                }}
+              />
+            </div>
+          )}
+
+          <CourtroomSimulatorModal
+            isOpen={isSimulatorOpen}
+            onClose={() => setIsSimulatorOpen(false)}
+            simulation={simulation}
+            loading={loadingSimulation}
+            situation={message.content}
+          />
+
+          <SosShieldModal
+            isOpen={isSosOpen}
+            onClose={() => setIsSosOpen(false)}
+          />
+
+          <LitigationEstimatorCard
+            isOpen={isEstimatorOpen}
+            onClose={() => setIsEstimatorOpen(false)}
+            estimator={estimator}
+            loading={loadingEstimator}
+          />
         </div>
-      </div>
+      )}
     </div>
   );
 }
@@ -773,22 +822,24 @@ function ThinkingIndicator() {
   return (
     <div className="flex gap-4">
       <div className="relative flex-shrink-0">
-        <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-violet-500 to-fuchsia-600 flex items-center justify-center">
-          <Sparkles className="w-4 h-4 text-white" />
+        <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-[#d4af37] via-[#f59e0b] to-[#78350f] p-[1.2px] shadow-lg shadow-amber-500/20">
+          <div className="w-full h-full rounded-[10px] bg-[#0c0e14] flex items-center justify-center">
+            <Scale className="w-5 h-5 text-amber-400 animate-pulse drop-shadow-[0_0_8px_rgba(245,158,11,0.5)]" />
+          </div>
         </div>
-        <div className="absolute inset-0 rounded-xl bg-gradient-to-br from-violet-500 to-fuchsia-600 blur-lg opacity-40 animate-pulse" />
       </div>
       <div className="flex-1">
-        <div className="mb-2">
-          <span className="text-[12px] font-medium text-white/40">YAMA AI</span>
+        <div className="mb-2 flex items-center gap-2">
+          <span className="text-[12px] font-bold text-amber-300">YAMA AI</span>
+          <span className="text-[10px] font-mono text-neutral-400 uppercase tracking-widest">• Senior Advocate Bench</span>
         </div>
-        <div className="inline-flex items-center gap-3 rounded-2xl rounded-tl-md px-5 py-4 bg-gradient-to-br from-white/[0.04] to-transparent border border-white/[0.06]">
+        <div className="inline-flex items-center gap-3 rounded-2xl rounded-tl-md px-5 py-3.5 bg-[#0e1017] border border-amber-500/20 shadow-xl">
           <div className="flex gap-1.5">
-            <span className="w-2 h-2 bg-gradient-to-br from-violet-400 to-fuchsia-400 rounded-full animate-bounce" style={{ animationDelay: '0ms' }} />
-            <span className="w-2 h-2 bg-gradient-to-br from-violet-400 to-fuchsia-400 rounded-full animate-bounce" style={{ animationDelay: '150ms' }} />
-            <span className="w-2 h-2 bg-gradient-to-br from-violet-400 to-fuchsia-400 rounded-full animate-bounce" style={{ animationDelay: '300ms' }} />
+            <span className="w-2 h-2 bg-amber-400 rounded-full animate-bounce shadow-[0_0_6px_rgba(245,158,11,0.6)]" style={{ animationDelay: '0ms' }} />
+            <span className="w-2 h-2 bg-amber-400 rounded-full animate-bounce shadow-[0_0_6px_rgba(245,158,11,0.6)]" style={{ animationDelay: '150ms' }} />
+            <span className="w-2 h-2 bg-amber-400 rounded-full animate-bounce shadow-[0_0_6px_rgba(245,158,11,0.6)]" style={{ animationDelay: '300ms' }} />
           </div>
-          <span className="text-[13px] text-white/30">Analyzing your situation...</span>
+          <span className="text-[13px] text-neutral-300 font-medium font-mono">Evaluating 12,036+ Bare Acts &amp; Sanhita Precedents...</span>
         </div>
       </div>
     </div>
