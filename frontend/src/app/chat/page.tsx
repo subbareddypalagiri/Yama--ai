@@ -59,7 +59,7 @@ function ChatPageInner() {
   const [isLoading, setIsLoading] = useState(false);
   const [sessionId, setSessionId] = useState<string | undefined>();
   const [error, setError] = useState<string | null>(null);
-  const [responseStyle, setResponseStyle] = useState<ChatResponseStyle>('default');
+  const [responseStyle, setResponseStyle] = useState<ChatResponseStyle>('roman_english');
   const [attachments, setAttachments] = useState<AttachedFile[]>([]);
   const [isFocused, setIsFocused] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);

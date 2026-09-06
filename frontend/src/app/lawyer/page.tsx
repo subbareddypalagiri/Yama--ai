@@ -453,7 +453,7 @@ function LawyerChat({ profile, onReset }: { profile: ClientProfile; onReset: () 
           );
         },
         sessionId,
-        'default',
+        'roman_english',
         undefined,
         customKey || undefined,
         customModel || undefined

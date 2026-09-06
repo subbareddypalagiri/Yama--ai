@@ -54,54 +54,130 @@ export async function sendChatMessageStream(
   message: string, 
   onChunk: (text: string) => void,
   sessionId?: string, 
-  responseStyle: ChatResponseStyle = 'default', 
+  responseStyle: ChatResponseStyle = 'roman_english', 
   responseLanguage?: string,
   customApiKey?: string,
   customModel?: string
 ): Promise<{session_id: string, analysis: string}> {
-  return new Promise((resolve, reject) => {
-    let fullAnalysis = "";
-    
-    // Lazy import so it doesn't break Next.js server components if imported
-    import('@microsoft/fetch-event-source').then(({ fetchEventSource }) => {
-      fetchEventSource(`${API_BASE}/chat/`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          message,
-          session_id: sessionId,
-          response_style: responseStyle,
-          custom_api_key: customApiKey?.trim() || undefined,
-          custom_model: customModel?.trim() || undefined
-        }),
-        onmessage(ev) {
-          if (ev.data === '[DONE]') return;
-          
-          let actualText = ev.data;
-          try {
-            const json = JSON.parse(ev.data);
-            if (json.candidates?.[0]?.content?.parts?.[0]?.text) {
-               actualText = json.candidates[0].content.parts[0].text;
-            } else {
-               actualText = "";
-            }
-          } catch(e) { }
-          
-          if (actualText) {
-            fullAnalysis += actualText;
-            onChunk(actualText);
-          }
-        },
-        onclose() {
-          resolve({ session_id: sessionId || "stream_session", analysis: fullAnalysis });
-        },
-        onerror(err) {
-          reject(err);
-          throw err;
-        }
-      });
-    }).catch(reject);
+  let fullAnalysis = "";
+  
+  const primaryUrl = `${API_BASE}/chat/`;
+  const fallbackUrl = `${API_BASE}/chat`;
+  
+  const requestPayload = JSON.stringify({
+    message,
+    session_id: sessionId,
+    response_style: responseStyle,
+    response_language: responseLanguage,
+    custom_api_key: customApiKey?.trim() || undefined,
+    custom_model: customModel?.trim() || undefined
   });
+
+  const headers = {
+    'Content-Type': 'application/json',
+    'Accept': 'text/event-stream, application/json, text/plain, */*'
+  };
+
+  let res: Response;
+  try {
+    res = await fetch(primaryUrl, {
+      method: 'POST',
+      headers,
+      body: requestPayload
+    });
+
+    if (res.status === 404) {
+      res = await fetch(fallbackUrl, {
+        method: 'POST',
+        headers,
+        body: requestPayload
+      });
+    }
+  } catch {
+    try {
+      res = await fetch('/api/v1/chat', {
+        method: 'POST',
+        headers,
+        body: requestPayload
+      });
+    } catch {
+      throw new Error('Connection failed. Please check network or try again.');
+    }
+  }
+
+  if (!res.ok) {
+    if (!res.url?.includes('/api/v1/chat')) {
+      try {
+        const altRes = await fetch('/api/v1/chat', {
+          method: 'POST',
+          headers,
+          body: requestPayload
+        });
+        if (altRes.ok) {
+          res = altRes;
+        }
+      } catch {}
+    }
+  }
+
+  if (!res.ok) {
+    let errMsg = `Request failed: ${res.statusText || res.status}`;
+    try {
+      const errData = await res.json();
+      if (errData.error) errMsg = errData.error;
+    } catch {}
+    throw new Error(errMsg);
+  }
+
+  const contentType = res.headers.get('content-type') || '';
+
+  if (contentType.includes('text/event-stream') && res.body) {
+    const reader = res.body.getReader();
+    const decoder = new TextDecoder();
+    let buffer = '';
+
+    while (true) {
+      const { done, value } = await reader.read();
+      if (done) break;
+
+      buffer += decoder.decode(value, { stream: true });
+      const lines = buffer.split('\n');
+      buffer = lines.pop() || '';
+
+      for (const line of lines) {
+        const trimmed = line.trim();
+        if (!trimmed.startsWith('data:')) continue;
+        const dataStr = trimmed.replace(/^data:\s*/, '');
+        if (dataStr === '[DONE]') continue;
+
+        let actualText = dataStr;
+        try {
+          const json = JSON.parse(dataStr);
+          if (json.candidates?.[0]?.content?.parts?.[0]?.text) {
+            actualText = json.candidates[0].content.parts[0].text;
+          } else if (json.text) {
+            actualText = json.text;
+          } else if (json.analysis) {
+            actualText = json.analysis;
+          }
+        } catch {}
+
+        if (actualText) {
+          fullAnalysis += actualText;
+          onChunk(actualText);
+        }
+      }
+    }
+
+    return { session_id: sessionId || "stream_session", analysis: fullAnalysis };
+  }
+
+  const data = await res.json();
+  const analysisText = data.analysis || data.text || JSON.stringify(data);
+  fullAnalysis = analysisText;
+  onChunk(analysisText);
+
+  return { session_id: data.session_id || sessionId || "session", analysis: fullAnalysis };
 }
 
 export async function uploadChatMessage(
