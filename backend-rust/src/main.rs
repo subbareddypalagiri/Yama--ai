@@ -37,7 +37,9 @@ async fn main() {
 
     let app = Router::new()
         .route("/api/v1/chat/", post(chat_handler))
+        .route("/api/v1/chat", post(chat_handler))
         .route("/api/v1/lawyer/", post(chat_handler))
+        .route("/api/v1/lawyer", post(chat_handler))
         .route("/api/v1/laws/search", axum::routing::get(routes::laws::search_laws_handler))
         .route("/api/v1/laws/state", axum::routing::get(routes::laws::search_state_laws_handler))
         .route("/api/v1/laws/supreme-court", axum::routing::get(routes::laws::search_supreme_court_handler))
@@ -55,8 +57,8 @@ async fn main() {
         .layer(cors)
         .with_state(state);
 
-    let listener = tokio::net::TcpListener::bind("127.0.0.1:8080").await.unwrap();
-    println!("🚀 Rust Server running on http://127.0.0.1:8080");
+    let listener = tokio::net::TcpListener::bind("0.0.0.0:8088").await.unwrap();
+    println!("🚀 Rust Server running on http://127.0.0.1:8088");
     
     axum::serve(listener, app).await.unwrap();
 }

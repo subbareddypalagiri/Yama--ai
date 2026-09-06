@@ -7,7 +7,7 @@ export const API_BASE = (() => {
       return '/api/v1';
     }
   }
-  return 'http://localhost:8080/api/v1';
+  return 'http://localhost:8088/api/v1';
 })();
 
 export type ChatResponseStyle = 'default' | 'roman_english';
