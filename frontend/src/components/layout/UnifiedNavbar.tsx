@@ -5,7 +5,7 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import {
   Scale, Briefcase, Search, BookOpen, FolderOpen, MessageSquare,
-  Settings2, Shield, Globe, Menu, X
+  Settings2, Shield, Globe, Menu, X, MessageCircle
 } from 'lucide-react';
 import { SettingsModal } from '@/components/chat/SettingsModal';
 import CyberJurisdictionModal from '@/components/intelligence/CyberJurisdictionModal';
@@ -13,6 +13,7 @@ import { DarkModeToggle } from '@/components/ui/DarkModeToggle';
 
 interface UnifiedNavbarProps {
   onLanguageChange?: (lang: string) => void;
+  activeLanguage?: string;
 }
 
 export default function UnifiedNavbar({ onLanguageChange }: UnifiedNavbarProps) {
@@ -28,6 +29,7 @@ export default function UnifiedNavbar({ onLanguageChange }: UnifiedNavbarProps) 
     { href: '/explore', label: 'Explore Acts', icon: BookOpen },
     { href: '/cases', label: 'Case Diary', icon: FolderOpen },
     { href: '/chat', label: 'Legal Chat', icon: MessageSquare },
+    { href: '/whatsapp', label: 'WhatsApp', icon: MessageCircle },
   ];
 
   const handleToggleLang = () => {

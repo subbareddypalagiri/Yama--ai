@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useRef, useEffect, Suspense } from 'react';
+import React, { useState, useRef, useEffect, useMemo, Suspense } from 'react';
 import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
 import { Scale, Loader2, AlertTriangle, BookOpen, ChevronLeft, Sparkles, Paperclip, X, FileText, Image as ImageIcon, File, ArrowUp, Copy, Check, RotateCcw, Settings2 } from 'lucide-react';
@@ -13,6 +13,8 @@ import CourtroomSimulatorModal from '@/components/intelligence/CourtroomSimulato
 import SosShieldModal from '@/components/intelligence/SosShieldModal';
 import LitigationEstimatorCard from '@/components/intelligence/LitigationEstimatorCard';
 import VoiceConsultation from '@/components/intelligence/VoiceConsultation';
+import AdvocateVoicePlayer from '@/components/intelligence/AdvocateVoicePlayer';
+import StatuteDrawer from '@/components/intelligence/StatuteDrawer';
 import type { ChatMessage, ChatApiResponse } from '@/types';
 
 
@@ -507,6 +509,21 @@ function MessageBubble({ message, isLast }: { message: ChatMessage; isLast: bool
   const [isEstimatorOpen, setIsEstimatorOpen] = useState(false);
 
   const [isSosOpen, setIsSosOpen] = useState(false);
+  const [activeCitation, setActiveCitation] = useState<string | null>(null);
+
+  const detectedCitations = React.useMemo(() => {
+    if (isUser) return [];
+    const text = message.content;
+    const list: { key: string; label: string }[] = [];
+    if (/318|cheating/i.test(text)) list.push({ key: '318_bns', label: '§ 318 BNS (Cheating)' });
+    if (/35(\s*bnss|\s*of\s*bnss)|notice\s*of\s*appearance/i.test(text)) list.push({ key: '35_bnss', label: '§ 35 BNSS (Notice Mandate)' });
+    if (/43(\s*bnss|\s*of\s*bnss)|meet\s*advocate/i.test(text)) list.push({ key: '43_bnss', label: '§ 43 BNSS (Right to Advocate)' });
+    if (/63(\s*bsa|\s*of\s*bsa)|electronic\s*record|65b/i.test(text)) list.push({ key: '63_bsa', label: '§ 63 BSA (Electronic Hash)' });
+    if (/136a|speed\s*camera|challan|lok\s*adalat/i.test(text)) list.push({ key: '136a_mv', label: '§ 136A MV Act (Challan Waiver)' });
+    if (/22|fundamental\s*right|custody|24\s*hours/i.test(text)) list.push({ key: '22_art', label: 'Art. 22 (Arrest Rights)' });
+    if (/deposit|tenan|landlord|rent/i.test(text)) list.push({ key: '21_tenancy', label: '§ 21 Tenancy Act (Deposit Refund)' });
+    return list;
+  }, [message.content, isUser]);
 
   const copyToClipboard = () => {
     navigator.clipboard.writeText(message.content);
@@ -631,6 +648,9 @@ function MessageBubble({ message, isLast }: { message: ChatMessage; isLast: bool
                     <span>{copied ? 'Copied' : 'Copy'}</span>
                   </button>
 
+                  {/* Feature 3: Advocate Voice-Back (TTS) */}
+                  <AdvocateVoicePlayer text={message.content} />
+
                   <button
                     onClick={handleOpenScorecard}
                     className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-bold text-purple-300 hover:text-white rounded-xl bg-purple-900/40 hover:bg-purple-800/60 border border-purple-500/40 transition-all shadow-sm"
@@ -663,6 +683,33 @@ function MessageBubble({ message, isLast }: { message: ChatMessage; isLast: bool
                     <span>Timeline & Cost Estimator</span>
                   </button>
                 </div>
+
+                {/* Feature 4: Interactive Statutory Citations Badges */}
+                {detectedCitations.length > 0 && (
+                  <div className="flex flex-wrap items-center gap-1.5 pt-1">
+                    <span className="text-[10px] font-mono text-amber-400 font-bold uppercase tracking-wider mr-1">
+                      Statutory Citations:
+                    </span>
+                    {detectedCitations.map((c) => (
+                      <button
+                        key={c.key}
+                        onClick={() => setActiveCitation(c.key)}
+                        className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-[11px] font-mono font-bold bg-[#141722] hover:bg-[#1a1f2e] text-amber-300 border border-[#2c344a] hover:border-[#f59e0b]/60 transition-all shadow-sm cursor-pointer"
+                        title="Click to view full statutory text & punishment details"
+                      >
+                        <Scale className="w-3 h-3 text-[#f59e0b]" />
+                        <span>{c.label}</span>
+                      </button>
+                    ))}
+                  </div>
+                )}
+
+                {/* Feature 4: Statute Verification Slide-Over Drawer */}
+                <StatuteDrawer
+                  isOpen={!!activeCitation}
+                  citationKey={activeCitation}
+                  onClose={() => setActiveCitation(null)}
+                />
 
                 {/* Scorecard Container */}
                 {showScorecard && (
