@@ -687,6 +687,22 @@ function LawyerChat({ profile, onReset }: { profile: ClientProfile; onReset: () 
             <FileText className="w-3.5 h-3.5 text-red-400" />
             <span>Clause Redline Auditor</span>
           </button>
+
+          <Link
+            href="/draft"
+            className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-amber-500/10 border border-amber-500/30 hover:border-amber-500/50 hover:bg-amber-500/20 text-amber-300 transition-all text-xs font-semibold shadow-sm"
+          >
+            <FileText className="w-3.5 h-3.5 text-amber-400" />
+            <span>Notice Studio</span>
+          </Link>
+
+          <Link
+            href="/precedents"
+            className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-purple-500/10 border border-purple-500/30 hover:border-purple-500/50 hover:bg-purple-500/20 text-purple-300 transition-all text-xs font-semibold shadow-sm"
+          >
+            <Award className="w-3.5 h-3.5 text-purple-400" />
+            <span>SC Precedents</span>
+          </Link>
         </div>
 
         <span className="text-[10px] text-amber-200/60 hidden md:inline font-mono font-medium">

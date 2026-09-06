@@ -5,7 +5,7 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import {
   Scale, Briefcase, Search, BookOpen, FolderOpen, MessageSquare,
-  Settings2, Shield, Globe, Menu, X, MessageCircle, User
+  Settings2, Shield, Globe, Menu, X, MessageCircle, User, FileText, Award
 } from 'lucide-react';
 import { SettingsModal } from '@/components/chat/SettingsModal';
 import CyberJurisdictionModal from '@/components/intelligence/CyberJurisdictionModal';
@@ -27,8 +27,9 @@ export default function UnifiedNavbar({ onLanguageChange }: UnifiedNavbarProps) 
 
   const navLinks = [
     { href: '/lawyer', label: 'Your Lawyer', icon: Briefcase, highlight: true },
+    { href: '/draft', label: 'Legal Drafter', icon: FileText },
+    { href: '/precedents', label: 'SC Precedents', icon: Award },
     { href: '/search', label: '12,036+ Laws', icon: Search },
-    { href: '/explore', label: 'Explore Acts', icon: BookOpen },
     { href: '/cases', label: 'Case Diary', icon: FolderOpen },
     { href: '/chat', label: 'Legal Chat', icon: MessageSquare },
     { href: '/whatsapp', label: 'WhatsApp', icon: MessageCircle },

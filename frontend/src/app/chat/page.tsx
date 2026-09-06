@@ -723,10 +723,18 @@ function MessageBubble({ message, isLast }: { message: ChatMessage; isLast: bool
 
           {/* Segmented Action Deck */}
           <div className="px-5 sm:px-6 py-3.5 bg-[#0a0c12] border-t border-[#161a26] flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-            {/* Primary Action Controls: Voice, PDF, Copy */}
+            {/* Primary Action Controls: Voice, PDF, Drafter, Copy */}
             <div className="flex flex-wrap items-center gap-2">
               <AdvocateVoicePlayer text={message.content} />
               <CourtNoticeExporter content={message.content} />
+              <Link
+                href="/draft"
+                className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold bg-amber-500/10 hover:bg-amber-500 hover:text-black text-amber-400 border border-amber-500/30 transition-all shadow-sm"
+                title="Open Interactive Legal Drafter Studio"
+              >
+                <FileText className="w-3.5 h-3.5" />
+                <span>Notice Studio</span>
+              </Link>
               <button
                 onClick={copyToClipboard}
                 className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold bg-[#12141c] hover:bg-[#181b26] text-gray-300 hover:text-white border border-[#252a3a] hover:border-[#f59e0b]/50 transition-all shadow-sm"
