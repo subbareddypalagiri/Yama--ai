@@ -24,7 +24,10 @@ backend-rust/target/
 # Database
 # chroma_data/
 # *.db
+*.db-shm
+*.db-wal
 *.sqlite3
+*.tsbuildinfo
 
 # IDE
 .vscode/

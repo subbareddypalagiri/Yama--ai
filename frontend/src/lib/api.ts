@@ -1,13 +1,11 @@
 const configuredApiUrl = process.env.NEXT_PUBLIC_API_URL?.trim();
 
 export const API_BASE = (() => {
-  if (configuredApiUrl) return `${configuredApiUrl.replace(/\/$/, '')}/api/v1`;
-  if (typeof window !== 'undefined') {
-    if (window.location.hostname !== 'localhost' && window.location.hostname !== '127.0.0.1') {
-      return '/api/v1';
-    }
+  if (configuredApiUrl && !configuredApiUrl.includes('localhost:8088')) {
+    return `${configuredApiUrl.replace(/\/$/, '')}/api/v1`;
   }
-  return 'http://localhost:8088/api/v1';
+  // 100% Vercel All-in-One Serverless Backend
+  return '/api/v1';
 })();
 
 export type ChatResponseStyle = 'default' | 'roman_english';
