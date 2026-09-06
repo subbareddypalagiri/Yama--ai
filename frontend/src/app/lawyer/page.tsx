@@ -22,6 +22,7 @@ import TenantDepositRecoveryModal from '@/components/intelligence/TenantDepositR
 import TrafficChallanWaiverModal from '@/components/intelligence/TrafficChallanWaiverModal';
 import PoliceSosShieldModal from '@/components/intelligence/PoliceSosShieldModal';
 import EvidenceVaultModal from '@/components/intelligence/EvidenceVaultModal';
+import ClauseRedlineScannerModal from '@/components/intelligence/ClauseRedlineScannerModal';
 
 // ─── Types ───────────────────────────────────────────────────────────────────
 interface Message {
@@ -268,6 +269,7 @@ function LawyerChat({ profile, onReset }: { profile: ClientProfile; onReset: () 
   const [isChallanWaiverOpen, setIsChallanWaiverOpen] = useState(false);
   const [isPoliceSosOpen, setIsPoliceSosOpen] = useState(false);
   const [isEvidenceVaultOpen, setIsEvidenceVaultOpen] = useState(false);
+  const [isClauseScannerOpen, setIsClauseScannerOpen] = useState(false);
   const [attachedFile, setAttachedFile] = useState<{ file: File; name: string; size: string; content?: string } | null>(null);
   const [isListening, setIsListening] = useState(false);
   const [speakingMsgId, setSpeakingMsgId] = useState<string | null>(null);
@@ -677,6 +679,14 @@ function LawyerChat({ profile, onReset }: { profile: ClientProfile; onReset: () 
             <Lock className="w-3.5 h-3.5 text-cyan-400" />
             <span>SHA-256 Vault</span>
           </button>
+
+          <button
+            onClick={() => setIsClauseScannerOpen(true)}
+            className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-red-500/10 border border-red-500/30 hover:border-red-500/50 hover:bg-red-500/20 text-red-300 transition-all text-xs font-semibold shadow-sm cursor-pointer"
+          >
+            <FileText className="w-3.5 h-3.5 text-red-400" />
+            <span>Clause Redline Auditor</span>
+          </button>
         </div>
 
         <span className="text-[10px] text-amber-200/60 hidden md:inline font-mono font-medium">
@@ -1000,6 +1010,11 @@ function LawyerChat({ profile, onReset }: { profile: ClientProfile; onReset: () 
         onClose={() => setIsEvidenceVaultOpen(false)}
         defaultClientName={profile.name}
         defaultState={profile.state}
+      />
+
+      <ClauseRedlineScannerModal
+        isOpen={isClauseScannerOpen}
+        onClose={() => setIsClauseScannerOpen(false)}
       />
 
       <SettingsModal

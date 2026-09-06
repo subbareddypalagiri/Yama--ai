@@ -12,6 +12,7 @@ import TiltCard from '@/components/ui/TiltCard';
 import UnifiedNavbar from '@/components/layout/UnifiedNavbar';
 import LanguageSelector from '@/components/LanguageSelector';
 import { useLanguage } from '@/context/LanguageContext';
+import CnrCaseTrackerModal from '@/components/intelligence/CnrCaseTrackerModal';
 
 const STATUS_COLORS: Record<string, string> = {
   draft: 'bg-gray-500/20 text-gray-400 border-gray-500/30',
@@ -35,6 +36,7 @@ export default function CasesPage() {
   const [cases, setCases] = useState<Case[]>([]);
   const [loading, setLoading] = useState(true);
   const [showCreateModal, setShowCreateModal] = useState(false);
+  const [showCnrModal, setShowCnrModal] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const [statusFilter, setStatusFilter] = useState('');
   const [creating, setCreating] = useState(false);
@@ -104,13 +106,22 @@ export default function CasesPage() {
             <p className="text-white/40 text-sm mt-1">{t.features.caseTrackingDesc}</p>
           </div>
           
-          <button
-            onClick={() => setShowCreateModal(true)}
-            className="flex items-center gap-2 px-5 py-2.5 rounded-xl font-medium btn-glow text-white"
-          >
-            <Plus className="w-4 h-4" />
-            {t.cases.newCase}
-          </button>
+          <div className="flex items-center gap-3">
+            <button
+              onClick={() => setShowCnrModal(true)}
+              className="flex items-center gap-2 px-4 py-2.5 rounded-xl font-bold text-xs bg-[#131622] border border-[#d4af37]/60 text-amber-300 hover:bg-amber-500/10 transition-all shadow-md cursor-pointer"
+            >
+              <Scale className="w-4 h-4 text-amber-400" />
+              <span>Track 16-Digit CNR (eCourts)</span>
+            </button>
+            <button
+              onClick={() => setShowCreateModal(true)}
+              className="flex items-center gap-2 px-5 py-2.5 rounded-xl font-medium btn-glow text-white cursor-pointer"
+            >
+              <Plus className="w-4 h-4" />
+              {t.cases.newCase}
+            </button>
+          </div>
         </div>
 
         {/* Filters */}
@@ -228,6 +239,13 @@ export default function CasesPage() {
           loading={creating}
         />
       )}
+
+      {/* 16-Digit eCourts CNR Tracker Modal */}
+      <CnrCaseTrackerModal
+        isOpen={showCnrModal}
+        onClose={() => setShowCnrModal(false)}
+        onCaseSaved={() => fetchCases()}
+      />
     </div>
   );
 }

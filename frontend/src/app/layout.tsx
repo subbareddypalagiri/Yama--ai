@@ -1,12 +1,22 @@
-import type { Metadata } from 'next';
+import type { Metadata, Viewport } from 'next';
 import './globals.css';
 import { LanguageProvider } from '@/context/LanguageContext';
 import { ThemeProvider } from '@/context/ThemeContext';
 
+export const viewport: Viewport = {
+  themeColor: '#07080b',
+};
+
 export const metadata: Metadata = {
-  title: 'YAMA AI — Indian Justice Analysis System',
+  title: 'YAMA AI — Bharat\'s Senior AI Legal Strategist',
   description:
-    'A neutral legal analysis platform that provides objective legal analysis based on Indian laws using the IRAC framework.',
+    'Autonomous statutory defense under the 2023 Sanhitas (BNS, BNSS, BSA) & 28 State Acts with 1-Tap Offline Police SOS Shield.',
+  manifest: '/manifest.json',
+  appleWebApp: {
+    capable: true,
+    statusBarStyle: 'black-translucent',
+    title: 'YAMA AI',
+  },
 };
 
 export default function RootLayout({
@@ -17,6 +27,8 @@ export default function RootLayout({
   return (
     <html lang="en" className="dark" suppressHydrationWarning>
       <head>
+        <link rel="manifest" href="/manifest.json" />
+        <meta name="theme-color" content="#07080b" />
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
         <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Inter:wght@300;400;500;600;700;800&family=Outfit:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&family=Noto+Sans+Telugu:wght@400;500;600;700&display=swap" rel="stylesheet" />
@@ -29,6 +41,11 @@ export default function RootLayout({
                   if (theme === 'light') {
                     document.documentElement.classList.remove('dark');
                     document.documentElement.classList.add('light');
+                  }
+                  if ('serviceWorker' in navigator && window.location.protocol.startsWith('http')) {
+                    window.addEventListener('load', function() {
+                      navigator.serviceWorker.register('/sw.js').catch(function() {});
+                    });
                   }
                 } catch (e) {}
               })();

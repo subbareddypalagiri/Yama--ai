@@ -5,10 +5,11 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import {
   Scale, Briefcase, Search, BookOpen, FolderOpen, MessageSquare,
-  Settings2, Shield, Globe, Menu, X, MessageCircle
+  Settings2, Shield, Globe, Menu, X, MessageCircle, User
 } from 'lucide-react';
 import { SettingsModal } from '@/components/chat/SettingsModal';
 import CyberJurisdictionModal from '@/components/intelligence/CyberJurisdictionModal';
+import AuthModal from '@/components/auth/AuthModal';
 import { DarkModeToggle } from '@/components/ui/DarkModeToggle';
 
 interface UnifiedNavbarProps {
@@ -21,6 +22,7 @@ export default function UnifiedNavbar({ onLanguageChange }: UnifiedNavbarProps) 
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
   const [isJurisdictionOpen, setIsJurisdictionOpen] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [isAuthOpen, setIsAuthOpen] = useState(false);
   const [currentLang, setCurrentLang] = useState('English');
 
   const navLinks = [
@@ -115,6 +117,16 @@ export default function UnifiedNavbar({ onLanguageChange }: UnifiedNavbarProps) 
             {/* Dark / Light Mode Toggle */}
             <DarkModeToggle />
 
+            {/* Supabase Account & Cloud Sync */}
+            <button
+              onClick={() => setIsAuthOpen(true)}
+              className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-[#12141c] border border-amber-500/30 hover:border-amber-500/60 text-xs text-amber-300 font-semibold transition-all cursor-pointer shadow-sm"
+              title="Cloud Account & Case Diary Sync"
+            >
+              <User className="w-3.5 h-3.5 text-amber-400" />
+              <span className="hidden sm:inline">Account</span>
+            </button>
+
             {/* Settings Button */}
             <button
               onClick={() => setIsSettingsOpen(true)}
@@ -191,6 +203,11 @@ export default function UnifiedNavbar({ onLanguageChange }: UnifiedNavbarProps) 
       <CyberJurisdictionModal
         isOpen={isJurisdictionOpen}
         onClose={() => setIsJurisdictionOpen(false)}
+      />
+
+      <AuthModal
+        isOpen={isAuthOpen}
+        onClose={() => setIsAuthOpen(false)}
       />
     </>
   );

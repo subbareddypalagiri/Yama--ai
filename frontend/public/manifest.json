@@ -1,0 +1,35 @@
+{
+  "name": "YAMA AI - Bharat's Senior AI Legal Strategist",
+  "short_name": "YAMA AI",
+  "description": "Autonomous statutory defense under the 2023 Sanhitas (BNS, BNSS, BSA) & 28 State Acts with 1-Tap Offline Police SOS Shield.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#07080b",
+  "theme_color": "#07080b",
+  "orientation": "portrait-primary",
+  "icons": [
+    {
+      "src": "/icon.svg",
+      "sizes": "192x192 512x512",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Police SOS Shield",
+      "url": "/lawyer?sos=true",
+      "description": "Instant 1-Tap Arrest Rights & Voice Playback"
+    },
+    {
+      "name": "Case Diary & CNR",
+      "url": "/cases",
+      "description": "National eCourts Case Tracker"
+    },
+    {
+      "name": "Legal Chat",
+      "url": "/chat",
+      "description": "Consult Advocate YAMA AI"
+    }
+  ]
+}
